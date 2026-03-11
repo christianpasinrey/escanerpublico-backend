@@ -6,19 +6,21 @@ use SimpleXMLElement;
 
 class PlacspParser
 {
-    /**
-     * Parsea un fichero ATOM de la PLACSP y devuelve un array de contratos normalizados.
-     */
+    // Namespaces reales del feed PLACSP
+    private const NS = [
+        'atom'          => 'http://www.w3.org/2005/Atom',
+        'cbc'           => 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2',
+        'cac'           => 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2',
+        'cac-place-ext' => 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2',
+        'cbc-place-ext' => 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2',
+    ];
+
     public function parseAtomFile(string $xmlContent): array
     {
         $xml = new SimpleXMLElement($xmlContent);
-        $xml->registerXPathNamespace('at', 'http://www.w3.org/2005/Atom');
-        $xml->registerXPathNamespace('cbc-place-ext', 'urn:dgpe:names:draft:codice:schema:xsd:PlacExtensionComponents-2');
-        $xml->registerXPathNamespace('cac-place-ext', 'urn:dgpe:names:draft:codice:schema:xsd:PlacExtensionAggregateComponents-2');
-        $xml->registerXPathNamespace('cbc', 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2');
-        $xml->registerXPathNamespace('cac', 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2');
+        $this->registerNs($xml);
 
-        $entries = $xml->xpath('//at:entry');
+        $entries = $xml->xpath('//atom:entry');
         $contracts = [];
 
         foreach ($entries as $entry) {
@@ -37,54 +39,62 @@ class PlacspParser
 
     protected function parseEntry(SimpleXMLElement $entry): array
     {
-        $entry->registerXPathNamespace('at', 'http://www.w3.org/2005/Atom');
-        $entry->registerXPathNamespace('cbc-place-ext', 'urn:dgpe:names:draft:codice:schema:xsd:PlacExtensionComponents-2');
-        $entry->registerXPathNamespace('cac-place-ext', 'urn:dgpe:names:draft:codice:schema:xsd:PlacExtensionAggregateComponents-2');
-        $entry->registerXPathNamespace('cbc', 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2');
-        $entry->registerXPathNamespace('cac', 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2');
+        $this->registerNs($entry);
 
-        $folder = $this->xpath($entry, './/cac-place-ext:ContractFolderStatus');
-
+        // Campos del atom entry (namespace por defecto = atom)
         $data = [
-            'external_id' => (string) $entry->id,
-            'link' => $this->xpathAttr($entry, './/at:link[@rel="alternate"]', 'href')
-                ?? $this->xpathAttr($entry, './/at:link', 'href'),
+            'external_id' => $this->xpathText($entry, 'atom:id'),
+            'link' => $this->xpathAttr($entry, 'atom:link', 'href'),
         ];
 
+        $folder = $this->xpath($entry, 'cac-place-ext:ContractFolderStatus');
+
         if (!$folder) {
-            $data['expediente'] = (string) $entry->title;
-            $data['objeto'] = (string) $entry->title;
+            $data['expediente'] = $this->xpathText($entry, 'atom:title') ?? '';
+            $data['objeto'] = $data['expediente'];
             $data['status_code'] = 'PUB';
             $data['organo_contratante'] = '';
             return $data;
         }
 
+        $this->registerNs($folder);
+
         // Expediente y estado
-        $data['expediente'] = $this->xpathText($folder, 'cbc:ContractFolderID') ?? (string) $entry->title;
+        $data['expediente'] = $this->xpathText($folder, 'cbc:ContractFolderID')
+            ?? $this->xpathText($entry, 'atom:title') ?? '';
         $data['status_code'] = $this->xpathText($folder, 'cbc-place-ext:ContractFolderStatusCode') ?? 'PUB';
 
         // Órgano de contratación
-        $party = $this->xpath($folder, './/cac-place-ext:LocatedContractingParty//cac:Party');
+        $party = $this->xpath($folder, './/cac-place-ext:LocatedContractingParty/cac:Party');
         if ($party) {
+            $this->registerNs($party);
             $data['organo_contratante'] = $this->xpathText($party, './/cac:PartyName/cbc:Name') ?? '';
-            $data['organo_dir3'] = $this->xpathText($party, './/cac:PartyIdentification/cbc:ID');
+
+            // DIR3 — buscar el ID con schemeName="DIR3"
+            $dir3Nodes = $party->xpath('.//cac:PartyIdentification/cbc:ID[@schemeName="DIR3"]');
+            if ($dir3Nodes) {
+                $data['organo_dir3'] = (string) $dir3Nodes[0];
+            }
         } else {
             $data['organo_contratante'] = '';
         }
 
         $data['organo_superior'] = $this->xpathText($folder,
-            './/cac-place-ext:LocatedContractingParty//cac-place-ext:ParentLocatedParty//cac:PartyName/cbc:Name');
+            './/cac-place-ext:LocatedContractingParty/cac-place-ext:ParentLocatedParty//cac:PartyName/cbc:Name');
 
         // Proyecto de contratación
         $project = $this->xpath($folder, './/cac:ProcurementProject');
         if ($project) {
-            $data['objeto'] = $this->xpathText($project, 'cbc:Name') ?? (string) $entry->title;
+            $this->registerNs($project);
+            $data['objeto'] = $this->xpathText($project, 'cbc:Name')
+                ?? $this->xpathText($entry, 'atom:title') ?? '';
             $data['tipo_contrato_code'] = $this->xpathText($project, 'cbc:TypeCode');
             $data['subtipo_contrato_code'] = $this->xpathText($project, 'cbc-place-ext:SubTypeCode');
 
             // Importes
             $budget = $this->xpath($project, './/cac:BudgetAmount');
             if ($budget) {
+                $this->registerNs($budget);
                 $data['valor_estimado'] = $this->xpathDecimal($budget, 'cbc:EstimatedOverallContractAmount');
                 $data['importe_con_iva'] = $this->xpathDecimal($budget, 'cbc:TotalAmount');
                 $data['importe_sin_iva'] = $this->xpathDecimal($budget, 'cbc:TaxExclusiveAmount');
@@ -99,6 +109,7 @@ class PlacspParser
             // Ubicación
             $location = $this->xpath($project, './/cac:RealizedLocation');
             if ($location) {
+                $this->registerNs($location);
                 $data['comunidad_autonoma'] = $this->xpathText($location, 'cbc:CountrySubentity');
                 $data['nuts_code'] = $this->xpathText($location, 'cbc:CountrySubentityCode');
                 $data['lugar_ejecucion'] = $this->xpathText($location, './/cac:Address/cbc:CityName');
@@ -107,6 +118,7 @@ class PlacspParser
             // Duración
             $period = $this->xpath($project, './/cac:PlannedPeriod');
             if ($period) {
+                $this->registerNs($period);
                 $durNode = $period->xpath('cbc:DurationMeasure');
                 if ($durNode) {
                     $data['duracion'] = (float) (string) $durNode[0];
@@ -116,12 +128,13 @@ class PlacspParser
                 $data['fecha_fin'] = $this->xpathText($period, 'cbc:EndDate');
             }
         } else {
-            $data['objeto'] = (string) $entry->title;
+            $data['objeto'] = $this->xpathText($entry, 'atom:title') ?? '';
         }
 
         // Proceso
         $process = $this->xpath($folder, './/cac:TenderingProcess');
         if ($process) {
+            $this->registerNs($process);
             $data['procedimiento_code'] = $this->xpathText($process, 'cbc:ProcedureCode');
             $data['urgencia_code'] = $this->xpathText($process, 'cbc:UrgencyCode');
 
@@ -134,6 +147,7 @@ class PlacspParser
         // Resultado (tomamos el primero)
         $result = $this->xpath($folder, './/cac:TenderResult');
         if ($result) {
+            $this->registerNs($result);
             $data['resultado_code'] = $this->xpathText($result, 'cbc:ResultCode');
             $data['fecha_adjudicacion'] = $this->xpathText($result, 'cbc:AwardDate');
             $data['num_ofertas'] = $this->xpathInt($result, 'cbc:ReceivedTenderQuantity');
@@ -141,6 +155,7 @@ class PlacspParser
             // Adjudicatario
             $winner = $this->xpath($result, './/cac:WinningParty');
             if ($winner) {
+                $this->registerNs($winner);
                 $data['adjudicatario_nombre'] = $this->xpathText($winner, './/cac:PartyName/cbc:Name');
                 $data['adjudicatario_nif'] = $this->xpathText($winner, './/cac:PartyIdentification/cbc:ID');
             }
@@ -148,6 +163,7 @@ class PlacspParser
             // Importe adjudicación
             $awarded = $this->xpath($result, './/cac:AwardedTenderedProject//cac:LegalMonetaryTotal');
             if ($awarded) {
+                $this->registerNs($awarded);
                 $data['importe_adjudicacion_sin_iva'] = $this->xpathDecimal($awarded, 'cbc:TaxExclusiveAmount');
                 $data['importe_adjudicacion_con_iva'] = $this->xpathDecimal($awarded, 'cbc:PayableAmount');
             }
@@ -155,6 +171,7 @@ class PlacspParser
             // Fecha formalización
             $contractNode = $this->xpath($result, 'cac:Contract');
             if ($contractNode) {
+                $this->registerNs($contractNode);
                 $data['fecha_formalizacion'] = $this->xpathText($contractNode, 'cbc:IssueDate');
             }
         }
@@ -163,6 +180,13 @@ class PlacspParser
     }
 
     // --- Helpers ---
+
+    protected function registerNs(SimpleXMLElement $el): void
+    {
+        foreach (self::NS as $prefix => $uri) {
+            $el->registerXPathNamespace($prefix, $uri);
+        }
+    }
 
     protected function xpath(SimpleXMLElement $el, string $path): ?SimpleXMLElement
     {
