@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
 
 class Contract extends Model
 {
-    use Searchable;
 
     protected $guarded = ['id'];
 
@@ -96,43 +94,5 @@ class Contract extends Model
         return $query->where('importe_con_iva', '<=', $max);
     }
 
-    // Typesense search schema
-    public function toSearchableArray(): array
-    {
-        return [
-            'id' => (string) $this->id,
-            'expediente' => $this->expediente,
-            'objeto' => $this->objeto,
-            'organo_contratante' => $this->organo_contratante,
-            'adjudicatario_nombre' => $this->adjudicatario_nombre ?? '',
-            'adjudicatario_nif' => $this->adjudicatario_nif ?? '',
-            'status_code' => $this->status_code,
-            'tipo_contrato_code' => $this->tipo_contrato_code ?? '',
-            'importe_con_iva' => (float) ($this->importe_con_iva ?? 0),
-            'comunidad_autonoma' => $this->comunidad_autonoma ?? '',
-            'fecha_adjudicacion' => $this->fecha_adjudicacion?->timestamp ?? 0,
-            'created_at' => $this->created_at->timestamp,
-        ];
-    }
-
-    public function typesenseCollectionSchema(): array
-    {
-        return [
-            'name' => $this->searchableAs(),
-            'fields' => [
-                ['name' => 'expediente', 'type' => 'string'],
-                ['name' => 'objeto', 'type' => 'string'],
-                ['name' => 'organo_contratante', 'type' => 'string'],
-                ['name' => 'adjudicatario_nombre', 'type' => 'string'],
-                ['name' => 'adjudicatario_nif', 'type' => 'string'],
-                ['name' => 'status_code', 'type' => 'string', 'facet' => true],
-                ['name' => 'tipo_contrato_code', 'type' => 'string', 'facet' => true],
-                ['name' => 'importe_con_iva', 'type' => 'float'],
-                ['name' => 'comunidad_autonoma', 'type' => 'string', 'facet' => true],
-                ['name' => 'fecha_adjudicacion', 'type' => 'int64'],
-                ['name' => 'created_at', 'type' => 'int64'],
-            ],
-            'default_sorting_field' => 'created_at',
-        ];
-    }
+    // TODO: Reactivar Searchable trait cuando Typesense esté configurado
 }
