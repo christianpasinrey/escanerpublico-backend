@@ -6,29 +6,26 @@ use SimpleXMLElement;
 
 class PlacspParser
 {
-    // Namespaces reales del feed PLACSP
-    private const NS = [
-        'atom'          => 'http://www.w3.org/2005/Atom',
-        'cbc'           => 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2',
-        'cac'           => 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2',
-        'cac-place-ext' => 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2',
-        'cbc-place-ext' => 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2',
-    ];
+    private const NS_ATOM = 'http://www.w3.org/2005/Atom';
+    private const NS_CBC = 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2';
+    private const NS_CAC = 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2';
+    private const NS_CAC_EXT = 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2';
+    private const NS_CBC_EXT = 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2';
 
     public function parseAtomFile(string $xmlContent): array
     {
         $xml = new SimpleXMLElement($xmlContent);
-        $this->registerNs($xml);
-
-        $entries = $xml->xpath('//atom:entry');
         $contracts = [];
 
-        foreach ($entries as $entry) {
+        // Acceder a entries por namespace Atom
+        foreach ($xml->children(self::NS_ATOM)->entry as $entry) {
             try {
-                $contracts[] = $this->parseEntry($entry);
+                $parsed = $this->parseEntry($entry);
+                if ($parsed) {
+                    $contracts[] = $parsed;
+                }
             } catch (\Throwable $e) {
                 logger()->warning('Error parsing PLACSP entry', [
-                    'id' => (string) ($entry->id ?? 'unknown'),
                     'error' => $e->getMessage(),
                 ]);
             }
@@ -37,188 +34,197 @@ class PlacspParser
         return $contracts;
     }
 
-    protected function parseEntry(SimpleXMLElement $entry): array
+    protected function parseEntry(SimpleXMLElement $entry): ?array
     {
-        $this->registerNs($entry);
+        // Atom fields
+        $atomChildren = $entry->children(self::NS_ATOM);
+        $id = trim((string) $atomChildren->id);
+        $title = trim((string) $atomChildren->title);
+        $link = '';
+        foreach ($entry->children(self::NS_ATOM)->link as $l) {
+            $href = (string) $l['href'];
+            if ($href) {
+                $link = $href;
+                break;
+            }
+        }
 
-        // Campos del atom entry (namespace por defecto = atom)
+        if (!$id) return null;
+
+        // ContractFolderStatus (namespace cac-place-ext)
+        $folder = $entry->children(self::NS_CAC_EXT)->ContractFolderStatus;
+        if (!$folder || !$folder->count()) {
+            // Entry sin datos de contrato — skip
+            return null;
+        }
+
         $data = [
-            'external_id' => $this->xpathText($entry, 'atom:id'),
-            'link' => $this->xpathAttr($entry, 'atom:link', 'href'),
+            'external_id' => $id,
+            'link' => $link ?: null,
         ];
 
-        $folder = $this->xpath($entry, 'cac-place-ext:ContractFolderStatus');
+        // Expediente
+        $cbcChildren = $folder->children(self::NS_CBC);
+        $data['expediente'] = trim((string) $cbcChildren->ContractFolderID) ?: mb_substr($title, 0, 490);
 
-        if (!$folder) {
-            $data['expediente'] = $this->xpathText($entry, 'atom:title') ?? '';
-            $data['objeto'] = $data['expediente'];
-            $data['status_code'] = 'PUB';
-            $data['organo_contratante'] = '';
-            return $data;
-        }
-
-        $this->registerNs($folder);
-
-        // Expediente y estado
-        $data['expediente'] = $this->xpathText($folder, 'cbc:ContractFolderID')
-            ?? $this->xpathText($entry, 'atom:title') ?? '';
-        $data['status_code'] = $this->xpathText($folder, 'cbc-place-ext:ContractFolderStatusCode') ?? 'PUB';
+        // Estado
+        $cbcExtChildren = $folder->children(self::NS_CBC_EXT);
+        $data['status_code'] = trim((string) $cbcExtChildren->ContractFolderStatusCode) ?: 'PUB';
 
         // Órgano de contratación
-        $party = $this->xpath($folder, './/cac-place-ext:LocatedContractingParty/cac:Party');
-        if ($party) {
-            $this->registerNs($party);
-            $data['organo_contratante'] = $this->xpathText($party, './/cac:PartyName/cbc:Name') ?? '';
+        $cacExtChildren = $folder->children(self::NS_CAC_EXT);
+        $locatedParty = $cacExtChildren->LocatedContractingParty;
+        if ($locatedParty && $locatedParty->count()) {
+            $party = $locatedParty->children(self::NS_CAC)->Party;
+            if ($party && $party->count()) {
+                $partyName = $party->children(self::NS_CAC)->PartyName;
+                $data['organo_contratante'] = trim((string) $partyName->children(self::NS_CBC)->Name);
 
-            // DIR3 — buscar el ID con schemeName="DIR3"
-            $dir3Nodes = $party->xpath('.//cac:PartyIdentification/cbc:ID[@schemeName="DIR3"]');
-            if ($dir3Nodes) {
-                $data['organo_dir3'] = (string) $dir3Nodes[0];
+                // DIR3
+                foreach ($party->children(self::NS_CAC)->PartyIdentification as $pid) {
+                    $idEl = $pid->children(self::NS_CBC)->ID;
+                    if ((string) $idEl['schemeName'] === 'DIR3') {
+                        $data['organo_dir3'] = trim((string) $idEl);
+                        break;
+                    }
+                }
             }
-        } else {
+
+            // Órgano superior
+            $parentParty = $locatedParty->children(self::NS_CAC_EXT)->ParentLocatedParty;
+            if ($parentParty && $parentParty->count()) {
+                $ppCac = $parentParty->children(self::NS_CAC);
+                if ($ppCac->Party && $ppCac->Party->count()) {
+                    $ppName = $ppCac->Party->children(self::NS_CAC)->PartyName;
+                    $data['organo_superior'] = trim((string) $ppName->children(self::NS_CBC)->Name);
+                }
+            }
+        }
+
+        if (empty($data['organo_contratante'])) {
             $data['organo_contratante'] = '';
         }
 
-        $data['organo_superior'] = $this->xpathText($folder,
-            './/cac-place-ext:LocatedContractingParty/cac-place-ext:ParentLocatedParty//cac:PartyName/cbc:Name');
+        // ProcurementProject
+        $project = $folder->children(self::NS_CAC)->ProcurementProject;
+        if ($project && $project->count()) {
+            $projCbc = $project->children(self::NS_CBC);
+            $data['objeto'] = trim((string) $projCbc->Name) ?: $title;
+            $data['tipo_contrato_code'] = trim((string) $projCbc->TypeCode) ?: null;
 
-        // Proyecto de contratación
-        $project = $this->xpath($folder, './/cac:ProcurementProject');
-        if ($project) {
-            $this->registerNs($project);
-            $data['objeto'] = $this->xpathText($project, 'cbc:Name')
-                ?? $this->xpathText($entry, 'atom:title') ?? '';
-            $data['tipo_contrato_code'] = $this->xpathText($project, 'cbc:TypeCode');
-            $data['subtipo_contrato_code'] = $this->xpathText($project, 'cbc-place-ext:SubTypeCode');
+            $projCbcExt = $project->children(self::NS_CBC_EXT);
+            $data['subtipo_contrato_code'] = trim((string) $projCbcExt->SubTypeCode) ?: null;
 
-            // Importes
-            $budget = $this->xpath($project, './/cac:BudgetAmount');
-            if ($budget) {
-                $this->registerNs($budget);
-                $data['valor_estimado'] = $this->xpathDecimal($budget, 'cbc:EstimatedOverallContractAmount');
-                $data['importe_con_iva'] = $this->xpathDecimal($budget, 'cbc:TotalAmount');
-                $data['importe_sin_iva'] = $this->xpathDecimal($budget, 'cbc:TaxExclusiveAmount');
+            // Budget
+            $budget = $project->children(self::NS_CAC)->BudgetAmount;
+            if ($budget && $budget->count()) {
+                $budgetCbc = $budget->children(self::NS_CBC);
+                $data['valor_estimado'] = $this->decimal($budgetCbc->EstimatedOverallContractAmount);
+                $data['importe_con_iva'] = $this->decimal($budgetCbc->TotalAmount);
+                $data['importe_sin_iva'] = $this->decimal($budgetCbc->TaxExclusiveAmount);
             }
 
             // CPV
-            $cpvNodes = $project->xpath('.//cac:RequiredCommodityClassification/cbc:ItemClassificationCode');
-            if ($cpvNodes) {
-                $data['cpv_codes'] = array_map(fn($n) => (string) $n, $cpvNodes);
+            $cpvCodes = [];
+            foreach ($project->children(self::NS_CAC)->RequiredCommodityClassification as $cpvClass) {
+                $code = trim((string) $cpvClass->children(self::NS_CBC)->ItemClassificationCode);
+                if ($code) $cpvCodes[] = $code;
             }
+            if ($cpvCodes) $data['cpv_codes'] = $cpvCodes;
 
-            // Ubicación
-            $location = $this->xpath($project, './/cac:RealizedLocation');
-            if ($location) {
-                $this->registerNs($location);
-                $data['comunidad_autonoma'] = $this->xpathText($location, 'cbc:CountrySubentity');
-                $data['nuts_code'] = $this->xpathText($location, 'cbc:CountrySubentityCode');
-                $data['lugar_ejecucion'] = $this->xpathText($location, './/cac:Address/cbc:CityName');
-            }
+            // Location
+            $location = $project->children(self::NS_CAC)->RealizedLocation;
+            if ($location && $location->count()) {
+                $locCbc = $location->children(self::NS_CBC);
+                $data['comunidad_autonoma'] = trim((string) $locCbc->CountrySubentity) ?: null;
+                $data['nuts_code'] = trim((string) $locCbc->CountrySubentityCode) ?: null;
 
-            // Duración
-            $period = $this->xpath($project, './/cac:PlannedPeriod');
-            if ($period) {
-                $this->registerNs($period);
-                $durNode = $period->xpath('cbc:DurationMeasure');
-                if ($durNode) {
-                    $data['duracion'] = (float) (string) $durNode[0];
-                    $data['duracion_unidad'] = (string) ($durNode[0]['unitCode'] ?? 'MON');
+                $addr = $location->children(self::NS_CAC)->Address;
+                if ($addr && $addr->count()) {
+                    $data['lugar_ejecucion'] = trim((string) $addr->children(self::NS_CBC)->CityName) ?: null;
                 }
-                $data['fecha_inicio'] = $this->xpathText($period, 'cbc:StartDate');
-                $data['fecha_fin'] = $this->xpathText($period, 'cbc:EndDate');
+            }
+
+            // Duration
+            $period = $project->children(self::NS_CAC)->PlannedPeriod;
+            if ($period && $period->count()) {
+                $periodCbc = $period->children(self::NS_CBC);
+                $dur = $periodCbc->DurationMeasure;
+                if (trim((string) $dur)) {
+                    $data['duracion'] = (float) trim((string) $dur);
+                    $data['duracion_unidad'] = (string) ($dur['unitCode'] ?? 'MON');
+                }
+                $data['fecha_inicio'] = $this->dateVal($periodCbc->StartDate);
+                $data['fecha_fin'] = $this->dateVal($periodCbc->EndDate);
             }
         } else {
-            $data['objeto'] = $this->xpathText($entry, 'atom:title') ?? '';
+            $data['objeto'] = $title;
         }
 
-        // Proceso
-        $process = $this->xpath($folder, './/cac:TenderingProcess');
-        if ($process) {
-            $this->registerNs($process);
-            $data['procedimiento_code'] = $this->xpathText($process, 'cbc:ProcedureCode');
-            $data['urgencia_code'] = $this->xpathText($process, 'cbc:UrgencyCode');
+        // TenderingProcess
+        $process = $folder->children(self::NS_CAC)->TenderingProcess;
+        if ($process && $process->count()) {
+            $procCbc = $process->children(self::NS_CBC);
+            $data['procedimiento_code'] = trim((string) $procCbc->ProcedureCode) ?: null;
+            $data['urgencia_code'] = trim((string) $procCbc->UrgencyCode) ?: null;
 
-            $deadline = $this->xpathText($process, './/cac:TenderSubmissionDeadlinePeriod/cbc:EndDate');
-            if ($deadline) {
-                $data['fecha_presentacion_limite'] = $deadline;
+            $deadline = $process->children(self::NS_CAC)->TenderSubmissionDeadlinePeriod;
+            if ($deadline && $deadline->count()) {
+                $data['fecha_presentacion_limite'] = $this->dateVal($deadline->children(self::NS_CBC)->EndDate);
             }
         }
 
-        // Resultado (tomamos el primero)
-        $result = $this->xpath($folder, './/cac:TenderResult');
-        if ($result) {
-            $this->registerNs($result);
-            $data['resultado_code'] = $this->xpathText($result, 'cbc:ResultCode');
-            $data['fecha_adjudicacion'] = $this->xpathText($result, 'cbc:AwardDate');
-            $data['num_ofertas'] = $this->xpathInt($result, 'cbc:ReceivedTenderQuantity');
+        // TenderResult (primer resultado)
+        $result = $folder->children(self::NS_CAC)->TenderResult;
+        if ($result && $result->count()) {
+            $resCbc = $result->children(self::NS_CBC);
+            $data['resultado_code'] = trim((string) $resCbc->ResultCode) ?: null;
+            $data['fecha_adjudicacion'] = $this->dateVal($resCbc->AwardDate);
+            $qty = trim((string) $resCbc->ReceivedTenderQuantity);
+            if ($qty !== '') $data['num_ofertas'] = (int) $qty;
 
-            // Adjudicatario
-            $winner = $this->xpath($result, './/cac:WinningParty');
-            if ($winner) {
-                $this->registerNs($winner);
-                $data['adjudicatario_nombre'] = $this->xpathText($winner, './/cac:PartyName/cbc:Name');
-                $data['adjudicatario_nif'] = $this->xpathText($winner, './/cac:PartyIdentification/cbc:ID');
+            // Winner
+            $winner = $result->children(self::NS_CAC)->WinningParty;
+            if ($winner && $winner->count()) {
+                $wName = $winner->children(self::NS_CAC)->PartyName;
+                $data['adjudicatario_nombre'] = trim((string) $wName->children(self::NS_CBC)->Name) ?: null;
+
+                $wId = $winner->children(self::NS_CAC)->PartyIdentification;
+                if ($wId && $wId->count()) {
+                    $data['adjudicatario_nif'] = trim((string) $wId->children(self::NS_CBC)->ID) ?: null;
+                }
             }
 
-            // Importe adjudicación
-            $awarded = $this->xpath($result, './/cac:AwardedTenderedProject//cac:LegalMonetaryTotal');
-            if ($awarded) {
-                $this->registerNs($awarded);
-                $data['importe_adjudicacion_sin_iva'] = $this->xpathDecimal($awarded, 'cbc:TaxExclusiveAmount');
-                $data['importe_adjudicacion_con_iva'] = $this->xpathDecimal($awarded, 'cbc:PayableAmount');
+            // Awarded amount
+            $awarded = $result->children(self::NS_CAC)->AwardedTenderedProject;
+            if ($awarded && $awarded->count()) {
+                $lmt = $awarded->children(self::NS_CAC)->LegalMonetaryTotal;
+                if ($lmt && $lmt->count()) {
+                    $lmtCbc = $lmt->children(self::NS_CBC);
+                    $data['importe_adjudicacion_sin_iva'] = $this->decimal($lmtCbc->TaxExclusiveAmount);
+                    $data['importe_adjudicacion_con_iva'] = $this->decimal($lmtCbc->PayableAmount);
+                }
             }
 
-            // Fecha formalización
-            $contractNode = $this->xpath($result, 'cac:Contract');
-            if ($contractNode) {
-                $this->registerNs($contractNode);
-                $data['fecha_formalizacion'] = $this->xpathText($contractNode, 'cbc:IssueDate');
+            // Contract formalization date
+            $contract = $result->children(self::NS_CAC)->Contract;
+            if ($contract && $contract->count()) {
+                $data['fecha_formalizacion'] = $this->dateVal($contract->children(self::NS_CBC)->IssueDate);
             }
         }
 
         return array_filter($data, fn($v) => $v !== null && $v !== '' && $v !== []);
     }
 
-    // --- Helpers ---
-
-    protected function registerNs(SimpleXMLElement $el): void
+    private function decimal(SimpleXMLElement $el): ?float
     {
-        foreach (self::NS as $prefix => $uri) {
-            $el->registerXPathNamespace($prefix, $uri);
-        }
+        $val = trim((string) $el);
+        return $val !== '' ? (float) $val : null;
     }
 
-    protected function xpath(SimpleXMLElement $el, string $path): ?SimpleXMLElement
+    private function dateVal(SimpleXMLElement $el): ?string
     {
-        $result = $el->xpath($path);
-        return $result ? $result[0] : null;
-    }
-
-    protected function xpathText(SimpleXMLElement $el, string $path): ?string
-    {
-        $result = $el->xpath($path);
-        if (!$result) return null;
-        $text = trim((string) $result[0]);
-        return $text !== '' ? $text : null;
-    }
-
-    protected function xpathDecimal(SimpleXMLElement $el, string $path): ?float
-    {
-        $text = $this->xpathText($el, $path);
-        return $text !== null ? (float) $text : null;
-    }
-
-    protected function xpathInt(SimpleXMLElement $el, string $path): ?int
-    {
-        $text = $this->xpathText($el, $path);
-        return $text !== null ? (int) $text : null;
-    }
-
-    protected function xpathAttr(SimpleXMLElement $el, string $path, string $attr): ?string
-    {
-        $result = $el->xpath($path);
-        if (!$result) return null;
-        $val = (string) ($result[0][$attr] ?? '');
+        $val = trim((string) $el);
         return $val !== '' ? $val : null;
     }
 }
