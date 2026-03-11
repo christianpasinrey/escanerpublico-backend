@@ -40,12 +40,24 @@ class PlacspParser
         $atomChildren = $entry->children(self::NS_ATOM);
         $id = trim((string) $atomChildren->id);
         $title = trim((string) $atomChildren->title);
+        // <link> es hijo directo del entry en el namespace por defecto (Atom)
+        // Acceder via children sin namespace ya que Atom es el default ns del feed
         $link = '';
-        foreach ($entry->children(self::NS_ATOM)->link as $l) {
-            $href = (string) $l['href'];
+        foreach ($entry->link as $l) {
+            $href = (string) ($l->attributes()['href'] ?? '');
             if ($href) {
                 $link = $href;
                 break;
+            }
+        }
+        // Fallback: intentar con namespace explícito
+        if (!$link) {
+            foreach ($entry->children(self::NS_ATOM)->link as $l) {
+                $href = (string) ($l->attributes()['href'] ?? '');
+                if ($href) {
+                    $link = $href;
+                    break;
+                }
             }
         }
 
