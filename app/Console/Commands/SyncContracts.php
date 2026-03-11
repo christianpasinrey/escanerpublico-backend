@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Jobs\ProcessPlacspFile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class SyncContracts extends Command
@@ -61,11 +60,13 @@ class SyncContracts extends Command
         $zipFilename = "licitacionesPerfilesContratanteCompleto3_{$month}.zip";
         $url = "{$this->baseUrl}/{$zipFilename}";
 
-        $storagePath = "placsp/{$month}";
-        $zipPath = storage_path("app/{$storagePath}/{$zipFilename}");
+        $dirPath = storage_path("app/placsp/{$month}");
+        $zipPath = "{$dirPath}/{$zipFilename}";
 
         // Crear directorio
-        Storage::makeDirectory($storagePath);
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath, 0755, true);
+        }
 
         // Descargar ZIP
         $this->line(" Descargando {$zipFilename}...");
@@ -87,7 +88,7 @@ class SyncContracts extends Command
         }
 
         // Descomprimir
-        $extractPath = storage_path("app/{$storagePath}/extracted");
+        $extractPath = "{$dirPath}/extracted";
         if (!is_dir($extractPath)) {
             mkdir($extractPath, 0755, true);
         }
