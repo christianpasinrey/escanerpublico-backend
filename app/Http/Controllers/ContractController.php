@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
+use App\Models\ContractNotice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContractController extends Controller
 {
@@ -76,13 +78,18 @@ class ContractController extends Controller
         }
 
         $contracts = $query->paginate($request->input('per_page', 25));
-
+        Log::info("Consulta de contratos: {$contracts->total()} resultados para q={$q}, status={$status}, tipo={$tipo}, procedimiento={$procedimiento}, importe_min={$importeMin}, importe_max={$importeMax}, ccaa={$ccaa}, organo={$organo}, adjudicatario={$adjudicatario}, fecha_desde={$fechaDesde}, fecha_hasta={$fechaHasta}");
         return response()->json($contracts);
     }
 
     public function show(Contract $contract): JsonResponse
     {
-        return response()->json($contract);
+        $contract->load(['notices', 'documents']);
+
+        return response()->json([
+            'contract' => $contract,
+            'timeline' => $this->buildTimeline($contract),
+        ]);
     }
 
     public function stats(): JsonResponse
@@ -116,5 +123,76 @@ class ContractController extends Controller
                 ->sort()
                 ->values(),
         ]);
+    }
+
+    private function buildTimeline(Contract $contract): array
+    {
+        $events = [];
+
+        // From ValidNoticeInfo notices
+        foreach ($contract->notices as $notice) {
+            if (!$notice->issue_date) continue;
+
+            $events[] = [
+                'date' => $notice->issue_date->toDateString(),
+                'type' => $notice->notice_type_code,
+                'label' => ContractNotice::NOTICE_TYPE_LABELS[$notice->notice_type_code] ?? $notice->notice_type_code,
+                'status' => match ($notice->notice_type_code) {
+                    'DOC_CN' => 'PUB',
+                    'DOC_CAN_ADJ' => 'ADJ',
+                    'DOC_FORM' => 'RES',
+                    default => null,
+                },
+                'document_uri' => $notice->document_uri,
+                'document_filename' => $notice->document_filename,
+            ];
+        }
+
+        // Add submission deadline as event
+        if ($contract->fecha_presentacion_limite) {
+            $events[] = [
+                'date' => $contract->fecha_presentacion_limite->toDateString(),
+                'type' => 'DEADLINE',
+                'label' => 'Fin plazo presentación',
+                'status' => 'EV',
+                'document_uri' => null,
+                'document_filename' => null,
+            ];
+        }
+
+        // Add award date if not already from notice
+        if ($contract->fecha_adjudicacion) {
+            $hasAwardNotice = collect($events)->contains(fn($e) => $e['type'] === 'DOC_CAN_ADJ');
+            if (!$hasAwardNotice) {
+                $events[] = [
+                    'date' => $contract->fecha_adjudicacion->toDateString(),
+                    'type' => 'AWARD',
+                    'label' => 'Adjudicación',
+                    'status' => 'ADJ',
+                    'document_uri' => null,
+                    'document_filename' => null,
+                ];
+            }
+        }
+
+        // Add formalization date
+        if ($contract->fecha_formalizacion) {
+            $hasFormNotice = collect($events)->contains(fn($e) => $e['type'] === 'DOC_FORM');
+            if (!$hasFormNotice) {
+                $events[] = [
+                    'date' => $contract->fecha_formalizacion->toDateString(),
+                    'type' => 'FORMALIZATION',
+                    'label' => 'Formalización',
+                    'status' => 'RES',
+                    'document_uri' => null,
+                    'document_filename' => null,
+                ];
+            }
+        }
+
+        // Sort chronologically
+        usort($events, fn($a, $b) => $a['date'] <=> $b['date']);
+
+        return $events;
     }
 }
