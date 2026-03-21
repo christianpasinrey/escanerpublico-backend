@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Contract;
 use App\Services\PlacspParser;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,10 +39,34 @@ class ProcessPlacspFile implements ShouldQueue
                 continue;
             }
 
-            Contract::updateOrCreate(
-                ['external_id' => $data['external_id']],
-                array_merge($data, ['synced_at' => now()]),
-            );
+            // Separate relational data from contract fields
+            $notices = $data['_notices'] ?? [];
+            $documents = $data['_documents'] ?? [];
+            unset($data['_notices'], $data['_documents']);
+
+            DB::transaction(function () use ($data, $notices, $documents) {
+                $contract = Contract::updateOrCreate(
+                    ['external_id' => $data['external_id']],
+                    array_merge($data, ['synced_at' => now()]),
+                );
+
+                // Sync notices (delete old + insert new to avoid duplicates)
+                if ($notices) {
+                    $contract->notices()->delete();
+                    foreach ($notices as $notice) {
+                        $contract->notices()->create($notice);
+                    }
+                }
+
+                // Sync documents
+                if ($documents) {
+                    $contract->documents()->delete();
+                    foreach ($documents as $doc) {
+                        $contract->documents()->create($doc);
+                    }
+                }
+            });
+
             $upserted++;
         }
 
