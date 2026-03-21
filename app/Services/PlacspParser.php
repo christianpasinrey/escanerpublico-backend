@@ -87,29 +87,66 @@ class PlacspParser
         $cacExtChildren = $folder->children(self::NS_CAC_EXT);
         $locatedParty = $cacExtChildren->LocatedContractingParty;
         if ($locatedParty && $locatedParty->count()) {
+            // ContractingPartyTypeCode
+            $orgTypeCode = trim((string) $locatedParty->children(self::NS_CBC)->ContractingPartyTypeCode);
+            if ($orgTypeCode) $data['organo_tipo_code'] = $orgTypeCode;
+
             $party = $locatedParty->children(self::NS_CAC)->Party;
             if ($party && $party->count()) {
+                $partyCbc = $party->children(self::NS_CBC);
+
+                // Website
+                $website = trim((string) $partyCbc->WebsiteURI);
+                if ($website) $data['organo_website'] = $website;
+
+                // Party name
                 $partyName = $party->children(self::NS_CAC)->PartyName;
                 $data['organo_contratante'] = trim((string) $partyName->children(self::NS_CBC)->Name);
 
-                // DIR3
+                // Party identifications (DIR3, NIF)
                 foreach ($party->children(self::NS_CAC)->PartyIdentification as $pid) {
                     $idEl = $pid->children(self::NS_CBC)->ID;
-                    if ((string) $idEl['schemeName'] === 'DIR3') {
+                    $scheme = (string) $idEl['schemeName'];
+                    if ($scheme === 'DIR3') {
                         $data['organo_dir3'] = trim((string) $idEl);
-                        break;
+                    } elseif ($scheme === 'NIF') {
+                        $data['organo_nif'] = trim((string) $idEl);
                     }
+                }
+
+                // Postal address
+                $address = $party->children(self::NS_CAC)->PostalAddress;
+                if ($address && $address->count()) {
+                    $addrCbc = $address->children(self::NS_CBC);
+                    $data['organo_ciudad'] = trim((string) $addrCbc->CityName) ?: null;
+                    $data['organo_cp'] = trim((string) $addrCbc->PostalZone) ?: null;
+                    $addressLine = $address->children(self::NS_CAC)->AddressLine;
+                    if ($addressLine && $addressLine->count()) {
+                        $data['organo_direccion'] = trim((string) $addressLine->children(self::NS_CBC)->Line) ?: null;
+                    }
+                }
+
+                // Contact
+                $contact = $party->children(self::NS_CAC)->Contact;
+                if ($contact && $contact->count()) {
+                    $contactCbc = $contact->children(self::NS_CBC);
+                    $data['organo_telefono'] = trim((string) $contactCbc->Telephone) ?: null;
+                    $data['organo_email'] = trim((string) $contactCbc->ElectronicMail) ?: null;
                 }
             }
 
-            // Órgano superior
-            $parentParty = $locatedParty->children(self::NS_CAC_EXT)->ParentLocatedParty;
-            if ($parentParty && $parentParty->count()) {
-                $ppCac = $parentParty->children(self::NS_CAC);
-                if ($ppCac->Party && $ppCac->Party->count()) {
-                    $ppName = $ppCac->Party->children(self::NS_CAC)->PartyName;
-                    $data['organo_superior'] = trim((string) $ppName->children(self::NS_CBC)->Name);
-                }
+            // Org hierarchy — walk the recursive ParentLocatedParty chain
+            $hierarchy = [];
+            $parentNode = $locatedParty->children(self::NS_CAC_EXT)->ParentLocatedParty;
+            while ($parentNode && $parentNode->count()) {
+                $ppName = $parentNode->children(self::NS_CAC)->PartyName;
+                $name = trim((string) $ppName->children(self::NS_CBC)->Name);
+                if ($name) $hierarchy[] = $name;
+                $parentNode = $parentNode->children(self::NS_CAC_EXT)->ParentLocatedParty;
+            }
+            if ($hierarchy) {
+                $data['organo_jerarquia'] = $hierarchy;
+                $data['organo_superior'] = $hierarchy[0];
             }
         }
 
@@ -179,11 +216,29 @@ class PlacspParser
             $procCbc = $process->children(self::NS_CBC);
             $data['procedimiento_code'] = trim((string) $procCbc->ProcedureCode) ?: null;
             $data['urgencia_code'] = trim((string) $procCbc->UrgencyCode) ?: null;
+            $data['submission_method_code'] = trim((string) $procCbc->SubmissionMethodCode) ?: null;
+            $data['contracting_system_code'] = trim((string) $procCbc->ContractingSystemCode) ?: null;
 
+            // Document availability period
+            $docAvail = $process->children(self::NS_CAC)->DocumentAvailabilityPeriod;
+            if ($docAvail && $docAvail->count()) {
+                $data['fecha_disponibilidad_docs'] = $this->dateVal($docAvail->children(self::NS_CBC)->EndDate);
+            }
+
+            // Submission deadline
             $deadline = $process->children(self::NS_CAC)->TenderSubmissionDeadlinePeriod;
             if ($deadline && $deadline->count()) {
-                $data['fecha_presentacion_limite'] = $this->dateVal($deadline->children(self::NS_CBC)->EndDate);
+                $dlCbc = $deadline->children(self::NS_CBC);
+                $data['fecha_presentacion_limite'] = $this->dateVal($dlCbc->EndDate);
+                $time = trim((string) $dlCbc->EndTime);
+                if ($time) $data['hora_presentacion_limite'] = $time;
             }
+        }
+
+        // Warn if multiple TenderResult (multi-lot — only first is captured for now)
+        $tenderResults = $folder->children(self::NS_CAC)->TenderResult;
+        if ($tenderResults && $tenderResults->count() > 1) {
+            logger()->info("PLACSP: Contrato {$data['expediente']} tiene {$tenderResults->count()} TenderResult (multi-lote). Solo se captura el primero.");
         }
 
         // TenderResult (primer resultado)
@@ -218,12 +273,127 @@ class PlacspParser
                 }
             }
 
-            // Contract formalization date
+            // SME indicator
+            $sme = trim((string) $resCbc->SMEAwardedIndicator);
+            if ($sme !== '') $data['sme_awarded'] = $sme === 'true';
+
+            // Contract number (modify existing Contract block)
             $contract = $result->children(self::NS_CAC)->Contract;
             if ($contract && $contract->count()) {
                 $data['fecha_formalizacion'] = $this->dateVal($contract->children(self::NS_CBC)->IssueDate);
+                $contractId = trim((string) $contract->children(self::NS_CBC)->ID);
+                if ($contractId) $data['contrato_numero'] = $contractId;
             }
         }
+
+        // TenderingTerms
+        $terms = $folder->children(self::NS_CAC)->TenderingTerms;
+        if ($terms && $terms->count()) {
+            // Language
+            $lang = $terms->children(self::NS_CAC)->Language;
+            if ($lang && $lang->count()) {
+                $data['idioma'] = trim((string) $lang->children(self::NS_CBC)->ID) ?: null;
+            }
+
+            // Financial guarantee
+            $guarantee = $terms->children(self::NS_CAC)->RequiredFinancialGuarantee;
+            if ($guarantee && $guarantee->count()) {
+                $gCbc = $guarantee->children(self::NS_CBC);
+                $data['garantia_tipo_code'] = trim((string) $gCbc->GuaranteeTypeCode) ?: null;
+                $rate = trim((string) $gCbc->AmountRate);
+                if ($rate !== '') $data['garantia_porcentaje'] = (float) $rate;
+            }
+
+            // Awarding criteria
+            $awardingTerms = $terms->children(self::NS_CAC)->AwardingTerms;
+            if ($awardingTerms && $awardingTerms->count()) {
+                $criterios = [];
+                foreach ($awardingTerms->children(self::NS_CAC)->AwardingCriteria as $criteria) {
+                    $critCbc = $criteria->children(self::NS_CBC);
+                    $desc = trim((string) $critCbc->Description);
+                    $weight = trim((string) $critCbc->WeightNumeric);
+                    if ($desc) {
+                        $criterios[] = [
+                            'description' => $desc,
+                            'weight' => $weight !== '' ? (float) $weight : null,
+                        ];
+                    }
+                }
+                if ($criterios) $data['criterios_adjudicacion'] = $criterios;
+            }
+
+            // Contract extension options
+            $extension = $folder->children(self::NS_CAC)->ProcurementProject
+                ?->children(self::NS_CAC)->ContractExtension;
+            if ($extension && $extension->count()) {
+                $opts = trim((string) $extension->children(self::NS_CBC)->OptionsDescription);
+                if ($opts) $data['opciones_descripcion'] = $opts;
+            }
+        }
+
+        // ValidNoticeInfo — timeline notices
+        $notices = [];
+        foreach ($folder->children(self::NS_CAC_EXT)->ValidNoticeInfo as $vni) {
+            $noticeType = trim((string) $vni->children(self::NS_CBC_EXT)->NoticeTypeCode);
+            if (!$noticeType) continue;
+
+            $pubStatus = $vni->children(self::NS_CAC_EXT)->AdditionalPublicationStatus;
+            if (!$pubStatus || !$pubStatus->count()) continue;
+
+            $mediaName = trim((string) $pubStatus->children(self::NS_CBC_EXT)->PublicationMediaName);
+
+            foreach ($pubStatus->children(self::NS_CAC_EXT)->AdditionalPublicationDocumentReference as $docRef) {
+                $notice = [
+                    'notice_type_code' => $noticeType,
+                    'publication_media' => $mediaName ?: null,
+                    'issue_date' => $this->dateVal($docRef->children(self::NS_CBC)->IssueDate),
+                ];
+
+                // Optional document attachment
+                $docTypeCode = $docRef->children(self::NS_CBC)->DocumentTypeCode;
+                if ($docTypeCode && trim((string) $docTypeCode)) {
+                    $notice['document_type_code'] = trim((string) $docTypeCode);
+                    $notice['document_type_name'] = (string) ($docTypeCode['name'] ?? null) ?: null;
+                }
+
+                $attachment = $docRef->children(self::NS_CAC)->Attachment;
+                if ($attachment && $attachment->count()) {
+                    $extRef = $attachment->children(self::NS_CAC)->ExternalReference;
+                    if ($extRef && $extRef->count()) {
+                        $extCbc = $extRef->children(self::NS_CBC);
+                        $notice['document_uri'] = trim((string) $extCbc->URI) ?: null;
+                        $notice['document_filename'] = trim((string) $extCbc->FileName) ?: null;
+                    }
+                }
+
+                $notices[] = $notice;
+            }
+        }
+        if ($notices) $data['_notices'] = $notices;
+
+        // Document references (Legal + Technical + Additional)
+        $docRefs = [];
+
+        foreach ($folder->children(self::NS_CAC)->LegalDocumentReference as $docRef) {
+            $docRefs[] = $this->parseDocumentReference($docRef, 'legal');
+        }
+        foreach ($folder->children(self::NS_CAC)->TechnicalDocumentReference as $docRef) {
+            $docRefs[] = $this->parseDocumentReference($docRef, 'technical');
+        }
+        foreach ($folder->children(self::NS_CAC)->AdditionalDocumentReference as $docRef) {
+            $docRefs[] = $this->parseDocumentReference($docRef, 'additional');
+        }
+        // GeneralDocument (cac-place-ext)
+        foreach ($folder->children(self::NS_CAC_EXT)->GeneralDocument as $genDoc) {
+            $ref = $genDoc->children(self::NS_CAC_EXT)->GeneralDocumentDocumentReference
+                ?? $genDoc->children(self::NS_CAC)->DocumentReference
+                ?? null;
+            if ($ref && $ref->count()) {
+                $docRefs[] = $this->parseDocumentReference($ref, 'general');
+            }
+        }
+
+        if ($docRefs) $data['_documents'] = array_filter($docRefs);
 
         return array_filter($data, fn($v) => $v !== null && $v !== '' && $v !== []);
     }
@@ -238,5 +408,34 @@ class PlacspParser
     {
         $val = trim((string) $el);
         return $val !== '' ? $val : null;
+    }
+
+    private function parseDocumentReference(SimpleXMLElement $docRef, string $type): ?array
+    {
+        $name = trim((string) $docRef->children(self::NS_CBC)->ID);
+        if (!$name) return null;
+
+        $doc = [
+            'type' => $type,
+            'name' => $name,
+        ];
+
+        $attachment = $docRef->children(self::NS_CAC)->Attachment;
+        if ($attachment && $attachment->count()) {
+            $extRef = $attachment->children(self::NS_CAC)->ExternalReference;
+            if ($extRef && $extRef->count()) {
+                $extCbc = $extRef->children(self::NS_CBC);
+                $doc['uri'] = trim((string) $extCbc->URI) ?: null;
+                $doc['hash'] = trim((string) $extCbc->DocumentHash) ?: null;
+
+                // For GeneralDocument, the ID is often a UUID — prefer FileName if available
+                $fileName = trim((string) $extCbc->FileName);
+                if ($fileName) {
+                    $doc['name'] = $fileName;
+                }
+            }
+        }
+
+        return $doc;
     }
 }
