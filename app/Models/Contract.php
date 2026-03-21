@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contract extends Model
 {
@@ -13,13 +14,18 @@ class Contract extends Model
     {
         return [
             'cpv_codes' => 'array',
+            'organo_jerarquia' => 'array',
+            'criterios_adjudicacion' => 'array',
             'importe_sin_iva' => 'decimal:2',
             'importe_con_iva' => 'decimal:2',
             'valor_estimado' => 'decimal:2',
             'importe_adjudicacion_sin_iva' => 'decimal:2',
             'importe_adjudicacion_con_iva' => 'decimal:2',
             'duracion' => 'decimal:2',
+            'garantia_porcentaje' => 'decimal:2',
+            'sme_awarded' => 'boolean',
             'fecha_presentacion_limite' => 'date',
+            'fecha_disponibilidad_docs' => 'date',
             'fecha_inicio' => 'date',
             'fecha_fin' => 'date',
             'fecha_adjudicacion' => 'date',
@@ -92,6 +98,17 @@ class Contract extends Model
     public function scopeImporteMax($query, float $max)
     {
         return $query->where('importe_con_iva', '<=', $max);
+    }
+
+    // Relationships
+    public function notices(): HasMany
+    {
+        return $this->hasMany(ContractNotice::class)->orderBy('issue_date');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(ContractDocument::class);
     }
 
     // TODO: Reactivar Searchable trait cuando Typesense esté configurado
