@@ -26,10 +26,10 @@ class CompanyController
         );
     }
 
-    public function show(Company $company): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $company->load(['addresses.country', 'contacts']);
-        $company->loadCount('awards');
+        $company = Company::with(['addresses', 'contacts'])->findOrFail($id);
+        $company->setAttribute('awards_count', $company->awards()->count());
 
         return response()->json($company);
     }

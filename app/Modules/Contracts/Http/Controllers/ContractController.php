@@ -71,9 +71,9 @@ class ContractController
         }
 
         // Ordenación
-        $sortField = $request->input('sort', 'updated_at');
+        $sortField = $request->input('sort', 'fecha_presentacion_limite');
         $sortDir = $request->input('dir', 'desc');
-        $allowedSorts = ['updated_at', 'importe_con_iva', 'expediente'];
+        $allowedSorts = ['fecha_presentacion_limite', 'importe_con_iva', 'expediente', 'updated_at'];
         if (in_array($sortField, $allowedSorts)) {
             $query->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
         }
@@ -83,16 +83,15 @@ class ContractController
         return response()->json($contracts);
     }
 
-    public function show(Contract $contract): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $contract->load([
-            'organization.addresses.country',
-            'organization.addresses.city',
+        $contract = Contract::with([
+            'organization.addresses',
             'organization.contacts',
             'awards.company',
             'notices',
             'documents',
-        ]);
+        ])->findOrFail($id);
 
         return response()->json([
             'contract' => $contract,

@@ -31,16 +31,17 @@ class OrganizationController
         );
     }
 
-    public function show(Organization $organization): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $organization->load(['addresses.country', 'addresses.city', 'contacts']);
-        $organization->loadCount('contracts');
+        $organization = Organization::with(['addresses', 'contacts'])->findOrFail($id);
+        $organization->setAttribute('contracts_count', Contract::where('organization_id', $id)->count());
 
         return response()->json($organization);
     }
 
-    public function stats(Organization $organization): JsonResponse
+    public function stats(int $id): JsonResponse
     {
+        $organization = Organization::findOrFail($id);
         $orgId = $organization->id;
 
         $totalContracts = Contract::where('organization_id', $orgId)->count();
