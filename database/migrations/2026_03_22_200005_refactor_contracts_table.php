@@ -9,15 +9,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // 1. Add organization_id FK
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->foreignId('organization_id')->nullable()
-                ->constrained('organizations')->nullOnDelete();
-        });
+        // 1. Add organization_id FK (idempotent)
+        if (!Schema::hasColumn('contracts', 'organization_id')) {
+            Schema::table('contracts', function (Blueprint $table) {
+                $table->foreignId('organization_id')->nullable()
+                    ->constrained('organizations')->nullOnDelete();
+            });
+        }
 
-        // 2. Backfill
-        $this->backfillOrganizations();
-        $this->backfillCompaniesAndAwards();
+        // 2. Backfill (skip if already done)
+        if (DB::table('organizations')->count() === 0) {
+            $this->backfillOrganizations();
+        }
+        if (DB::table('companies')->count() === 0) {
+            $this->backfillCompaniesAndAwards();
+        }
 
         // 3. Drop redundant columns (only those that exist)
         $allCols = Schema::getColumnListing('contracts');
