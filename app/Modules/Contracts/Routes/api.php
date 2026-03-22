@@ -12,6 +12,7 @@ Route::prefix('api/v1')->group(function () {
     Route::get('/contracts/{contract}', [ContractController::class, 'show']);
 
     Route::get('/organizations', [OrganizationController::class, 'index']);
+    Route::get('/organizations/{organization}/stats', [OrganizationController::class, 'stats']);
     Route::get('/organizations/{organization}', [OrganizationController::class, 'show']);
 
     Route::get('/companies', [CompanyController::class, 'index']);
