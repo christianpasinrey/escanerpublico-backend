@@ -19,10 +19,8 @@ class ContractController
         if ($q = $request->input('q')) {
             $query->where(function ($w) use ($q) {
                 $w->where('objeto', 'like', "%{$q}%")
-                  ->orWhere('organo_contratante', 'like', "%{$q}%")
-                  ->orWhere('adjudicatario_nombre', 'like', "%{$q}%")
                   ->orWhere('expediente', 'like', "%{$q}%")
-                  ->orWhere('adjudicatario_nif', 'like', "%{$q}%");
+                  ->orWhereHas('organization', fn($o) => $o->where('name', 'like', "%{$q}%"));
             });
         }
 
@@ -52,14 +50,16 @@ class ContractController
         }
 
         if ($organo = $request->input('organo')) {
-            $query->where('organo_contratante', 'like', "%{$organo}%");
+            $query->whereHas('organization', fn($o) => $o->where('name', 'like', "%{$organo}%"));
         }
 
         if ($adjudicatario = $request->input('adjudicatario')) {
-            $query->where(function ($w) use ($adjudicatario) {
-                $w->where('adjudicatario_nombre', 'like', "%{$adjudicatario}%")
-                  ->orWhere('adjudicatario_nif', 'like', "%{$adjudicatario}%");
-            });
+            $query->whereHas('awards', fn($a) =>
+                $a->whereHas('company', fn($c) =>
+                    $c->where('name', 'like', "%{$adjudicatario}%")
+                      ->orWhere('nif', 'like', "%{$adjudicatario}%")
+                )
+            );
         }
 
         if ($fechaDesde = $request->input('fecha_desde')) {
@@ -73,7 +73,7 @@ class ContractController
         // Ordenación
         $sortField = $request->input('sort', 'updated_at');
         $sortDir = $request->input('dir', 'desc');
-        $allowedSorts = ['updated_at', 'importe_con_iva', 'fecha_adjudicacion', 'expediente'];
+        $allowedSorts = ['updated_at', 'importe_con_iva', 'expediente'];
         if (in_array($sortField, $allowedSorts)) {
             $query->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
         }
