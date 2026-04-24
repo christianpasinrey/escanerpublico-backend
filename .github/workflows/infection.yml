@@ -1,0 +1,87 @@
+name: Mutation testing
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'  # Mondays 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  infection:
+    name: Infection (MSI >=70 gate)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gobtracker_testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4 with xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, pdo_mysql, redis, xml, simplexml, bcmath, dom
+          coverage: xdebug
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Copy environment
+        run: cp .env.example .env && php artisan key:generate
+
+      - name: Run migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan migrate --force
+
+      - name: Infection (mutation testing)
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: ./vendor/bin/infection --threads=4 --min-msi=70 --min-covered-msi=70 --no-progress
+
+      - name: Upload Infection HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: infection-report
+          path: |
+            infection.html
+            infection.log
+            infection-summary.log
+            infection.json
+          if-no-files-found: ignore
