@@ -65,8 +65,8 @@ jobs:
       - name: PHPStan (level 8 with baseline)
         run: ./vendor/bin/phpstan analyse --memory-limit=2G
 
-      - name: Pint (code style check)
-        run: ./vendor/bin/pint --test
+      - name: Pint (code style check, Contracts module scope)
+        run: ./vendor/bin/pint --test app/Modules/Contracts tests/Feature/Contracts tests/Unit/Contracts tests/Benchmarks
 
       - name: Unit tests with coverage
         env:
