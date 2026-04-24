@@ -190,10 +190,10 @@ class ContractIngestor
                 $firstLot = $e->lots[0] ?? null;
 
                 $contractsRows[] = [
-                    'external_id' => $e->external_id,
-                    'expediente' => $e->expediente,
-                    'link' => $e->link,
-                    'buyer_profile_uri' => $e->organization->buyer_profile_uri,
+                    'external_id' => $this->truncate($e->external_id, 500),
+                    'expediente' => $this->truncate($e->expediente, 500),
+                    'link' => $this->truncate($e->link, 1000),
+                    'buyer_profile_uri' => $this->truncate($e->organization->buyer_profile_uri, 500),
                     'activity_code' => $e->organization->activity_code,
                     'status_code' => $e->status_code,
                     'objeto' => $firstLot?->title,
@@ -206,7 +206,7 @@ class ContractIngestor
                     'urgencia_code' => $e->process?->urgency_code,
                     'cpv_codes' => $firstLot !== null ? json_encode($firstLot->cpv_codes) : null,
                     'nuts_code' => $firstLot?->nuts_code,
-                    'lugar_ejecucion' => $firstLot?->lugar_ejecucion,
+                    'lugar_ejecucion' => $this->truncate($firstLot?->lugar_ejecucion, 500),
                     'fecha_presentacion_limite' => $e->process?->fecha_presentacion_limite,
                     'duracion' => $firstLot?->duration,
                     'duracion_unidad' => $firstLot?->duration_unit,
@@ -270,7 +270,7 @@ class ContractIngestor
                     $lotRows[] = [
                         'contract_id' => $contractId,
                         'lot_number' => $lot->lot_number,
-                        'title' => $lot->title,
+                        'title' => $this->truncate($lot->title, 500),
                         'description' => $lot->description,
                         'tipo_contrato_code' => $lot->tipo_contrato_code,
                         'subtipo_contrato_code' => $lot->subtipo_contrato_code,
@@ -283,7 +283,7 @@ class ContractIngestor
                         'start_date' => $lot->start_date,
                         'end_date' => $lot->end_date,
                         'nuts_code' => $lot->nuts_code,
-                        'lugar_ejecucion' => $lot->lugar_ejecucion,
+                        'lugar_ejecucion' => $this->truncate($lot->lugar_ejecucion, 255),
                         'options_description' => $lot->options_description,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -529,5 +529,18 @@ class ContractIngestor
         $exDt = Carbon::parse($ex)->toDateTimeImmutable();
 
         return $e->entry_updated_at <= $exDt;
+    }
+
+    /**
+     * Truncate a string to fit in a VARCHAR column (multi-byte safe).
+     * Returns null if the input is null.
+     */
+    private function truncate(?string $value, int $max): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return mb_substr($value, 0, $max, 'UTF-8');
     }
 }
