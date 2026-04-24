@@ -2,6 +2,9 @@
 
 namespace Modules\Contracts;
 
+use Dedoc\Scramble\Scramble;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Contracts\Console\ReprocessContracts;
 use Modules\Contracts\Console\SyncContracts;
@@ -45,6 +48,19 @@ class ContractsServiceProvider extends ServiceProvider
         );
 
         $this->loadRoutesFrom(__DIR__.'/Routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
+
+        // Configure Scramble: expose only the OpenAPI document at /openapi.json,
+        // disable Scramble's built-in UI (we serve docs via Scalar at /docs).
+        if (class_exists(Scramble::class)) {
+            Scramble::configure()->expose(
+                ui: false,
+                document: fn (Router $router, $action) => $router->get('openapi.json', $action)->name('scramble.docs.document'),
+            );
+        }
+
+        // Public docs: allow Scalar without authentication.
+        Gate::define('viewScalar', fn ($user = null) => true);
 
         if ($this->app->runningInConsole()) {
             $this->commands([

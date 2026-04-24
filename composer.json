@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "dedoc/scramble": "^0.13.20",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.3",
         "laravel/scout": "^11.0",
@@ -14,6 +15,7 @@
         "league/csv": "^9.28",
         "nnjeim/world": "^1.1",
         "predis/predis": "^3.4",
+        "scalar/laravel": "^0.2.1",
         "smalot/pdfparser": "^2.12",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-data": "^4.20",
