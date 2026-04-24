@@ -33,4 +33,11 @@ class CompanyController
 
         return response()->json($company);
     }
+
+    public function stats(int $id): JsonResponse
+    {
+        Company::findOrFail($id);
+
+        return response()->json(['total_awards' => 0, 'total_amount' => 0, 'by_year' => []]);
+    }
 }
