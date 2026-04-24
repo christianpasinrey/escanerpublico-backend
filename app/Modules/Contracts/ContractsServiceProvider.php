@@ -3,6 +3,7 @@
 namespace Modules\Contracts;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Contracts\Console\ReprocessContracts;
 use Modules\Contracts\Console\SyncContracts;
 use Modules\Contracts\Services\Parser\Extractors\CriteriaExtractor;
 use Modules\Contracts\Services\Parser\Extractors\DocumentsExtractor;
@@ -42,6 +43,7 @@ class ContractsServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SyncContracts::class,
+                ReprocessContracts::class,
             ]);
         }
     }
