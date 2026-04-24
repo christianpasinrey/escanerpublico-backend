@@ -3,6 +3,7 @@
 namespace Modules\Contracts\Services\Stats;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Modules\Contracts\Models\Company;
 use Modules\Contracts\Models\Contract;
 use Modules\Contracts\Models\Organization;
@@ -20,21 +21,25 @@ class LandingStatsService
      */
     public function compute(): array
     {
-        $topOrgs = Contract::query()
+        $topOrgsRaw = DB::table('contracts')
             ->selectRaw('organization_id, COUNT(*) as cnt, SUM(importe_con_iva) as total')
             ->whereNotNull('organization_id')
-            ->with('organization:id,name')
             ->groupBy('organization_id')
             ->orderByDesc('total')
             ->limit(10)
-            ->get()
-            ->map(fn ($r) => [
-                'id' => $r->organization_id,
-                'name' => $r->organization?->name,
-                'contracts' => (int) $r->cnt,
-                'total' => (float) $r->total,
-            ])
-            ->toArray();
+            ->get();
+
+        $orgIds = $topOrgsRaw->pluck('organization_id')->all();
+        $orgNames = Organization::query()
+            ->whereIn('id', $orgIds)
+            ->pluck('name', 'id');
+
+        $topOrganizations = $topOrgsRaw->map(fn ($r): array => [
+            'id' => (int) $r->organization_id,
+            'name' => $orgNames->get($r->organization_id),
+            'contracts' => (int) $r->cnt,
+            'total' => (float) $r->total,
+        ])->all();
 
         $recentAwarded = Contract::query()
             ->where('status_code', 'ADJ')
@@ -44,12 +49,12 @@ class LandingStatsService
             ->toArray();
 
         return [
-            'total_contracts' => Contract::count(),
-            'total_organizations' => Organization::count(),
-            'total_companies' => Company::count(),
-            'total_amount' => (float) Contract::sum('importe_con_iva'),
-            'last_snapshot_at' => Contract::max('snapshot_updated_at'),
-            'top_organizations' => $topOrgs,
+            'total_contracts' => Contract::query()->count(),
+            'total_organizations' => Organization::query()->count(),
+            'total_companies' => Company::query()->count(),
+            'total_amount' => (float) Contract::query()->sum('importe_con_iva'),
+            'last_snapshot_at' => Contract::query()->max('snapshot_updated_at'),
+            'top_organizations' => $topOrganizations,
             'recent_awarded' => $recentAwarded,
         ];
     }
@@ -63,7 +68,11 @@ class LandingStatsService
     {
         $cached = Cache::get(self::CACHE_KEY);
 
-        return $cached ?? $this->refresh();
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        return $this->refresh();
     }
 
     /**

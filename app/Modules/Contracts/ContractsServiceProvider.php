@@ -3,6 +3,7 @@
 namespace Modules\Contracts;
 
 use Dedoc\Scramble\Scramble;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -70,7 +71,7 @@ class ContractsServiceProvider extends ServiceProvider
                 RefreshLandingStats::class,
             ]);
 
-            $this->callAfterResolving(\Illuminate\Console\Scheduling\Schedule::class, function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
                 $schedule->command('landing:refresh-stats')->everyFiveMinutes();
             });
         }
