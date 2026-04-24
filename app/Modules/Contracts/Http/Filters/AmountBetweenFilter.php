@@ -3,8 +3,12 @@
 namespace Modules\Contracts\Http\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Contracts\Models\Contract;
 use Spatie\QueryBuilder\Filters\Filter;
 
+/**
+ * @implements Filter<Contract>
+ */
 class AmountBetweenFilter implements Filter
 {
     public function __invoke(Builder $query, mixed $value, string $property): void

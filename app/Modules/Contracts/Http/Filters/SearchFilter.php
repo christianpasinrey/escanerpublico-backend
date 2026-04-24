@@ -3,6 +3,7 @@
 namespace Modules\Contracts\Http\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Contracts\Models\Contract;
 use Spatie\QueryBuilder\Filters\Filter;
 
 /**
@@ -13,6 +14,8 @@ use Spatie\QueryBuilder\Filters\Filter;
  * both production and unit-size fixtures we use IN BOOLEAN MODE (no threshold)
  * and fall back to LIKE when the tokenized term is too short (< 4 chars for
  * default InnoDB FT minimum word length).
+ *
+ * @implements Filter<Contract>
  */
 class SearchFilter implements Filter
 {

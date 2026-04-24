@@ -5,6 +5,7 @@ namespace Modules\Contracts;
 use Illuminate\Support\ServiceProvider;
 use Modules\Contracts\Console\ReprocessContracts;
 use Modules\Contracts\Console\SyncContracts;
+use Modules\Contracts\Http\Middleware\LimitNestedIncludes;
 use Modules\Contracts\Services\Parser\Extractors\CriteriaExtractor;
 use Modules\Contracts\Services\Parser\Extractors\DocumentsExtractor;
 use Modules\Contracts\Services\Parser\Extractors\LotsExtractor;
@@ -40,7 +41,7 @@ class ContractsServiceProvider extends ServiceProvider
     {
         $this->app['router']->aliasMiddleware(
             'limit.includes',
-            \Modules\Contracts\Http\Middleware\LimitNestedIncludes::class
+            LimitNestedIncludes::class
         );
 
         $this->loadRoutesFrom(__DIR__.'/Routes/api.php');

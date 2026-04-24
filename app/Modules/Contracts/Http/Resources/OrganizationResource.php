@@ -4,9 +4,10 @@ namespace Modules\Contracts\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Contracts\Models\Organization;
 
 /**
- * @mixin \Modules\Contracts\Models\Organization
+ * @mixin Organization
  */
 class OrganizationResource extends JsonResource
 {

@@ -10,7 +10,8 @@ class LimitNestedIncludes
 {
     public function handle(Request $request, Closure $next, int $maxDepth = 3): Response
     {
-        $include = (string) $request->query('include', '');
+        $rawInclude = $request->query('include', '');
+        $include = is_string($rawInclude) ? $rawInclude : '';
         if ($include === '') {
             return $next($request);
         }

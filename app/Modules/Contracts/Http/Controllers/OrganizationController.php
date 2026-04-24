@@ -20,7 +20,7 @@ class OrganizationController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $perPage = min(100, max(1, (int) $request->query('per_page', 25)));
+        $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
         $paginated = QueryBuilder::for(Organization::class)
             ->allowedFilters('identifier', 'nif', 'type_code', 'activity_code')

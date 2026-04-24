@@ -35,7 +35,7 @@ class ContractController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $perPage = min(100, max(1, (int) $request->query('per_page', 25)));
+        $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
         $q = QueryBuilder::for(Contract::class)
             ->allowedFilters(
