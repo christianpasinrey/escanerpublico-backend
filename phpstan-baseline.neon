@@ -1,0 +1,613 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Modules/Contracts/Console/SyncContracts.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Console\\SyncContracts\:\:resolveMonths\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Console/SyncContracts.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Console/SyncContracts.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Contract\:\:\$awards\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Contract\:\:\$fecha_presentacion_limite\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Contract\:\:\$notices\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Contract\>\:\:importeMax\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Contract\>\:\:importeMin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Contract\>\:\:procedimiento\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Contract\>\:\:status\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Contract\>\:\:tipo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:count\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:selectRaw\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:sum\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:whereNotNull\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Http\\Controllers\\ContractController\:\:buildTimeline\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Award\:\:whereHas\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/OrganizationController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 7
+			path: app/Modules/Contracts/Http/Controllers/OrganizationController.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:findOrFail\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/OrganizationController.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Address\:\:updateOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Contact\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Contact\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Award\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:insertOrIgnore\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:select\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:whereIn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractDocument\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractDocument\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractNotice\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractNotice\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:insertOrIgnore\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:select\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:persistOrganizationMeta\(\) has parameter \$orgMeta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:processBatch\(\) has parameter \$entries with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:resolveCompanyFromCache\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:resolveOrganizationFromCache\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Offset ''_documents'' on array\{_notices\: mixed, _documents\: mixed\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Offset ''_notices'' on array\{_notices\: mixed, _documents\: mixed\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Property Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:\$companiesCache type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Property Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:\$organizationsCache type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\Award uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Award.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Award\:\:company\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Award.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Award\:\:contractLot\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Award.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\AwardingCriterion uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/AwardingCriterion.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\AwardingCriterion\:\:contractLot\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/AwardingCriterion.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\Company uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Company.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Company\:\:addresses\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Company.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Company\:\:awards\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Company.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Company\:\:contacts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Company.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\Contract uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:awards\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasManyThrough does not specify its types\: TRelatedModel, TIntermediateModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:lots\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:lots\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:modifications\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:modifications\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:notices\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:notices\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:organization\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeImporteMax\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeImporteMax\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeImporteMin\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeImporteMin\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeNotAnnulled\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeNotAnnulled\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeNotAnnulled\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeProcedimiento\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeProcedimiento\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeStatus\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeStatus\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeTipo\(\) has parameter \$q with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:scopeTipo\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:snapshots\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Contract\:\:snapshots\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/Contract.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractDocument\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractDocument.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ContractLot uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractLot.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractLot\:\:awards\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractLot.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractLot\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractLot.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractLot\:\:criteria\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractLot.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractLot\:\:criteria\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Contracts/Models/ContractLot.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ContractModification uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractModification.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractModification\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractModification.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractModification\:\:relatedNotice\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractModification.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractNotice\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractNotice.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ContractSnapshot uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractSnapshot.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ContractSnapshot\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ContractSnapshot.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\Organization uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Organization.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Organization\:\:addresses\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Organization.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Organization\:\:contacts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Organization.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\Organization\:\:contracts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/Organization.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ParseError uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ParseError.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ParseError\:\:reprocessAtomRun\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ParseError.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ReprocessAtomRun uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ReprocessAtomRun.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ReprocessAtomRun\:\:reprocessRun\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ReprocessAtomRun.php
+
+		-
+			message: '#^Class Modules\\Contracts\\Models\\ReprocessRun uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ReprocessRun.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Models\\ReprocessRun\:\:atomRuns\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Modules/Contracts/Models/ReprocessRun.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Services\\PlacspParser\:\:parseAtomFile\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Services/PlacspParser.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Services\\PlacspParser\:\:parseDocumentReference\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Services/PlacspParser.php
+
+		-
+			message: '#^Method Modules\\Contracts\\Services\\PlacspParser\:\:parseEntry\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Services/PlacspParser.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-array\<''city_name''\|''country_code''\|''line''\|''postal_code''\|int\<0, max\>, array\{type\: ''email''\|''fax''\|''phone''\|''website'', value\: non\-falsy\-string\}\|non\-falsy\-string\>\|non\-empty\-string and array\{\} will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Modules/Contracts/Services/PlacspParser.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-falsy\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Modules/Contracts/Services/PlacspParser.php
