@@ -6,6 +6,7 @@ use Dedoc\Scramble\Scramble;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Contracts\Console\RefreshLandingStats;
 use Modules\Contracts\Console\ReprocessContracts;
 use Modules\Contracts\Console\SyncContracts;
 use Modules\Contracts\Http\Middleware\LimitNestedIncludes;
@@ -66,7 +67,12 @@ class ContractsServiceProvider extends ServiceProvider
             $this->commands([
                 SyncContracts::class,
                 ReprocessContracts::class,
+                RefreshLandingStats::class,
             ]);
+
+            $this->callAfterResolving(\Illuminate\Console\Scheduling\Schedule::class, function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+                $schedule->command('landing:refresh-stats')->everyFiveMinutes();
+            });
         }
     }
 }
