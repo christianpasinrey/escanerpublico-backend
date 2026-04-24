@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:at="http://purl.org/atompub/tombstones/1.0">
+    <at:deleted-entry ref="https://contrataciondelestado.es/sindicacion/licitacionesPerfilContratante/19163035"
+                      when="2026-03-20T14:48:14.452+01:00">
+        <at:comment type="ANULADA"/>
+    </at:deleted-entry>
+</feed>
