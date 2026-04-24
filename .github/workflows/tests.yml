@@ -122,7 +122,7 @@ jobs:
           DB_PASSWORD: root
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
-        run: php artisan test tests/Benchmarks
+        run: php artisan test --testsuite=Benchmarks
 
       - name: Upload coverage report
         if: always()

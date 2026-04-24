@@ -12,25 +12,22 @@
             <directory>tests/Feature</directory>
         </testsuite>
         <testsuite name="Benchmarks">
-            <directory>tests/Benchmarks</directory>
+            <directory suffix="Benchmark.php">tests/Benchmarks</directory>
         </testsuite>
     </testsuites>
     <source>
-        <include>
-            <directory>app</directory>
-        </include>
-    </source>
-    <coverage>
-        <report>
-            <html outputDirectory="build/coverage-html"/>
-            <clover outputFile="build/logs/clover.xml"/>
-        </report>
         <include>
             <directory suffix=".php">./app/Modules/Contracts</directory>
         </include>
         <exclude>
             <directory>./app/Modules/Contracts/Database/Migrations</directory>
         </exclude>
+    </source>
+    <coverage>
+        <report>
+            <html outputDirectory="build/coverage-html"/>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
