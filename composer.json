@@ -17,6 +17,7 @@
         "smalot/pdfparser": "^2.12",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-data": "^4.20",
+        "spatie/laravel-query-builder": "^7.2",
         "symfony/dom-crawler": "^8.0",
         "typesense/typesense-php": "^6.0"
     },
