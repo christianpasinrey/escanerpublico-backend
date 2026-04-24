@@ -1,0 +1,25 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "app/Modules/Contracts/Services/Parser",
+            "app/Modules/Contracts/Services"
+        ],
+        "excludes": [
+            "Cache",
+            "Stats",
+            "BatchResult.php"
+        ]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "infection.log",
+        "html": "infection.html",
+        "summary": "infection-summary.log",
+        "json": "infection.json"
+    },
+    "testFramework": "phpunit",
+    "testFrameworkOptions": "--testsuite=Unit,Feature --filter=Contracts",
+    "minMsi": 70,
+    "minCoveredMsi": 70
+}
