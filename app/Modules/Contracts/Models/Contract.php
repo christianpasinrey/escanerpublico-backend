@@ -2,6 +2,8 @@
 
 namespace Modules\Contracts\Models;
 
+use Database\Factories\Modules\Contracts\ContractFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,13 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contract extends Model
 {
+    use HasFactory;
+
     protected $guarded = ['id'];
 
     protected function casts(): array
     {
         return [
             'cpv_codes' => 'array',
-            'criterios_adjudicacion' => 'array',
             'importe_sin_iva' => 'decimal:2',
             'importe_con_iva' => 'decimal:2',
             'valor_estimado' => 'decimal:2',
@@ -70,4 +73,9 @@ class Contract extends Model
     public function awards(): HasMany { return $this->hasMany(Award::class); }
     public function notices(): HasMany { return $this->hasMany(ContractNotice::class)->orderBy('issue_date'); }
     public function documents(): HasMany { return $this->hasMany(ContractDocument::class); }
+
+    protected static function newFactory(): ContractFactory
+    {
+        return ContractFactory::new();
+    }
 }
