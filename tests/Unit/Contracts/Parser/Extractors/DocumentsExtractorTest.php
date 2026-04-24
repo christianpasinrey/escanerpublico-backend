@@ -15,7 +15,7 @@ class DocumentsExtractorTest extends TestCase
         $feed = new \SimpleXMLElement($xml);
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
 
-        $docs = (new DocumentsExtractor())->extract($folder);
+        $docs = (new DocumentsExtractor)->extract($folder);
 
         $this->assertNotEmpty($docs);
         foreach ($docs as $d) {

@@ -20,7 +20,7 @@ class PlacspStreamParser
     /** @return \Generator<EntryDTO|TombstoneDTO> */
     public function stream(string $atomPath): \Generator
     {
-        $reader = new \XMLReader();
+        $reader = new \XMLReader;
         if (! $reader->open($atomPath)) {
             throw new \RuntimeException("Cannot open atom: {$atomPath}");
         }
@@ -54,7 +54,11 @@ class PlacspStreamParser
             return null;
         }
         $doc->appendChild($node);
-        $xml = simplexml_import_dom($doc->documentElement);
+        $root = $doc->documentElement;
+        if ($root === null) {
+            return null;
+        }
+        $xml = simplexml_import_dom($root);
 
         return $xml instanceof \SimpleXMLElement ? $xml : null;
     }

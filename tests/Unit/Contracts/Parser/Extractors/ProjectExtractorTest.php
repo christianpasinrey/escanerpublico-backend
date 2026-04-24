@@ -18,7 +18,7 @@ class ProjectExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $project = $folder->children(self::NS_CAC)->ProcurementProject;
 
-        $lot = (new ProjectExtractor())->extract($project);
+        $lot = (new ProjectExtractor)->extract($project);
 
         $this->assertEquals(1, $lot->lot_number);
         $this->assertNotEmpty($lot->title);

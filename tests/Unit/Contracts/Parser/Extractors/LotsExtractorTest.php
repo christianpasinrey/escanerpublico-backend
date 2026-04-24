@@ -18,7 +18,7 @@ class LotsExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $project = $folder->children(self::NS_CAC)->ProcurementProject;
 
-        $lots = (new LotsExtractor())->extract($project);
+        $lots = (new LotsExtractor)->extract($project);
 
         $this->assertGreaterThanOrEqual(2, count($lots));
         foreach ($lots as $i => $lot) {
@@ -33,7 +33,7 @@ class LotsExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $project = $folder->children(self::NS_CAC)->ProcurementProject;
 
-        $lots = (new LotsExtractor())->extract($project);
+        $lots = (new LotsExtractor)->extract($project);
 
         $this->assertEquals([], $lots);
     }

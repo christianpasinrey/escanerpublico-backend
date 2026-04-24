@@ -18,7 +18,7 @@ class OrganizationExtractorTest extends TestCase
         $folder = $entry->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $locatedParty = $folder->children(self::NS_CAC_EXT)->LocatedContractingParty;
 
-        $dto = (new OrganizationExtractor())->extract($locatedParty);
+        $dto = (new OrganizationExtractor)->extract($locatedParty);
 
         $this->assertInstanceOf(OrganizationDTO::class, $dto);
         $this->assertNotEmpty($dto->name);
@@ -43,7 +43,7 @@ class OrganizationExtractorTest extends TestCase
         $root = new \SimpleXMLElement($xmlString);
         $lp = $root->children(self::NS_CAC_EXT)->LocatedContractingParty;
 
-        $dto = (new OrganizationExtractor())->extract($lp);
+        $dto = (new OrganizationExtractor)->extract($lp);
 
         $this->assertEquals('Nombre Mínimo', $dto->name);
         $this->assertNull($dto->dir3);

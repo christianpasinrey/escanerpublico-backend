@@ -18,7 +18,7 @@ class CriteriaExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $terms = $folder->children(self::NS_CAC)->TenderingTerms;
 
-        $result = (new CriteriaExtractor())->extract($terms, defaultLotNumber: 1);
+        $result = (new CriteriaExtractor)->extract($terms, defaultLotNumber: 1);
 
         $this->assertArrayHasKey(1, $result);
         $this->assertGreaterThanOrEqual(2, count($result[1]));

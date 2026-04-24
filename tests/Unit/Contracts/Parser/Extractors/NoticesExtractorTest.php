@@ -15,7 +15,7 @@ class NoticesExtractorTest extends TestCase
         $feed = new \SimpleXMLElement($xml);
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
 
-        $notices = (new NoticesExtractor())->extract($folder);
+        $notices = (new NoticesExtractor)->extract($folder);
 
         $this->assertGreaterThanOrEqual(3, count($notices));
         foreach ($notices as $n) {

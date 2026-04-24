@@ -15,7 +15,7 @@ class TombstoneExtractorTest extends TestCase
         $atNs = 'http://purl.org/atompub/tombstones/1.0';
         $deleted = $feed->children($atNs)->{'deleted-entry'};
 
-        $dto = (new TombstoneExtractor())->extract($deleted[0]);
+        $dto = (new TombstoneExtractor)->extract($deleted[0]);
 
         $this->assertInstanceOf(TombstoneDTO::class, $dto);
         $this->assertStringContainsString('/19163035', $dto->ref);

@@ -18,7 +18,7 @@ class TermsExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $terms = $folder->children(self::NS_CAC)->TenderingTerms;
 
-        $dto = (new TermsExtractor())->extract($terms);
+        $dto = (new TermsExtractor)->extract($terms);
 
         // At minimum funding program or legislation code should be populated on real entries
         $this->assertTrue(

@@ -15,7 +15,7 @@ class ResultsExtractorTest extends TestCase
         $feed = new \SimpleXMLElement($xml);
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
 
-        $results = (new ResultsExtractor())->extract($folder);
+        $results = (new ResultsExtractor)->extract($folder);
 
         $this->assertGreaterThanOrEqual(1, count($results));
         $r = $results[0];
@@ -30,7 +30,7 @@ class ResultsExtractorTest extends TestCase
         $feed = new \SimpleXMLElement($xml);
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
 
-        $results = (new ResultsExtractor())->extract($folder);
+        $results = (new ResultsExtractor)->extract($folder);
 
         $this->assertGreaterThanOrEqual(2, count($results));
     }
@@ -41,7 +41,7 @@ class ResultsExtractorTest extends TestCase
         $feed = new \SimpleXMLElement($xml);
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
 
-        $results = (new ResultsExtractor())->extract($folder);
+        $results = (new ResultsExtractor)->extract($folder);
 
         foreach ($results as $r) {
             $this->assertNull($r->winner);

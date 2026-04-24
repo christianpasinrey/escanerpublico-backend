@@ -18,7 +18,7 @@ class ProcessExtractorTest extends TestCase
         $folder = $feed->entry[0]->children(self::NS_CAC_EXT)->ContractFolderStatus;
         $process = $folder->children(self::NS_CAC)->TenderingProcess;
 
-        $dto = (new ProcessExtractor())->extract($process);
+        $dto = (new ProcessExtractor)->extract($process);
 
         $this->assertNotNull($dto->procedure_code);
     }
