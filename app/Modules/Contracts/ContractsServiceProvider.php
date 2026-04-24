@@ -38,6 +38,11 @@ class ContractsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app['router']->aliasMiddleware(
+            'limit.includes',
+            \Modules\Contracts\Http\Middleware\LimitNestedIncludes::class
+        );
+
         $this->loadRoutesFrom(__DIR__.'/Routes/api.php');
 
         if ($this->app->runningInConsole()) {

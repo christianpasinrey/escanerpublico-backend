@@ -5,7 +5,7 @@ use Modules\Contracts\Http\Controllers\CompanyController;
 use Modules\Contracts\Http\Controllers\ContractController;
 use Modules\Contracts\Http\Controllers\OrganizationController;
 
-Route::prefix('api/v1')->group(function () {
+Route::prefix('api/v1')->middleware(['limit.includes'])->group(function () {
     Route::get('/contracts', [ContractController::class, 'index']);
     Route::get('/contracts/stats', [ContractController::class, 'stats']);
     Route::get('/contracts/filters', [ContractController::class, 'filters']);
