@@ -23,9 +23,20 @@ class Company extends Model
      *   Contract::whereHas('lots.awards', fn($q) => $q->where('company_id', $companyId))
      * Phase 1.3 will wire this into an API endpoint.
      */
-    public function awards(): HasMany { return $this->hasMany(Award::class); }
-    public function addresses(): MorphMany { return $this->morphMany(Address::class, 'addressable'); }
-    public function contacts(): MorphMany { return $this->morphMany(Contact::class, 'contactable'); }
+    public function awards(): HasMany
+    {
+        return $this->hasMany(Award::class);
+    }
+
+    public function addresses(): MorphMany
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
+    public function contacts(): MorphMany
+    {
+        return $this->morphMany(Contact::class, 'contactable');
+    }
 
     protected static function newFactory(): CompanyFactory
     {

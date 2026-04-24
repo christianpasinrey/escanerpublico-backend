@@ -21,5 +21,8 @@ class ContractNotice extends Model
         'DOC_FORM' => 'Anuncio de formalización',
     ];
 
-    public function contract(): BelongsTo { return $this->belongsTo(Contract::class); }
+    public function contract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class);
+    }
 }

@@ -58,12 +58,35 @@ class Contract extends Model
     ];
 
     // Scopes
-    public function scopeStatus(Builder $q, string $s): Builder { return $q->where('status_code', $s); }
-    public function scopeTipo(Builder $q, string $t): Builder { return $q->where('tipo_contrato_code', $t); }
-    public function scopeProcedimiento(Builder $q, string $p): Builder { return $q->where('procedimiento_code', $p); }
-    public function scopeImporteMin(Builder $q, float $v): Builder { return $q->where('importe_con_iva', '>=', $v); }
-    public function scopeImporteMax(Builder $q, float $v): Builder { return $q->where('importe_con_iva', '<=', $v); }
-    public function scopeNotAnnulled(Builder $q): Builder { return $q->whereNull('annulled_at'); }
+    public function scopeStatus(Builder $q, string $s): Builder
+    {
+        return $q->where('status_code', $s);
+    }
+
+    public function scopeTipo(Builder $q, string $t): Builder
+    {
+        return $q->where('tipo_contrato_code', $t);
+    }
+
+    public function scopeProcedimiento(Builder $q, string $p): Builder
+    {
+        return $q->where('procedimiento_code', $p);
+    }
+
+    public function scopeImporteMin(Builder $q, float $v): Builder
+    {
+        return $q->where('importe_con_iva', '>=', $v);
+    }
+
+    public function scopeImporteMax(Builder $q, float $v): Builder
+    {
+        return $q->where('importe_con_iva', '<=', $v);
+    }
+
+    public function scopeNotAnnulled(Builder $q): Builder
+    {
+        return $q->whereNull('annulled_at');
+    }
 
     // Relationships
     public function organization(): BelongsTo

@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        if (!Schema::hasTable('reprocess_runs')) {
+        if (! Schema::hasTable('reprocess_runs')) {
             Schema::create('reprocess_runs', function (Blueprint $t) {
                 $t->id();
                 $t->string('name', 100)->nullable();
@@ -23,7 +24,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('reprocess_atom_runs')) {
+        if (! Schema::hasTable('reprocess_atom_runs')) {
             Schema::create('reprocess_atom_runs', function (Blueprint $t) {
                 $t->id();
                 $t->foreignId('reprocess_run_id')->constrained('reprocess_runs')->cascadeOnDelete();

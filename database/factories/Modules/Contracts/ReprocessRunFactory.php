@@ -15,7 +15,7 @@ class ReprocessRunFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'run-' . $this->faker->unique()->numerify('#####'),
+            'name' => 'run-'.$this->faker->unique()->numerify('#####'),
             'status' => $this->faker->randomElement(['pending', 'running', 'completed', 'failed', 'cancelled']),
             'started_at' => null,
             'finished_at' => null,

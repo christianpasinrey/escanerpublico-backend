@@ -15,7 +15,7 @@ class CompanyController
         if ($q = $request->input('q')) {
             $query->where(function ($w) use ($q) {
                 $w->where('name', 'like', "%{$q}%")
-                  ->orWhere('nif', 'like', "%{$q}%");
+                    ->orWhere('nif', 'like', "%{$q}%");
             });
         }
 

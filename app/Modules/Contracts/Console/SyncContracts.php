@@ -2,9 +2,10 @@
 
 namespace Modules\Contracts\Console;
 
-use Modules\Contracts\Jobs\ProcessPlacspFile;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Modules\Contracts\Jobs\ProcessPlacspFile;
 use ZipArchive;
 
 class SyncContracts extends Command
@@ -38,7 +39,7 @@ class SyncContracts extends Command
         return self::SUCCESS;
     }
 
-    protected function resolveMonths(): \Illuminate\Support\Collection
+    protected function resolveMonths(): Collection
     {
         if ($this->option('all')) {
             $months = collect();
@@ -48,10 +49,12 @@ class SyncContracts extends Command
                 $months->push($start->format('Ym'));
                 $start->addMonth();
             }
+
             return $months;
         }
 
         $month = $this->option('month') ?? now()->format('Ym');
+
         return collect([$month]);
     }
 
@@ -64,7 +67,7 @@ class SyncContracts extends Command
         $zipPath = "{$dirPath}/{$zipFilename}";
 
         // Crear directorio
-        if (!is_dir($dirPath)) {
+        if (! is_dir($dirPath)) {
             mkdir($dirPath, 0755, true);
         }
 
@@ -76,26 +79,29 @@ class SyncContracts extends Command
                 ->withHeaders(['User-Agent' => config('scrapers.user_agent', 'GobTracker/1.0')])
                 ->get($url);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 $this->warn("  No disponible: {$url} (HTTP {$response->status()})");
+
                 return;
             }
 
             file_put_contents($zipPath, $response->body());
         } catch (\Throwable $e) {
             $this->error("  Error descargando {$url}: {$e->getMessage()}");
+
             return;
         }
 
         // Descomprimir
         $extractPath = "{$dirPath}/extracted";
-        if (!is_dir($extractPath)) {
+        if (! is_dir($extractPath)) {
             mkdir($extractPath, 0755, true);
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($zipPath) !== true) {
             $this->error("  Error abriendo ZIP: {$zipPath}");
+
             return;
         }
 
@@ -104,7 +110,7 @@ class SyncContracts extends Command
 
         // Despachar jobs para cada .atom
         $atomFiles = glob("{$extractPath}/*.atom");
-        $this->line("  Encontrados " . count($atomFiles) . " ficheros ATOM");
+        $this->line('  Encontrados '.count($atomFiles).' ficheros ATOM');
 
         foreach ($atomFiles as $atomFile) {
             if ($this->option('sync')) {

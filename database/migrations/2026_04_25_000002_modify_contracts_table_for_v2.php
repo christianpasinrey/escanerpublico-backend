@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('contracts', function (Blueprint $t) {
@@ -30,9 +31,9 @@ return new class extends Migration {
             $t->dropIndex('contracts_status_snapshot_idx');
             $t->dropIndex('contracts_tipo_status_idx');
             $t->dropIndex('contracts_annulled_idx');
-            $t->dropColumn(['buyer_profile_uri','activity_code','mix_contract_indicator',
-                'funding_program_code','over_threshold_indicator','national_legislation_code',
-                'received_appeal_quantity','snapshot_updated_at','annulled_at']);
+            $t->dropColumn(['buyer_profile_uri', 'activity_code', 'mix_contract_indicator',
+                'funding_program_code', 'over_threshold_indicator', 'national_legislation_code',
+                'received_appeal_quantity', 'snapshot_updated_at', 'annulled_at']);
         });
     }
 };

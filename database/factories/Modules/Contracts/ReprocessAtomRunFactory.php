@@ -17,7 +17,7 @@ class ReprocessAtomRunFactory extends Factory
     {
         return [
             'reprocess_run_id' => ReprocessRun::factory(),
-            'atom_path' => 'atoms/' . $this->faker->unique()->numerify('########') . '.atom',
+            'atom_path' => 'atoms/'.$this->faker->unique()->numerify('########').'.atom',
             'atom_hash' => sha1($this->faker->uuid()),
             'status' => $this->faker->randomElement(['pending', 'running', 'completed', 'failed']),
             'started_at' => null,

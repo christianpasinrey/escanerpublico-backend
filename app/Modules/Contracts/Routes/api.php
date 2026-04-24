@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Contracts\Http\Controllers\CompanyController;
 use Modules\Contracts\Http\Controllers\ContractController;
 use Modules\Contracts\Http\Controllers\OrganizationController;
-use Modules\Contracts\Http\Controllers\CompanyController;
 
 Route::prefix('api/v1')->group(function () {
     Route::get('/contracts', [ContractController::class, 'index']);
@@ -18,4 +18,3 @@ Route::prefix('api/v1')->group(function () {
     Route::get('/companies', [CompanyController::class, 'index']);
     Route::get('/companies/{id}', [CompanyController::class, 'show'])->whereNumber('id');
 });
-

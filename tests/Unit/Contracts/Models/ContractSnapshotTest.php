@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Contracts\Models;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Contracts\Models\Contract;
 use Modules\Contracts\Models\ContractSnapshot;
@@ -24,7 +25,7 @@ class ContractSnapshotTest extends TestCase
         $c = Contract::factory()->create();
         $at = '2026-03-01 10:00:00';
         ContractSnapshot::factory()->for($c)->create(['entry_updated_at' => $at]);
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectException(QueryException::class);
         ContractSnapshot::factory()->for($c)->create(['entry_updated_at' => $at]);
     }
 }

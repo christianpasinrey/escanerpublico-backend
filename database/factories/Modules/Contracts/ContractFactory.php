@@ -16,7 +16,7 @@ class ContractFactory extends Factory
     public function definition(): array
     {
         return [
-            'external_id' => 'https://contrataciondelestado.es/entry/' . $this->faker->unique()->numerify('########'),
+            'external_id' => 'https://contrataciondelestado.es/entry/'.$this->faker->unique()->numerify('########'),
             'expediente' => $this->faker->bothify('EXP-####'),
             'status_code' => $this->faker->randomElement(['PRE', 'PUB', 'EV', 'ADJ', 'RES', 'ANUL']),
             'objeto' => $this->faker->sentence(),

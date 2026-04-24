@@ -16,8 +16,8 @@ class CompanyFactory extends Factory
     {
         return [
             'name' => $this->faker->company(),
-            'nif' => 'B' . $this->faker->unique()->numerify('########'),
-            'identifier' => 'B' . $this->faker->unique()->numerify('########'),
+            'nif' => 'B'.$this->faker->unique()->numerify('########'),
+            'identifier' => 'B'.$this->faker->unique()->numerify('########'),
         ];
     }
 }

@@ -14,7 +14,7 @@ class AwardsV2ColumnsTest extends TestCase
     {
         $this->assertTrue(Schema::hasColumn('awards', 'contract_lot_id'));
         $this->assertFalse(Schema::hasColumn('awards', 'contract_id'));
-        $new = ['description','start_date','lower_tender_amount','higher_tender_amount','smes_received_tender_quantity'];
+        $new = ['description', 'start_date', 'lower_tender_amount', 'higher_tender_amount', 'smes_received_tender_quantity'];
         foreach ($new as $c) {
             $this->assertTrue(Schema::hasColumn('awards', $c), "Missing {$c}");
         }

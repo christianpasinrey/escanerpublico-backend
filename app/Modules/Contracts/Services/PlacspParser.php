@@ -7,9 +7,13 @@ use SimpleXMLElement;
 class PlacspParser
 {
     private const NS_ATOM = 'http://www.w3.org/2005/Atom';
+
     private const NS_CBC = 'urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2';
+
     private const NS_CAC = 'urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2';
+
     private const NS_CAC_EXT = 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2';
+
     private const NS_CBC_EXT = 'urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2';
 
     public function parseAtomFile(string $xmlContent): array
@@ -50,7 +54,7 @@ class PlacspParser
             }
         }
         // Fallback: intentar con namespace explícito
-        if (!$link) {
+        if (! $link) {
             foreach ($entry->children(self::NS_ATOM)->link as $l) {
                 $href = (string) ($l->attributes()['href'] ?? '');
                 if ($href) {
@@ -60,11 +64,13 @@ class PlacspParser
             }
         }
 
-        if (!$id) return null;
+        if (! $id) {
+            return null;
+        }
 
         // ContractFolderStatus (namespace cac-place-ext)
         $folder = $entry->children(self::NS_CAC_EXT)->ContractFolderStatus;
-        if (!$folder || !$folder->count()) {
+        if (! $folder || ! $folder->count()) {
             return null;
         }
 
@@ -158,7 +164,9 @@ class PlacspParser
             while ($parentNode && $parentNode->count()) {
                 $ppName = $parentNode->children(self::NS_CAC)->PartyName;
                 $name = trim((string) $ppName->children(self::NS_CBC)->Name);
-                if ($name) $hierarchy[] = $name;
+                if ($name) {
+                    $hierarchy[] = $name;
+                }
                 $parentNode = $parentNode->children(self::NS_CAC_EXT)->ParentLocatedParty;
             }
         }
@@ -179,19 +187,31 @@ class PlacspParser
             'postal_code' => $postalZone,
             'city_name' => $cityName,
             'country_code' => $countryCode,
-        ], fn($v) => $v !== null && $v !== '');
+        ], fn ($v) => $v !== null && $v !== '');
 
-        if ($addressArr) $orgData['_address'] = $addressArr;
+        if ($addressArr) {
+            $orgData['_address'] = $addressArr;
+        }
 
         // Contacts sub-array
         $contacts = [];
-        if ($phone) $contacts[] = ['type' => 'phone', 'value' => $phone];
-        if ($fax) $contacts[] = ['type' => 'fax', 'value' => $fax];
-        if ($email) $contacts[] = ['type' => 'email', 'value' => $email];
-        if ($website) $contacts[] = ['type' => 'website', 'value' => $website];
-        if ($contacts) $orgData['_contacts'] = $contacts;
+        if ($phone) {
+            $contacts[] = ['type' => 'phone', 'value' => $phone];
+        }
+        if ($fax) {
+            $contacts[] = ['type' => 'fax', 'value' => $fax];
+        }
+        if ($email) {
+            $contacts[] = ['type' => 'email', 'value' => $email];
+        }
+        if ($website) {
+            $contacts[] = ['type' => 'website', 'value' => $website];
+        }
+        if ($contacts) {
+            $orgData['_contacts'] = $contacts;
+        }
 
-        $data['_organization'] = array_filter($orgData, fn($v) => $v !== null && $v !== '' && $v !== []);
+        $data['_organization'] = array_filter($orgData, fn ($v) => $v !== null && $v !== '' && $v !== []);
 
         // ProcurementProject
         $project = $folder->children(self::NS_CAC)->ProcurementProject;
@@ -216,9 +236,13 @@ class PlacspParser
             $cpvCodes = [];
             foreach ($project->children(self::NS_CAC)->RequiredCommodityClassification as $cpvClass) {
                 $code = trim((string) $cpvClass->children(self::NS_CBC)->ItemClassificationCode);
-                if ($code) $cpvCodes[] = $code;
+                if ($code) {
+                    $cpvCodes[] = $code;
+                }
             }
-            if ($cpvCodes) $data['cpv_codes'] = $cpvCodes;
+            if ($cpvCodes) {
+                $data['cpv_codes'] = $cpvCodes;
+            }
 
             // Location
             $location = $project->children(self::NS_CAC)->RealizedLocation;
@@ -274,7 +298,9 @@ class PlacspParser
                 $dlCbc = $deadline->children(self::NS_CBC);
                 $data['fecha_presentacion_limite'] = $this->dateVal($dlCbc->EndDate);
                 $time = trim((string) $dlCbc->EndTime);
-                if ($time) $data['hora_presentacion_limite'] = $time;
+                if ($time) {
+                    $data['hora_presentacion_limite'] = $time;
+                }
             }
         }
 
@@ -293,7 +319,9 @@ class PlacspParser
             $awardDate = $this->dateVal($resCbc->AwardDate);
             $numOffers = null;
             $qty = trim((string) $resCbc->ReceivedTenderQuantity);
-            if ($qty !== '') $numOffers = (int) $qty;
+            if ($qty !== '') {
+                $numOffers = (int) $qty;
+            }
 
             // Winner
             $companyName = null;
@@ -325,7 +353,9 @@ class PlacspParser
             // SME indicator
             $smeAwarded = null;
             $sme = trim((string) $resCbc->SMEAwardedIndicator);
-            if ($sme !== '') $smeAwarded = $sme === 'true';
+            if ($sme !== '') {
+                $smeAwarded = $sme === 'true';
+            }
 
             // Contract number + formalization date
             $contractNumber = null;
@@ -334,7 +364,9 @@ class PlacspParser
             if ($contract && $contract->count()) {
                 $formalizationDate = $this->dateVal($contract->children(self::NS_CBC)->IssueDate);
                 $cid = trim((string) $contract->children(self::NS_CBC)->ID);
-                if ($cid) $contractNumber = $cid;
+                if ($cid) {
+                    $contractNumber = $cid;
+                }
             }
 
             // Build _award sub-array
@@ -353,7 +385,7 @@ class PlacspParser
                 'urgency' => $urgencyCode,
             ];
 
-            $data['_award'] = array_filter($awardData, fn($v) => $v !== null && $v !== '');
+            $data['_award'] = array_filter($awardData, fn ($v) => $v !== null && $v !== '');
         }
 
         // TenderingTerms
@@ -371,7 +403,9 @@ class PlacspParser
                 $gCbc = $guarantee->children(self::NS_CBC);
                 $data['garantia_tipo_code'] = trim((string) $gCbc->GuaranteeTypeCode) ?: null;
                 $rate = trim((string) $gCbc->AmountRate);
-                if ($rate !== '') $data['garantia_porcentaje'] = (float) $rate;
+                if ($rate !== '') {
+                    $data['garantia_porcentaje'] = (float) $rate;
+                }
             }
 
             // Awarding criteria
@@ -389,7 +423,9 @@ class PlacspParser
                         ];
                     }
                 }
-                if ($criterios) $data['criterios_adjudicacion'] = $criterios;
+                if ($criterios) {
+                    $data['criterios_adjudicacion'] = $criterios;
+                }
             }
 
             // Contract extension options
@@ -397,7 +433,9 @@ class PlacspParser
                 ?->children(self::NS_CAC)->ContractExtension;
             if ($extension && $extension->count()) {
                 $opts = trim((string) $extension->children(self::NS_CBC)->OptionsDescription);
-                if ($opts) $data['opciones_descripcion'] = $opts;
+                if ($opts) {
+                    $data['opciones_descripcion'] = $opts;
+                }
             }
         }
 
@@ -405,10 +443,14 @@ class PlacspParser
         $notices = [];
         foreach ($folder->children(self::NS_CAC_EXT)->ValidNoticeInfo as $vni) {
             $noticeType = trim((string) $vni->children(self::NS_CBC_EXT)->NoticeTypeCode);
-            if (!$noticeType) continue;
+            if (! $noticeType) {
+                continue;
+            }
 
             $pubStatus = $vni->children(self::NS_CAC_EXT)->AdditionalPublicationStatus;
-            if (!$pubStatus || !$pubStatus->count()) continue;
+            if (! $pubStatus || ! $pubStatus->count()) {
+                continue;
+            }
 
             $mediaName = trim((string) $pubStatus->children(self::NS_CBC_EXT)->PublicationMediaName);
 
@@ -439,7 +481,9 @@ class PlacspParser
                 $notices[] = $notice;
             }
         }
-        if ($notices) $data['_notices'] = $notices;
+        if ($notices) {
+            $data['_notices'] = $notices;
+        }
 
         // Document references (Legal + Technical + Additional)
         $docRefs = [];
@@ -463,27 +507,33 @@ class PlacspParser
             }
         }
 
-        if ($docRefs) $data['_documents'] = array_filter($docRefs);
+        if ($docRefs) {
+            $data['_documents'] = array_filter($docRefs);
+        }
 
-        return array_filter($data, fn($v) => $v !== null && $v !== '' && $v !== []);
+        return array_filter($data, fn ($v) => $v !== null && $v !== '' && $v !== []);
     }
 
     private function decimal(SimpleXMLElement $el): ?float
     {
         $val = trim((string) $el);
+
         return $val !== '' ? (float) $val : null;
     }
 
     private function dateVal(SimpleXMLElement $el): ?string
     {
         $val = trim((string) $el);
+
         return $val !== '' ? $val : null;
     }
 
     private function parseDocumentReference(SimpleXMLElement $docRef, string $type): ?array
     {
         $name = trim((string) $docRef->children(self::NS_CBC)->ID);
-        if (!$name) return null;
+        if (! $name) {
+            return null;
+        }
 
         $doc = [
             'type' => $type,

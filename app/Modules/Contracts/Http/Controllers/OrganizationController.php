@@ -18,8 +18,8 @@ class OrganizationController
         if ($q = $request->input('q')) {
             $query->where(function ($w) use ($q) {
                 $w->where('name', 'like', "%{$q}%")
-                  ->orWhere('nif', 'like', "%{$q}%")
-                  ->orWhere('identifier', 'like', "%{$q}%");
+                    ->orWhere('nif', 'like', "%{$q}%")
+                    ->orWhere('identifier', 'like', "%{$q}%");
             });
         }
 
@@ -48,7 +48,7 @@ class OrganizationController
         $totalAmount = (float) Contract::where('organization_id', $orgId)->sum('importe_con_iva');
         $avgAmount = $totalContracts > 0 ? round($totalAmount / $totalContracts, 2) : 0;
 
-        $uniqueCompanies = Award::whereHas('contract', fn($q) => $q->where('organization_id', $orgId))
+        $uniqueCompanies = Award::whereHas('contract', fn ($q) => $q->where('organization_id', $orgId))
             ->distinct('company_id')
             ->count('company_id');
 
@@ -68,7 +68,7 @@ class OrganizationController
             ->groupBy('year')
             ->orderBy('year')
             ->pluck('total', 'year')
-            ->map(fn($v) => round((float) $v, 2));
+            ->map(fn ($v) => round((float) $v, 2));
 
         $topCompanies = DB::table('awards')
             ->join('contracts', 'awards.contract_id', '=', 'contracts.id')

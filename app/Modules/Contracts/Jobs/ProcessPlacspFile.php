@@ -4,13 +4,6 @@ namespace Modules\Contracts\Jobs;
 
 use App\Models\Address;
 use App\Models\Contact;
-use Modules\Contracts\Models\Award;
-use Modules\Contracts\Models\Company;
-use Modules\Contracts\Models\Contract;
-use Modules\Contracts\Models\ContractDocument;
-use Modules\Contracts\Models\ContractNotice;
-use Modules\Contracts\Models\Organization;
-use Modules\Contracts\Services\PlacspParser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,20 +13,30 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Modules\Contracts\Models\Award;
+use Modules\Contracts\Models\Company;
+use Modules\Contracts\Models\Contract;
+use Modules\Contracts\Models\ContractDocument;
+use Modules\Contracts\Models\ContractNotice;
+use Modules\Contracts\Models\Organization;
+use Modules\Contracts\Services\PlacspParser;
 
 class ProcessPlacspFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public int $timeout = 300;
 
     // In-memory caches
     private array $organizationsCache = [];
+
     private array $companiesCache = [];
 
     // Redis cache key prefix and TTL (2 hours)
     private const CACHE_TAG = 'placsp_import';
+
     private const CACHE_TTL = 7200;
 
     public function __construct(
@@ -43,8 +46,9 @@ class ProcessPlacspFile implements ShouldQueue
     public function handle(PlacspParser $parser): void
     {
         $content = file_get_contents($this->filePath);
-        if (!$content) {
+        if (! $content) {
             Log::error("PLACSP: No se pudo leer {$this->filePath}");
+
             return;
         }
 
@@ -84,10 +88,10 @@ class ProcessPlacspFile implements ShouldQueue
             Organization::select('id', 'identifier', 'name', 'nif')->chunk(10000, function ($orgs) {
                 foreach ($orgs as $org) {
                     if ($org->identifier) {
-                        $this->organizationsCache['dir3:' . $org->identifier] = $org->id;
+                        $this->organizationsCache['dir3:'.$org->identifier] = $org->id;
                     }
                     if ($org->nif) {
-                        $this->organizationsCache['nif:' . $org->nif] = $org->id;
+                        $this->organizationsCache['nif:'.$org->nif] = $org->id;
                     }
                     $key = $this->makeOrganizationKey($org->identifier, $org->name);
                     $this->organizationsCache[$key] = $org->id;
@@ -105,7 +109,7 @@ class ProcessPlacspFile implements ShouldQueue
             Company::select('id', 'identifier', 'name', 'nif')->chunk(10000, function ($companies) {
                 foreach ($companies as $company) {
                     if ($company->nif) {
-                        $this->companiesCache['nif:' . $company->nif] = $company->id;
+                        $this->companiesCache['nif:'.$company->nif] = $company->id;
                     }
                     $key = $this->makeCompanyKey($company->nif, $company->name);
                     $this->companiesCache[$key] = $company->id;
@@ -143,23 +147,23 @@ class ProcessPlacspFile implements ShouldQueue
                 if ($orgName || $orgDir3) {
                     $inCache = false;
 
-                    if ($orgDir3 && isset($this->organizationsCache['dir3:' . $orgDir3])) {
+                    if ($orgDir3 && isset($this->organizationsCache['dir3:'.$orgDir3])) {
                         $inCache = true;
                     }
-                    if (!$inCache && $orgNif && isset($this->organizationsCache['nif:' . $orgNif])) {
+                    if (! $inCache && $orgNif && isset($this->organizationsCache['nif:'.$orgNif])) {
                         $inCache = true;
                     }
-                    if (!$inCache) {
+                    if (! $inCache) {
                         $key = $this->makeOrganizationKey($orgDir3, $orgName);
                         if (isset($this->organizationsCache[$key])) {
                             $inCache = true;
                         }
                     }
 
-                    if (!$inCache) {
+                    if (! $inCache) {
                         $key = $this->makeOrganizationKey($orgDir3, $orgName);
                         // Deduplicate within batch by key
-                        if (!isset($newOrganizations[$key])) {
+                        if (! isset($newOrganizations[$key])) {
                             $newOrganizations[$key] = [
                                 'name' => $orgName,
                                 'identifier' => $orgDir3,
@@ -190,19 +194,19 @@ class ProcessPlacspFile implements ShouldQueue
                 if ($companyName || $companyNif) {
                     $inCache = false;
 
-                    if ($companyNif && isset($this->companiesCache['nif:' . $companyNif])) {
+                    if ($companyNif && isset($this->companiesCache['nif:'.$companyNif])) {
                         $inCache = true;
                     }
-                    if (!$inCache) {
+                    if (! $inCache) {
                         $key = $this->makeCompanyKey($companyNif, $companyName);
                         if (isset($this->companiesCache[$key])) {
                             $inCache = true;
                         }
                     }
 
-                    if (!$inCache) {
+                    if (! $inCache) {
                         $key = $this->makeCompanyKey($companyNif, $companyName);
-                        if (!isset($newCompanies[$key])) {
+                        if (! isset($newCompanies[$key])) {
                             $newCompanies[$key] = [
                                 'name' => $companyName,
                                 'identifier' => $companyNif,
@@ -216,7 +220,7 @@ class ProcessPlacspFile implements ShouldQueue
             }
 
             // Bulk insert new organizations (insertOrIgnore handles race conditions)
-            if (!empty($newOrganizations)) {
+            if (! empty($newOrganizations)) {
                 Organization::insertOrIgnore(array_values($newOrganizations));
 
                 // Refresh cache: query back the newly inserted organizations
@@ -224,12 +228,12 @@ class ProcessPlacspFile implements ShouldQueue
                 $nombres = array_filter(array_column(array_values($newOrganizations), 'name'));
 
                 $query = Organization::select('id', 'identifier', 'name', 'nif');
-                if (!empty($dir3Codes) && !empty($nombres)) {
+                if (! empty($dir3Codes) && ! empty($nombres)) {
                     $query->where(function ($q) use ($dir3Codes, $nombres) {
                         $q->whereIn('identifier', $dir3Codes)
-                          ->orWhereIn('name', $nombres);
+                            ->orWhereIn('name', $nombres);
                     });
-                } elseif (!empty($dir3Codes)) {
+                } elseif (! empty($dir3Codes)) {
                     $query->whereIn('identifier', $dir3Codes);
                 } else {
                     $query->whereIn('name', $nombres);
@@ -237,10 +241,10 @@ class ProcessPlacspFile implements ShouldQueue
 
                 foreach ($query->get() as $org) {
                     if ($org->identifier) {
-                        $this->organizationsCache['dir3:' . $org->identifier] = $org->id;
+                        $this->organizationsCache['dir3:'.$org->identifier] = $org->id;
                     }
                     if ($org->nif) {
-                        $this->organizationsCache['nif:' . $org->nif] = $org->id;
+                        $this->organizationsCache['nif:'.$org->nif] = $org->id;
                     }
                     $key = $this->makeOrganizationKey($org->identifier, $org->name);
                     $this->organizationsCache[$key] = $org->id;
@@ -254,7 +258,7 @@ class ProcessPlacspFile implements ShouldQueue
             }
 
             // Bulk insert new companies
-            if (!empty($newCompanies)) {
+            if (! empty($newCompanies)) {
                 Company::insertOrIgnore(array_values($newCompanies));
 
                 // Refresh cache
@@ -262,12 +266,12 @@ class ProcessPlacspFile implements ShouldQueue
                 $nombres = array_filter(array_column(array_values($newCompanies), 'name'));
 
                 $query = Company::select('id', 'identifier', 'name', 'nif');
-                if (!empty($nifs) && !empty($nombres)) {
+                if (! empty($nifs) && ! empty($nombres)) {
                     $query->where(function ($q) use ($nifs, $nombres) {
                         $q->whereIn('nif', $nifs)
-                          ->orWhereIn('name', $nombres);
+                            ->orWhereIn('name', $nombres);
                     });
-                } elseif (!empty($nifs)) {
+                } elseif (! empty($nifs)) {
                     $query->whereIn('nif', $nifs);
                 } else {
                     $query->whereIn('name', $nombres);
@@ -275,7 +279,7 @@ class ProcessPlacspFile implements ShouldQueue
 
                 foreach ($query->get() as $company) {
                     if ($company->nif) {
-                        $this->companiesCache['nif:' . $company->nif] = $company->id;
+                        $this->companiesCache['nif:'.$company->nif] = $company->id;
                     }
                     $key = $this->makeCompanyKey($company->nif, $company->name);
                     $this->companiesCache[$key] = $company->id;
@@ -341,7 +345,7 @@ class ProcessPlacspFile implements ShouldQueue
 
                 // Prepare award if there's a winner
                 $awardData = $data['_award'] ?? [];
-                if ($companyId && !empty($awardData['company_name'])) {
+                if ($companyId && ! empty($awardData['company_name'])) {
                     $awardsData[$data['external_id']] = [
                         'company_id' => $companyId,
                         'amount' => $awardData['amount'] ?? null,
@@ -363,7 +367,7 @@ class ProcessPlacspFile implements ShouldQueue
                 // Track entries with notices or documents
                 $notices = $data['_notices'] ?? [];
                 $documents = $data['_documents'] ?? [];
-                if (!empty($notices) || !empty($documents)) {
+                if (! empty($notices) || ! empty($documents)) {
                     $entriesWithRelations[$data['external_id']] = [
                         '_notices' => $notices,
                         '_documents' => $documents,
@@ -372,7 +376,7 @@ class ProcessPlacspFile implements ShouldQueue
             }
 
             // Batch upsert contracts
-            if (!empty($contractsData)) {
+            if (! empty($contractsData)) {
                 // Deduplicate by external_id (keep last occurrence)
                 $contractsData = array_values(
                     collect($contractsData)->keyBy('external_id')->all()
@@ -399,7 +403,7 @@ class ProcessPlacspFile implements ShouldQueue
             }
 
             // Upsert awards (need contract_id FK first)
-            if (!empty($awardsData)) {
+            if (! empty($awardsData)) {
                 $contractIds = Contract::whereIn('external_id', array_keys($awardsData))
                     ->pluck('id', 'external_id')
                     ->toArray();
@@ -412,7 +416,7 @@ class ProcessPlacspFile implements ShouldQueue
                     }
                 }
 
-                if (!empty($awardsToInsert)) {
+                if (! empty($awardsToInsert)) {
                     Award::upsert(
                         $awardsToInsert,
                         ['contract_id', 'company_id'],
@@ -427,26 +431,28 @@ class ProcessPlacspFile implements ShouldQueue
             }
 
             // Sync notices and documents per contract
-            if (!empty($entriesWithRelations)) {
+            if (! empty($entriesWithRelations)) {
                 $contractIds = Contract::whereIn('external_id', array_keys($entriesWithRelations))
                     ->pluck('id', 'external_id')
                     ->toArray();
 
                 foreach ($entriesWithRelations as $externalId => $relations) {
                     $contractId = $contractIds[$externalId] ?? null;
-                    if (!$contractId) continue;
+                    if (! $contractId) {
+                        continue;
+                    }
 
                     $notices = $relations['_notices'] ?? [];
                     $documents = $relations['_documents'] ?? [];
 
-                    if (!empty($notices)) {
+                    if (! empty($notices)) {
                         ContractNotice::where('contract_id', $contractId)->delete();
                         foreach ($notices as $notice) {
                             ContractNotice::create(array_merge($notice, ['contract_id' => $contractId]));
                         }
                     }
 
-                    if (!empty($documents)) {
+                    if (! empty($documents)) {
                         ContractDocument::where('contract_id', $contractId)->delete();
                         foreach ($documents as $doc) {
                             ContractDocument::create(array_merge($doc, ['contract_id' => $contractId]));
@@ -471,15 +477,17 @@ class ProcessPlacspFile implements ShouldQueue
 
             // Resolve the org ID from cache
             $orgId = null;
-            if ($identifier && isset($this->organizationsCache['dir3:' . $identifier])) {
-                $orgId = $this->organizationsCache['dir3:' . $identifier];
+            if ($identifier && isset($this->organizationsCache['dir3:'.$identifier])) {
+                $orgId = $this->organizationsCache['dir3:'.$identifier];
             }
-            if (!$orgId) {
+            if (! $orgId) {
                 $key = $this->makeOrganizationKey($identifier, $name);
                 $orgId = $this->organizationsCache[$key] ?? null;
             }
 
-            if (!$orgId) continue;
+            if (! $orgId) {
+                continue;
+            }
 
             // Persist address
             $addressData = $meta['_address'] ?? null;
@@ -528,17 +536,20 @@ class ProcessPlacspFile implements ShouldQueue
         $dir3 = $orgData['identifier'] ?? null;
         $nif = $orgData['nif'] ?? null;
 
-        if (!$name && !$dir3) return null;
-
-        if ($dir3 && isset($this->organizationsCache['dir3:' . $dir3])) {
-            return $this->organizationsCache['dir3:' . $dir3];
+        if (! $name && ! $dir3) {
+            return null;
         }
 
-        if ($nif && isset($this->organizationsCache['nif:' . $nif])) {
-            return $this->organizationsCache['nif:' . $nif];
+        if ($dir3 && isset($this->organizationsCache['dir3:'.$dir3])) {
+            return $this->organizationsCache['dir3:'.$dir3];
+        }
+
+        if ($nif && isset($this->organizationsCache['nif:'.$nif])) {
+            return $this->organizationsCache['nif:'.$nif];
         }
 
         $key = $this->makeOrganizationKey($dir3, $name);
+
         return $this->organizationsCache[$key] ?? null;
     }
 
@@ -548,13 +559,16 @@ class ProcessPlacspFile implements ShouldQueue
         $name = $awardData['company_name'] ?? null;
         $nif = $awardData['company_nif'] ?? null;
 
-        if (!$name && !$nif) return null;
+        if (! $name && ! $nif) {
+            return null;
+        }
 
-        if ($nif && isset($this->companiesCache['nif:' . $nif])) {
-            return $this->companiesCache['nif:' . $nif];
+        if ($nif && isset($this->companiesCache['nif:'.$nif])) {
+            return $this->companiesCache['nif:'.$nif];
         }
 
         $key = $this->makeCompanyKey($nif, $name);
+
         return $this->companiesCache[$key] ?? null;
     }
 
@@ -567,17 +581,19 @@ class ProcessPlacspFile implements ShouldQueue
         if (empty($identifier) && empty($name)) {
             return Str::uuid()->toString();
         }
-        return md5(($identifier ?? '') . '|' . ($name ?? ''));
+
+        return md5(($identifier ?? '').'|'.($name ?? ''));
     }
 
     private function makeCompanyKey(?string $nif, ?string $name = null): string
     {
-        if (!empty($nif)) {
+        if (! empty($nif)) {
             return md5($nif);
         }
-        if (!empty($name)) {
-            return md5('name:' . $name);
+        if (! empty($name)) {
+            return md5('name:'.$name);
         }
+
         return Str::uuid()->toString();
     }
 }

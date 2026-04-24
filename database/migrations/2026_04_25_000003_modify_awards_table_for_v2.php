@@ -2,9 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         // Awards may have rows linked to old contract_id. Under wipe+reproceso
@@ -12,7 +14,7 @@ return new class extends Migration {
         // the new parser. Truncate so the NOT NULL contract_lot_id can be added
         // without orphaning rows.
         if (Schema::hasColumn('awards', 'contract_id')) {
-            \Illuminate\Support\Facades\DB::table('awards')->delete();
+            DB::table('awards')->delete();
         }
 
         Schema::table('awards', function (Blueprint $t) {
@@ -69,8 +71,8 @@ return new class extends Migration {
             $t->dropIndex('awards_company_award_date_idx');
             $t->dropUnique('awards_lot_company_unique');
             $t->dropForeign(['contract_lot_id']);
-            $t->dropColumn(['contract_lot_id','description',
-                'lower_tender_amount','higher_tender_amount','smes_received_tender_quantity']);
+            $t->dropColumn(['contract_lot_id', 'description',
+                'lower_tender_amount', 'higher_tender_amount', 'smes_received_tender_quantity']);
         });
 
         Schema::table('awards', function (Blueprint $t) {

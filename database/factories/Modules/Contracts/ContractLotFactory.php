@@ -29,7 +29,7 @@ class ContractLotFactory extends Factory
             'duration_unit' => 'MON',
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
-            'nuts_code' => 'ES' . $this->faker->numerify('###'),
+            'nuts_code' => 'ES'.$this->faker->numerify('###'),
             'lugar_ejecucion' => $this->faker->city(),
         ];
     }

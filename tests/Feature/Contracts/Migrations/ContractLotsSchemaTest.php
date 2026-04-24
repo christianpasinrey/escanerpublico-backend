@@ -13,12 +13,12 @@ class ContractLotsSchemaTest extends TestCase
     public function test_contract_lots_table_has_required_columns(): void
     {
         $this->assertTrue(Schema::hasTable('contract_lots'));
-        $cols = ['id','contract_id','lot_number','title','description',
-            'tipo_contrato_code','subtipo_contrato_code','cpv_codes',
-            'budget_with_tax','budget_without_tax','estimated_value',
-            'duration','duration_unit','start_date','end_date',
-            'nuts_code','lugar_ejecucion','options_description',
-            'created_at','updated_at'];
+        $cols = ['id', 'contract_id', 'lot_number', 'title', 'description',
+            'tipo_contrato_code', 'subtipo_contrato_code', 'cpv_codes',
+            'budget_with_tax', 'budget_without_tax', 'estimated_value',
+            'duration', 'duration_unit', 'start_date', 'end_date',
+            'nuts_code', 'lugar_ejecucion', 'options_description',
+            'created_at', 'updated_at'];
         foreach ($cols as $c) {
             $this->assertTrue(Schema::hasColumn('contract_lots', $c), "Missing col {$c}");
         }
@@ -30,6 +30,6 @@ class ContractLotsSchemaTest extends TestCase
             ->where('unique', true)
             ->pluck('columns')
             ->all();
-        $this->assertContains(['contract_id','lot_number'], $uniques);
+        $this->assertContains(['contract_id', 'lot_number'], $uniques);
     }
 }

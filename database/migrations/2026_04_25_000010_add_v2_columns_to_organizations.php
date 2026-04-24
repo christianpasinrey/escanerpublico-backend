@@ -4,17 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('organizations', function (Blueprint $t) {
-            if (!Schema::hasColumn('organizations', 'buyer_profile_uri')) {
+            if (! Schema::hasColumn('organizations', 'buyer_profile_uri')) {
                 $t->string('buyer_profile_uri', 500)->nullable()->after('name');
             }
-            if (!Schema::hasColumn('organizations', 'activity_code')) {
+            if (! Schema::hasColumn('organizations', 'activity_code')) {
                 $t->string('activity_code', 10)->nullable()->after('buyer_profile_uri');
             }
-            if (!Schema::hasColumn('organizations', 'platform_id')) {
+            if (! Schema::hasColumn('organizations', 'platform_id')) {
                 $t->string('platform_id', 50)->nullable()->after('activity_code');
             }
         });
@@ -29,7 +30,7 @@ return new class extends Migration {
                     $cols[] = $c;
                 }
             }
-            if (!empty($cols)) {
+            if (! empty($cols)) {
                 $t->dropColumn($cols);
             }
         });

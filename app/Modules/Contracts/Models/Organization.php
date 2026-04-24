@@ -21,9 +21,20 @@ class Organization extends Model
         return ['hierarchy' => 'array'];
     }
 
-    public function contracts(): HasMany { return $this->hasMany(Contract::class); }
-    public function addresses(): MorphMany { return $this->morphMany(Address::class, 'addressable'); }
-    public function contacts(): MorphMany { return $this->morphMany(Contact::class, 'contactable'); }
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function addresses(): MorphMany
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
+    public function contacts(): MorphMany
+    {
+        return $this->morphMany(Contact::class, 'contactable');
+    }
 
     protected static function newFactory(): OrganizationFactory
     {

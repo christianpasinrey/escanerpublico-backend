@@ -16,5 +16,8 @@ class ContractDocument extends Model
         'general' => 'Documento general',
     ];
 
-    public function contract(): BelongsTo { return $this->belongsTo(Contract::class); }
+    public function contract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class);
+    }
 }

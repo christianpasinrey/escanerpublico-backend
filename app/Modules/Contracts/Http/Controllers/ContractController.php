@@ -2,12 +2,11 @@
 
 namespace Modules\Contracts\Http\Controllers;
 
-use Modules\Contracts\Models\Contract;
-use Modules\Contracts\Models\ContractNotice;
-use Modules\Contracts\Models\Award;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Modules\Contracts\Models\Contract;
+use Modules\Contracts\Models\ContractNotice;
 
 class ContractController
 {
@@ -19,8 +18,8 @@ class ContractController
         if ($q = $request->input('q')) {
             $query->where(function ($w) use ($q) {
                 $w->where('objeto', 'like', "%{$q}%")
-                  ->orWhere('expediente', 'like', "%{$q}%")
-                  ->orWhereHas('organization', fn($o) => $o->where('name', 'like', "%{$q}%"));
+                    ->orWhere('expediente', 'like', "%{$q}%")
+                    ->orWhereHas('organization', fn ($o) => $o->where('name', 'like', "%{$q}%"));
             });
         }
 
@@ -50,15 +49,13 @@ class ContractController
         }
 
         if ($organo = $request->input('organo')) {
-            $query->whereHas('organization', fn($o) => $o->where('name', 'like', "%{$organo}%"));
+            $query->whereHas('organization', fn ($o) => $o->where('name', 'like', "%{$organo}%"));
         }
 
         if ($adjudicatario = $request->input('adjudicatario')) {
-            $query->whereHas('awards', fn($a) =>
-                $a->whereHas('company', fn($c) =>
-                    $c->where('name', 'like', "%{$adjudicatario}%")
-                      ->orWhere('nif', 'like', "%{$adjudicatario}%")
-                )
+            $query->whereHas('awards', fn ($a) => $a->whereHas('company', fn ($c) => $c->where('name', 'like', "%{$adjudicatario}%")
+                ->orWhere('nif', 'like', "%{$adjudicatario}%")
+            )
             );
         }
 
@@ -80,6 +77,7 @@ class ContractController
 
         $contracts = $query->with('organization:id,name')->paginate($request->input('per_page', 25));
         Log::info("Consulta de contratos: {$contracts->total()} resultados para q={$q}, status={$status}, tipo={$tipo}, procedimiento={$procedimiento}, importe_min={$importeMin}, importe_max={$importeMax}, ccaa={$ccaa}, organo={$organo}, adjudicatario={$adjudicatario}, fecha_desde={$fechaDesde}, fecha_hasta={$fechaHasta}");
+
         return response()->json($contracts);
     }
 
@@ -137,7 +135,9 @@ class ContractController
         $events = [];
 
         foreach ($contract->notices as $notice) {
-            if (!$notice->issue_date) continue;
+            if (! $notice->issue_date) {
+                continue;
+            }
             $events[] = [
                 'date' => $notice->issue_date->toDateString(),
                 'type' => $notice->notice_type_code,
@@ -164,8 +164,8 @@ class ContractController
         $award = $contract->awards->first();
 
         if ($award?->award_date) {
-            $hasAwardNotice = collect($events)->contains(fn($e) => $e['type'] === 'DOC_CAN_ADJ');
-            if (!$hasAwardNotice) {
+            $hasAwardNotice = collect($events)->contains(fn ($e) => $e['type'] === 'DOC_CAN_ADJ');
+            if (! $hasAwardNotice) {
                 $events[] = [
                     'date' => $award->award_date->toDateString(),
                     'type' => 'AWARD', 'label' => 'Adjudicación',
@@ -175,8 +175,8 @@ class ContractController
         }
 
         if ($award?->formalization_date) {
-            $hasFormNotice = collect($events)->contains(fn($e) => $e['type'] === 'DOC_FORM');
-            if (!$hasFormNotice) {
+            $hasFormNotice = collect($events)->contains(fn ($e) => $e['type'] === 'DOC_FORM');
+            if (! $hasFormNotice) {
                 $events[] = [
                     'date' => $award->formalization_date->toDateString(),
                     'type' => 'FORMALIZATION', 'label' => 'Formalización',
@@ -185,7 +185,8 @@ class ContractController
             }
         }
 
-        usort($events, fn($a, $b) => $a['date'] <=> $b['date']);
+        usort($events, fn ($a, $b) => $a['date'] <=> $b['date']);
+
         return $events;
     }
 }
