@@ -6,32 +6,31 @@
       xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2"
       xmlns:at="http://purl.org/atompub/tombstones/1.0">
     <entry>
-        <id>https://contrataciondelestado.es/sindicacion/licitacionesPerfilContratante/1852499</id>
-        <link href="https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=XyYbDmCUlmsQK2TEfXGy%2BA%3D%3D"/>
-        <summary type="text">Id licitación: 2017/003424; Órgano de Contratación: Delegación Provincial de la Consejería de Educación, Cultura y Deportes en Cuenca; Importe: 433065.52 EUR; Estado: RES</summary>
-        <title>Servicio de limpieza del I.E.S "Alfonso VIII" de Cuenca-1800CU17SER00064-CD</title>
-        <updated>2018-01-03T09:09:05.263+01:00</updated>
+        <id>https://contrataciondelestado.es/sindicacion/licitacionesPerfilContratante/1892960</id>
+        <link href="https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=AkxmG5wcqK8QK2TEfXGy%2BA%3D%3D"/>
+        <summary type="text">Id licitación: 3654217073700; Órgano de Contratación: Intendente de Ferrol; Importe: 20000 EUR; Estado: RES</summary>
+        <title>Expdte. Num.: 2437/17.- I-00007-P-18/Gen Buques/Mantº equipos de cuadros, iluminación y distribución eléctrica en buques ARFER.</title>
+        <updated>2018-01-03T09:08:49.621+01:00</updated>
         <cac-place-ext:ContractFolderStatus>
-            <cbc:ContractFolderID>2017/003424</cbc:ContractFolderID>
+            <cbc:ContractFolderID>3654217073700</cbc:ContractFolderID>
             <cbc-place-ext:ContractFolderStatusCode languageID="es" listURI="https://contrataciondelestado.es/codice/cl/2.04/SyndicationContractFolderStatusCode-2.04.gc">RES</cbc-place-ext:ContractFolderStatusCode>
             <cac-place-ext:LocatedContractingParty>
-                <cbc:ContractingPartyTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc">2</cbc:ContractingPartyTypeCode>
+                <cbc:ContractingPartyTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc">1</cbc:ContractingPartyTypeCode>
                 <cac:Party>
-                    <cbc:WebsiteURI>http://contratacion.castillalamancha.es/</cbc:WebsiteURI>
                     <cac:PartyIdentification>
-                        <cbc:ID schemeName="DIR3">A08014354</cbc:ID>
+                        <cbc:ID schemeName="DIR3">EA0002985</cbc:ID>
                     </cac:PartyIdentification>
                     <cac:PartyIdentification>
-                        <cbc:ID schemeName="NIF">S1911001D</cbc:ID>
+                        <cbc:ID schemeName="NIF">S1515003J</cbc:ID>
                     </cac:PartyIdentification>
                     <cac:PartyName>
-                        <cbc:Name>Delegación Provincial de la Consejería de Educación, Cultura y Deportes en Cuenca</cbc:Name>
+                        <cbc:Name>Intendente de Ferrol</cbc:Name>
                     </cac:PartyName>
                     <cac:PostalAddress>
-                        <cbc:CityName>Cuenca</cbc:CityName>
-                        <cbc:PostalZone>16071</cbc:PostalZone>
+                        <cbc:CityName>Ferrol (A Coruña)</cbc:CityName>
+                        <cbc:PostalZone>15490</cbc:PostalZone>
                         <cac:AddressLine>
-                            <cbc:Line>Glorieta González Palencia, 2</cbc:Line>
+                            <cbc:Line>ARSENAL MILITAR CALLE IRMANDIÑOS S/N</cbc:Line>
                         </cac:AddressLine>
                         <cac:Country>
                             <cbc:IdentificationCode listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc">ES</cbc:IdentificationCode>
@@ -39,31 +38,28 @@
                         </cac:Country>
                     </cac:PostalAddress>
                     <cac:Contact>
-                        <cbc:Name>Delegación Provincial de la Consejería de Educación, Cultura y Deportes en Cuenca</cbc:Name>
-                        <cbc:Telephone>969176300</cbc:Telephone>
-                        <cbc:Telefax>969176403</cbc:Telefax>
-                        <cbc:ElectronicMail>contratos.edu.cu@jccm.es</cbc:ElectronicMail>
+                        <cbc:Name>Intendente de Ferrol</cbc:Name>
+                        <cbc:Telephone>981336207</cbc:Telephone>
+                        <cbc:Telefax>981336135</cbc:Telefax>
+                        <cbc:ElectronicMail>a3jucofer@fn.mde.es</cbc:ElectronicMail>
                     </cac:Contact>
                 </cac:Party>
             </cac-place-ext:LocatedContractingParty>
             <cac:ProcurementProject>
-                <cbc:Name>Servicio de limpieza del I.E.S "Alfonso VIII" de Cuenca-1800CU17SER00064-CD</cbc:Name>
+                <cbc:Name>Expdte. Num.: 2437/17.- I-00007-P-18/Gen Buques/Mantº equipos de cuadros, iluminación y distribución eléctrica en buques ARFER.</cbc:Name>
                 <cbc:TypeCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ContractCode-2.08.gc">2</cbc:TypeCode>
-                <cbc:SubTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ServiceContractCode-1.04.gc">14</cbc:SubTypeCode>
+                <cbc:SubTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ServiceContractCode-1.04.gc">1</cbc:SubTypeCode>
                 <cac:BudgetAmount>
-                    <cbc:EstimatedOverallContractAmount currencyID="EUR">433065.52</cbc:EstimatedOverallContractAmount>
-                    <cbc:TotalAmount currencyID="EUR">524009.28</cbc:TotalAmount>
-                    <cbc:TaxExclusiveAmount currencyID="EUR">433065.52</cbc:TaxExclusiveAmount>
+                    <cbc:EstimatedOverallContractAmount currencyID="EUR">20000</cbc:EstimatedOverallContractAmount>
+                    <cbc:TotalAmount currencyID="EUR">20000</cbc:TotalAmount>
+                    <cbc:TaxExclusiveAmount currencyID="EUR">20000</cbc:TaxExclusiveAmount>
                 </cac:BudgetAmount>
                 <cac:RequiredCommodityClassification>
-                    <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc">90910000</cbc:ItemClassificationCode>
-                </cac:RequiredCommodityClassification>
-                <cac:RequiredCommodityClassification>
-                    <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc">90510000</cbc:ItemClassificationCode>
+                    <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc">50640000</cbc:ItemClassificationCode>
                 </cac:RequiredCommodityClassification>
                 <cac:RealizedLocation>
-                    <cbc:CountrySubentity>Cuenca</cbc:CountrySubentity>
-                    <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.06/NUTS-2016.gc">ES423</cbc:CountrySubentityCode>
+                    <cbc:CountrySubentity>NOROESTE</cbc:CountrySubentity>
+                    <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.06/NUTS-2016.gc">ES1</cbc:CountrySubentityCode>
                     <cac:Address>
                         <cac:Country>
                             <cbc:IdentificationCode listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc">ES</cbc:IdentificationCode>
@@ -72,79 +68,114 @@
                     </cac:Address>
                 </cac:RealizedLocation>
                 <cac:PlannedPeriod>
-                    <cbc:DurationMeasure unitCode="ANN">2</cbc:DurationMeasure>
+                    <cbc:DurationMeasure unitCode="DAY">365</cbc:DurationMeasure>
                 </cac:PlannedPeriod>
-                <cac:ContractExtension>
-                    <cbc:OptionsDescription>Una prórroga</cbc:OptionsDescription>
-                </cac:ContractExtension>
             </cac:ProcurementProject>
             <cac:TenderResult>
                 <cbc:ResultCode listURI="http://contrataciondelestado.es/codice/cl/2.02/TenderResultCode-2.02.gc">8</cbc:ResultCode>
-                <cbc:Description>La oferta económicamente más ventajosa</cbc:Description>
-                <cbc:AwardDate>2017-11-30</cbc:AwardDate>
-                <cbc:ReceivedTenderQuantity>3</cbc:ReceivedTenderQuantity>
+                <cbc:Description>Por obtener la mayor puntuación en aplicación de los criterios de valoración y cumplir los requisitos exigidos en los Pliegos que rigen este expediente</cbc:Description>
+                <cbc:AwardDate>2018-03-23</cbc:AwardDate>
+                <cbc:ReceivedTenderQuantity>5</cbc:ReceivedTenderQuantity>
+                <cbc:StartDate>2018-04-09</cbc:StartDate>
                 <cac:Contract>
-                    <cbc:ID>1721/2017</cbc:ID>
-                    <cbc:IssueDate>2017-12-15</cbc:IssueDate>
+                    <cbc:ID>2437/2017</cbc:ID>
+                    <cbc:IssueDate>2018-04-09</cbc:IssueDate>
                 </cac:Contract>
                 <cac:WinningParty>
                     <cac:PartyIdentification>
-                        <cbc:ID schemeName="NIF">B16183006</cbc:ID>
+                        <cbc:ID schemeName="NIF">B15054570</cbc:ID>
                     </cac:PartyIdentification>
                     <cac:PartyName>
-                        <cbc:Name>LIMPTRAMAN
-</cbc:Name>
+                        <cbc:Name>FOROVE S.L.</cbc:Name>
                     </cac:PartyName>
                 </cac:WinningParty>
                 <cac:AwardedTenderedProject>
                     <cac:LegalMonetaryTotal>
-                        <cbc:TaxExclusiveAmount currencyID="EUR">201861.58</cbc:TaxExclusiveAmount>
-                        <cbc:PayableAmount currencyID="EUR">244252.52</cbc:PayableAmount>
+                        <cbc:TaxExclusiveAmount currencyID="EUR">20000</cbc:TaxExclusiveAmount>
+                        <cbc:PayableAmount currencyID="EUR">20000</cbc:PayableAmount>
                     </cac:LegalMonetaryTotal>
                 </cac:AwardedTenderedProject>
             </cac:TenderResult>
             <cac:TenderingTerms>
                 <cbc:RequiredCurriculaIndicator>false</cbc:RequiredCurriculaIndicator>
-                <cbc:VariantConstraintIndicator>false</cbc:VariantConstraintIndicator>
+                <cac:RequiredFinancialGuarantee>
+                    <cbc:GuaranteeTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/GuaranteeTypeCode-1.04.gc">2</cbc:GuaranteeTypeCode>
+                    <cbc:AmountRate>5</cbc:AmountRate>
+                </cac:RequiredFinancialGuarantee>
                 <cac:TendererQualificationRequest>
+                    <cbc:Description>Según Pliego de Cláusulas Administrativas Particulares</cbc:Description>
                     <cac:TechnicalEvaluationCriteria>
                         <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/TechnicalCapabilityTypeCode-2.0.gc">ZZZ</cbc:EvaluationCriteriaTypeCode>
-                        <cbc:Description>Los establecidos en el Acuerdo Marco</cbc:Description>
+                        <cbc:Description>Se presentará relación de los principales suministros realizados de objeto
+similar al del presente expediente, en los últimos cinco (S) años, indicando
+su importe, fechas y destinatario público o privado de los mismos.</cbc:Description>
                     </cac:TechnicalEvaluationCriteria>
                     <cac:FinancialEvaluationCriteria>
                         <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/FinancialCapabilityTypeCode-2.0.gc">ZZZ</cbc:EvaluationCriteriaTypeCode>
-                        <cbc:Description>Los establecidos en el Acuerdo Marco</cbc:Description>
+                        <cbc:Description>Declaración entidades financieras o seguro RC</cbc:Description>
                     </cac:FinancialEvaluationCriteria>
-                    <cac:SpecificTendererRequirement>
-                        <cbc:RequirementTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/DeclarationTypeCode-2.0.gc">1</cbc:RequirementTypeCode>
-                    </cac:SpecificTendererRequirement>
                 </cac:TendererQualificationRequest>
-                <cac:AwardingTerms>
-                    <cac:AwardingCriteria>
-                        <cbc:Description>Precio</cbc:Description>
-                        <cbc:WeightNumeric>100</cbc:WeightNumeric>
-                    </cac:AwardingCriteria>
-                </cac:AwardingTerms>
                 <cac:Language>
                     <cbc:ID>es</cbc:ID>
                 </cac:Language>
             </cac:TenderingTerms>
             <cac:TenderingProcess>
-                <cbc:ProcedureCode listURI="https://contrataciondelestado.es/codice/cl/2.07/SyndicationTenderingProcessCode-2.07.gc">7</cbc:ProcedureCode>
+                <cbc:ProcedureCode listURI="https://contrataciondelestado.es/codice/cl/2.07/SyndicationTenderingProcessCode-2.07.gc">3</cbc:ProcedureCode>
                 <cbc:UrgencyCode listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc">1</cbc:UrgencyCode>
-                <cbc:ContractingSystemCode listURI="http://contrataciondelestado.es/codice/cl/2.0/ContractingSystemTypeCode-2.0.gc">3</cbc:ContractingSystemCode>
                 <cbc:SubmissionMethodCode listURI="http://contrataciondelestado.es/codice/cl/1.04/TenderDeliveryCode-1.04.gc">2</cbc:SubmissionMethodCode>
                 <cac:TenderSubmissionDeadlinePeriod>
-                    <cbc:EndDate>2017-06-22</cbc:EndDate>
-                    <cbc:EndTime>14:00:00</cbc:EndTime>
+                    <cbc:EndDate>2018-01-11</cbc:EndDate>
+                    <cbc:EndTime>12:00:00</cbc:EndTime>
                 </cac:TenderSubmissionDeadlinePeriod>
             </cac:TenderingProcess>
+            <cac:LegalDocumentReference>
+                <cbc:ID>FAS-14800962.PDF</cbc:ID>
+                <cac:Attachment>
+                    <cac:ExternalReference>
+                        <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=3721687c-5b18-408c-9f10-3efb1a847f6a</cbc:URI>
+                        <cbc:DocumentHash>PzJhU1ZUQTch/uJyucNJe1sjhJI=</cbc:DocumentHash>
+                    </cac:ExternalReference>
+                </cac:Attachment>
+            </cac:LegalDocumentReference>
+            <cac:TechnicalDocumentReference>
+                <cbc:ID>GALIA-28137028.pdf</cbc:ID>
+                <cac:Attachment>
+                    <cac:ExternalReference>
+                        <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=2c61cbd5-4e59-40f1-b8ef-bbf4b9efb4ac</cbc:URI>
+                        <cbc:DocumentHash>UZJ20dApaTILdMnQ3+sABdMA4W8=</cbc:DocumentHash>
+                    </cac:ExternalReference>
+                </cac:Attachment>
+            </cac:TechnicalDocumentReference>
             <cac-place-ext:ValidNoticeInfo>
                 <cbc-place-ext:NoticeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.04/TenderingNoticeTypeCode-2.04.gc">DOC_CAN_ADJ</cbc-place-ext:NoticeTypeCode>
                 <cac-place-ext:AdditionalPublicationStatus>
                     <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
                     <cac-place-ext:AdditionalPublicationDocumentReference>
-                        <cbc:IssueDate>2017-12-05</cbc:IssueDate>
+                        <cbc:IssueDate>2018-04-10</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                </cac-place-ext:AdditionalPublicationStatus>
+            </cac-place-ext:ValidNoticeInfo>
+            <cac-place-ext:ValidNoticeInfo>
+                <cbc-place-ext:NoticeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.04/TenderingNoticeTypeCode-2.04.gc">DOC_CD</cbc-place-ext:NoticeTypeCode>
+                <cac-place-ext:AdditionalPublicationStatus>
+                    <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2018-01-02</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2018-01-03</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                </cac-place-ext:AdditionalPublicationStatus>
+            </cac-place-ext:ValidNoticeInfo>
+            <cac-place-ext:ValidNoticeInfo>
+                <cbc-place-ext:NoticeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.04/TenderingNoticeTypeCode-2.04.gc">DOC_CN</cbc-place-ext:NoticeTypeCode>
+                <cac-place-ext:AdditionalPublicationStatus>
+                    <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2018-01-02</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2018-01-02</cbc:IssueDate>
                     </cac-place-ext:AdditionalPublicationDocumentReference>
                 </cac-place-ext:AdditionalPublicationStatus>
             </cac-place-ext:ValidNoticeInfo>
@@ -153,7 +184,7 @@
                 <cac-place-ext:AdditionalPublicationStatus>
                     <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
                     <cac-place-ext:AdditionalPublicationDocumentReference>
-                        <cbc:IssueDate>2018-01-03</cbc:IssueDate>
+                        <cbc:IssueDate>2018-05-30</cbc:IssueDate>
                     </cac-place-ext:AdditionalPublicationDocumentReference>
                 </cac-place-ext:AdditionalPublicationStatus>
             </cac-place-ext:ValidNoticeInfo>
