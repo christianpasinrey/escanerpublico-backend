@@ -84,7 +84,7 @@ class ProcessPlacspFile implements ShouldQueue
             $atomRun?->update([
                 'status' => 'failed',
                 'finished_at' => now(),
-                'error_message' => $e->getMessage(),
+                'error_message' => mb_substr($e->getMessage(), 0, 60000, 'UTF-8'),
             ]);
 
             throw $e;
@@ -112,10 +112,10 @@ class ProcessPlacspFile implements ShouldQueue
         ParseError::create([
             'reprocess_atom_run_id' => $this->atomRunId,
             'atom_path' => $this->atomPath,
-            'entry_external_id' => $externalId,
+            'entry_external_id' => $externalId !== null ? mb_substr($externalId, 0, 500, 'UTF-8') : null,
             'error_code' => $code,
-            'error_message' => $message,
-            'raw_fragment' => $fragment,
+            'error_message' => mb_substr($message, 0, 60000, 'UTF-8'),
+            'raw_fragment' => $fragment !== null ? mb_substr($fragment, 0, 60000, 'UTF-8') : null,
         ]);
     }
 }

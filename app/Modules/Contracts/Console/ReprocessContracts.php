@@ -3,6 +3,7 @@
 namespace Modules\Contracts\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Modules\Contracts\Jobs\ProcessPlacspFile;
 use Modules\Contracts\Models\ReprocessAtomRun;
 use Modules\Contracts\Models\ReprocessRun;
@@ -34,6 +35,11 @@ class ReprocessContracts extends Command
             }
             $this->call('migrate:fresh');
         }
+
+        // Always flush the resolver cache before running: stale orgs/companies
+        // IDs in Redis would cause FK failures if the DB was reset between runs.
+        // The in-memory cache is cheap to rebuild from DB via preload().
+        Cache::tags(['placsp_import'])->flush();
 
         if ($this->option('resume')) {
             $run = ReprocessRun::whereIn('status', ['failed', 'running'])->latest()->first();

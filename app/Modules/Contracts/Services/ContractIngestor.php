@@ -86,27 +86,28 @@ class ContractIngestor
 
                 $org = $e->organization;
                 if ($this->resolver->resolveOrganizationId($org->dir3, $org->nif, $org->name) === null && $org->name !== '') {
-                    $key = md5(($org->dir3 ?? '').'|'.$org->name);
+                    $truncatedName = $this->truncate($org->name, 255);
+                    $key = md5(($org->dir3 ?? '').'|'.$truncatedName);
                     if (! isset($newOrgs[$key])) {
                         $newOrgs[$key] = [
-                            'name' => $org->name,
-                            'identifier' => $org->dir3,
+                            'name' => $truncatedName,
+                            'identifier' => $this->truncate($org->dir3, 255),
                             'nif' => $org->nif,
                             'platform_id' => $org->platform_id,
-                            'buyer_profile_uri' => $org->buyer_profile_uri,
+                            'buyer_profile_uri' => $this->truncate($org->buyer_profile_uri, 500),
                             'activity_code' => $org->activity_code,
                             'type_code' => $org->type_code,
                             'hierarchy' => $org->hierarchy !== [] ? json_encode($org->hierarchy) : null,
-                            'parent_name' => $org->hierarchy[0] ?? null,
+                            'parent_name' => $this->truncate($org->hierarchy[0] ?? null, 255),
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
                         $newOrgMeta[$key] = [
                             '_address' => $org->address,
                             '_contacts' => $org->contacts,
-                            'dir3' => $org->dir3,
+                            'dir3' => $this->truncate($org->dir3, 255),
                             'nif' => $org->nif,
-                            'name' => $org->name,
+                            'name' => $truncatedName,
                         ];
                     }
                 }
@@ -116,11 +117,12 @@ class ContractIngestor
                         continue;
                     }
                     if ($this->resolver->resolveCompanyId($r->winner->nif, $r->winner->name) === null) {
-                        $key = md5($r->winner->nif ?? 'name:'.$r->winner->name);
+                        $truncatedWinnerName = $this->truncate($r->winner->name, 255);
+                        $key = md5($r->winner->nif ?? 'name:'.$truncatedWinnerName);
                         if (! isset($newCompanies[$key])) {
                             $newCompanies[$key] = [
-                                'name' => $r->winner->name,
-                                'identifier' => $r->winner->nif,
+                                'name' => $truncatedWinnerName,
+                                'identifier' => $this->truncate($r->winner->nif, 255),
                                 'nif' => $r->winner->nif,
                                 'created_at' => now(),
                                 'updated_at' => now(),
@@ -186,7 +188,11 @@ class ContractIngestor
                     continue;
                 }
 
-                $orgId = $this->resolver->resolveOrganizationId($e->organization->dir3, $e->organization->nif, $e->organization->name);
+                $orgId = $this->resolver->resolveOrganizationId(
+                    $this->truncate($e->organization->dir3, 255),
+                    $e->organization->nif,
+                    $this->truncate($e->organization->name, 255),
+                );
                 $firstLot = $e->lots[0] ?? null;
 
                 $contractsRows[] = [
@@ -234,7 +240,18 @@ class ContractIngestor
             }
 
             if ($contractsRows !== []) {
-                $contractsRows = array_values(collect($contractsRows)->keyBy('external_id')->all());
+                // Dedupe by external_id keeping the row with the MAX snapshot_updated_at.
+                // Otherwise if the atom yields duplicates in oldest-first order,
+                // the stored snapshot_updated_at would be the older one and the
+                // next re-ingest would re-process the newer row as "new".
+                $byExternal = [];
+                foreach ($contractsRows as $row) {
+                    $ext = $row['external_id'];
+                    if (! isset($byExternal[$ext]) || $row['snapshot_updated_at'] > $byExternal[$ext]['snapshot_updated_at']) {
+                        $byExternal[$ext] = $row;
+                    }
+                }
+                $contractsRows = array_values($byExternal);
                 Contract::upsert($contractsRows, ['external_id'], [
                     'expediente', 'link', 'buyer_profile_uri', 'activity_code', 'status_code', 'objeto',
                     'tipo_contrato_code', 'subtipo_contrato_code', 'importe_sin_iva', 'importe_con_iva',
@@ -309,7 +326,7 @@ class ContractIngestor
                     if ($lotId === null) {
                         continue;
                     }
-                    $companyId = $this->resolver->resolveCompanyId($r->winner->nif, $r->winner->name);
+                    $companyId = $this->resolver->resolveCompanyId($r->winner->nif, $this->truncate($r->winner->name, 255));
                     if ($companyId === null) {
                         continue;
                     }
@@ -516,6 +533,9 @@ class ContractIngestor
 
     /**
      * Returns true if the existing DB snapshot_updated_at is >= entry.updated_at.
+     * Compares at second precision because MySQL TIMESTAMP stores only whole
+     * seconds, so the in-memory DateTimeImmutable's microseconds would make
+     * every re-ingest look newer than the stored value.
      *
      * @param  array<string, mixed>  $existing
      */
@@ -526,9 +546,12 @@ class ContractIngestor
             return false;
         }
 
-        $exDt = Carbon::parse($ex)->toDateTimeImmutable();
+        $exDt = Carbon::parse($ex)->startOfSecond()->toDateTimeImmutable();
+        $entryDt = Carbon::instance(\DateTime::createFromImmutable($e->entry_updated_at))
+            ->startOfSecond()
+            ->toDateTimeImmutable();
 
-        return $e->entry_updated_at <= $exDt;
+        return $entryDt <= $exDt;
     }
 
     /**
