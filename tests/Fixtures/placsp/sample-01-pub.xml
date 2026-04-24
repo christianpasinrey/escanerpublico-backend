@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2"
+      xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2"
+      xmlns:cac-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2"
+      xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2"
+      xmlns:at="http://purl.org/atompub/tombstones/1.0">
+    <entry>
+        <id>https://contrataciondelestado.es/sindicacion/licitacionesPerfilContratante/1892425</id>
+        <link href="https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=8zOYd1mIXxYQK2TEfXGy%2BA%3D%3D"/>
+        <summary type="text">Id licitación: CG-09/17; Órgano de Contratación: Dirección Ejecutiva de la Fundación Centro de Estudios Ambientales del Mediterráneo; Importe: 5225 EUR; Estado: PUB</summary>
+        <title>Servicio de asesoría jurídico laboral durante 12 meses</title>
+        <updated>2017-12-31T17:57:58.777+01:00</updated>
+        <cac-place-ext:ContractFolderStatus>
+            <cbc:ContractFolderID>CG-09/17</cbc:ContractFolderID>
+            <cbc-place-ext:ContractFolderStatusCode languageID="es" listURI="https://contrataciondelestado.es/codice/cl/2.04/SyndicationContractFolderStatusCode-2.04.gc">PUB</cbc-place-ext:ContractFolderStatusCode>
+            <cac-place-ext:LocatedContractingParty>
+                <cbc:ContractingPartyTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ContractingAuthorityCode-1.04.gc">5</cbc:ContractingPartyTypeCode>
+                <cac:Party>
+                    <cbc:WebsiteURI>http://www.ceam.es</cbc:WebsiteURI>
+                    <cac:PartyIdentification>
+                        <cbc:ID schemeName="NIF">G46957213</cbc:ID>
+                    </cac:PartyIdentification>
+                    <cac:PartyName>
+                        <cbc:Name>Dirección Ejecutiva de la Fundación Centro de Estudios Ambientales del Mediterráneo</cbc:Name>
+                    </cac:PartyName>
+                    <cac:PostalAddress>
+                        <cbc:CityName>Paterna</cbc:CityName>
+                        <cbc:PostalZone>46980</cbc:PostalZone>
+                        <cac:AddressLine>
+                            <cbc:Line>Charles R. Darwin, 14 - Parque Tecnológico</cbc:Line>
+                        </cac:AddressLine>
+                        <cac:Country>
+                            <cbc:IdentificationCode listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc">ES</cbc:IdentificationCode>
+                            <cbc:Name>España</cbc:Name>
+                        </cac:Country>
+                    </cac:PostalAddress>
+                    <cac:Contact>
+                        <cbc:Name>Dirección Ejecutiva de la Fundación Centro de Estudios Ambientales del Mediterráneo</cbc:Name>
+                        <cbc:Telephone>961318227</cbc:Telephone>
+                        <cbc:Telefax>961318190</cbc:Telefax>
+                        <cbc:ElectronicMail>emilio@ceam.es</cbc:ElectronicMail>
+                    </cac:Contact>
+                </cac:Party>
+                <cac-place-ext:ParentLocatedParty>
+                    <cac:PartyName>
+                        <cbc:Name>Comunidad Valenciana</cbc:Name>
+                    </cac:PartyName>
+                    <cac-place-ext:ParentLocatedParty>
+                        <cac:PartyName>
+                            <cbc:Name>SOCIEDADES, FUNDACIONES Y CONSORCIOS COMUNIDADES AUTÓNOMAS</cbc:Name>
+                        </cac:PartyName>
+                        <cac-place-ext:ParentLocatedParty>
+                            <cac:PartyName>
+                                <cbc:Name>OTRAS ENTIDADES DEL SECTOR PÚBLICO</cbc:Name>
+                            </cac:PartyName>
+                            <cac-place-ext:ParentLocatedParty>
+                                <cac:PartyName>
+                                    <cbc:Name>Sector Público</cbc:Name>
+                                </cac:PartyName>
+                            </cac-place-ext:ParentLocatedParty>
+                        </cac-place-ext:ParentLocatedParty>
+                    </cac-place-ext:ParentLocatedParty>
+                </cac-place-ext:ParentLocatedParty>
+            </cac-place-ext:LocatedContractingParty>
+            <cac:ProcurementProject>
+                <cbc:Name>Servicio de asesoría jurídico laboral durante 12 meses</cbc:Name>
+                <cbc:TypeCode listURI="http://contrataciondelestado.es/codice/cl/2.02/ContractCode-2.02.gc">2</cbc:TypeCode>
+                <cbc:SubTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ServiceContractCode-1.04.gc">21</cbc:SubTypeCode>
+                <cac:BudgetAmount>
+                    <cbc:EstimatedOverallContractAmount currencyID="EUR">5225</cbc:EstimatedOverallContractAmount>
+                    <cbc:TotalAmount currencyID="EUR">6322.25</cbc:TotalAmount>
+                    <cbc:TaxExclusiveAmount currencyID="EUR">5225</cbc:TaxExclusiveAmount>
+                </cac:BudgetAmount>
+                <cac:RequiredCommodityClassification>
+                    <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc">79211110</cbc:ItemClassificationCode>
+                </cac:RequiredCommodityClassification>
+                <cac:RequiredCommodityClassification>
+                    <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/1.04/CPV2007-1.04.gc">79140000</cbc:ItemClassificationCode>
+                </cac:RequiredCommodityClassification>
+                <cac:RealizedLocation>
+                    <cbc:CountrySubentity>Valencia/València</cbc:CountrySubentity>
+                    <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.06/NUTS-2016.gc">ES523</cbc:CountrySubentityCode>
+                    <cac:Address>
+                        <cac:Country>
+                            <cbc:IdentificationCode listURI="http://docs.oasis-open.org/ubl/os-ubl-2.0/cl/gc/default/CountryIdentificationCode-2.0.gc">ES</cbc:IdentificationCode>
+                            <cbc:Name>España</cbc:Name>
+                        </cac:Country>
+                    </cac:Address>
+                </cac:RealizedLocation>
+                <cac:PlannedPeriod>
+                    <cbc:DurationMeasure unitCode="MON">12</cbc:DurationMeasure>
+                </cac:PlannedPeriod>
+            </cac:ProcurementProject>
+            <cac:TenderingTerms>
+                <cbc:RequiredCurriculaIndicator>false</cbc:RequiredCurriculaIndicator>
+                <cbc:VariantConstraintIndicator>false</cbc:VariantConstraintIndicator>
+                <cac:TendererQualificationRequest>
+                    <cac:TechnicalEvaluationCriteria>
+                        <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/TechnicalCapabilityTypeCode-2.0.gc">OXR-TITULOS</cbc:EvaluationCriteriaTypeCode>
+                        <cbc:Description>Se debe facilitar CV de cada uno de ellos en el que conste la titulación académica y profesional y la experiencia laboral.</cbc:Description>
+                    </cac:TechnicalEvaluationCriteria>
+                    <cac:TechnicalEvaluationCriteria>
+                        <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/TechnicalCapabilityTypeCode-2.0.gc">OSR-COMPTASK</cbc:EvaluationCriteriaTypeCode>
+                        <cbc:Description>declaración responsable con la relación de los principales servicios realizados en los últimos cinco años, en el que se incluya importe, fechas y nombre de la entidad, organismo o empresa destinatario de los mismos. El órgano de contratación, si lo estima necesario, podrá solicitar su acreditación mediante certificados expedidos por la entidad destinataria de los servicios que se relacionan.  </cbc:Description>
+                    </cac:TechnicalEvaluationCriteria>
+                    <cac:FinancialEvaluationCriteria>
+                        <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/FinancialCapabilityTypeCode-2.0.gc">3</cbc:EvaluationCriteriaTypeCode>
+                        <cbc:Description>Documento</cbc:Description>
+                    </cac:FinancialEvaluationCriteria>
+                    <cac:FinancialEvaluationCriteria>
+                        <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/FinancialCapabilityTypeCode-2.0.gc">5</cbc:EvaluationCriteriaTypeCode>
+                        <cbc:Description>Declaración responsable</cbc:Description>
+                    </cac:FinancialEvaluationCriteria>
+                </cac:TendererQualificationRequest>
+                <cac:Language>
+                    <cbc:ID>es</cbc:ID>
+                </cac:Language>
+            </cac:TenderingTerms>
+            <cac:TenderingProcess>
+                <cbc:ProcedureCode listURI="https://contrataciondelestado.es/codice/cl/2.04/SyndicationTenderingProcessCode-2.04.gc">1</cbc:ProcedureCode>
+                <cbc:UrgencyCode listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc">1</cbc:UrgencyCode>
+                <cac:DocumentAvailabilityPeriod>
+                    <cbc:EndDate>2018-01-15</cbc:EndDate>
+                    <cbc:EndTime>12:00:00</cbc:EndTime>
+                </cac:DocumentAvailabilityPeriod>
+                <cac:TenderSubmissionDeadlinePeriod>
+                    <cbc:EndDate>2018-01-15</cbc:EndDate>
+                    <cbc:EndTime>15:00:00</cbc:EndTime>
+                </cac:TenderSubmissionDeadlinePeriod>
+            </cac:TenderingProcess>
+            <cac:LegalDocumentReference>
+                <cbc:ID>g-2 PCAP_fdo.pdf</cbc:ID>
+                <cac:Attachment>
+                    <cac:ExternalReference>
+                        <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=80307163-20d5-499d-b658-c5b8735fa106</cbc:URI>
+                        <cbc:DocumentHash>tFXKEAVy4/NF5YSsDKVOw8YcKPo=</cbc:DocumentHash>
+                    </cac:ExternalReference>
+                </cac:Attachment>
+            </cac:LegalDocumentReference>
+            <cac:TechnicalDocumentReference>
+                <cbc:ID>g-3_PCT_ASES_FDO.pdf</cbc:ID>
+                <cac:Attachment>
+                    <cac:ExternalReference>
+                        <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=486c497a-0ad9-48ee-975f-21d946978845</cbc:URI>
+                        <cbc:DocumentHash>unRcM2uSNARZj5/8A4A0fLH2jAA=</cbc:DocumentHash>
+                    </cac:ExternalReference>
+                </cac:Attachment>
+            </cac:TechnicalDocumentReference>
+            <cac:AdditionalDocumentReference>
+                <cbc:ID>ANEXOS.docx</cbc:ID>
+                <cac:Attachment>
+                    <cac:ExternalReference>
+                        <cbc:URI>https://contrataciondelestado.es/wps/wcm/connect/PLACE_es/Site/area/docAccCmpnt?srv=cmpnt&amp;cmpntname=GetDocumentsById&amp;source=library&amp;DocumentIdParam=805878bc-d711-422a-95cd-6a833f284e44</cbc:URI>
+                        <cbc:DocumentHash>MwzQbc3266eGE2lOTn5LNu1FHbo=</cbc:DocumentHash>
+                    </cac:ExternalReference>
+                </cac:Attachment>
+            </cac:AdditionalDocumentReference>
+            <cac-place-ext:ValidNoticeInfo>
+                <cbc-place-ext:NoticeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.04/TenderingNoticeTypeCode-2.04.gc">DOC_CD</cbc-place-ext:NoticeTypeCode>
+                <cac-place-ext:AdditionalPublicationStatus>
+                    <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2017-12-31</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                </cac-place-ext:AdditionalPublicationStatus>
+            </cac-place-ext:ValidNoticeInfo>
+            <cac-place-ext:ValidNoticeInfo>
+                <cbc-place-ext:NoticeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.04/TenderingNoticeTypeCode-2.04.gc">DOC_CN</cbc-place-ext:NoticeTypeCode>
+                <cac-place-ext:AdditionalPublicationStatus>
+                    <cbc-place-ext:PublicationMediaName>Perfil del Contratante</cbc-place-ext:PublicationMediaName>
+                    <cac-place-ext:AdditionalPublicationDocumentReference>
+                        <cbc:IssueDate>2017-12-31</cbc:IssueDate>
+                    </cac-place-ext:AdditionalPublicationDocumentReference>
+                </cac-place-ext:AdditionalPublicationStatus>
+            </cac-place-ext:ValidNoticeInfo>
+        </cac-place-ext:ContractFolderStatus>
+    </entry>
+</feed>
