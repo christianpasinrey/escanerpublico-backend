@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+// Application web routes are loaded by individual modules.
+// The Contracts module registers '/' (landing), '/health', '/openapi.json',
+// and Scalar registers '/docs' from its package routes.
