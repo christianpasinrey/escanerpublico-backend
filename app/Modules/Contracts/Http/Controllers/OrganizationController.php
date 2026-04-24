@@ -2,106 +2,56 @@
 
 namespace Modules\Contracts\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Modules\Contracts\Models\Award;
-use Modules\Contracts\Models\Contract;
+use Modules\Contracts\Http\Resources\OrganizationResource;
 use Modules\Contracts\Models\Organization;
+use Modules\Contracts\Services\Stats\OrganizationStatsService;
+use Spatie\QueryBuilder\QueryBuilder;
 
-class OrganizationController
+class OrganizationController extends Controller
 {
+    private const INDEX_CACHE = 'public, s-maxage=60, stale-while-revalidate=300';
+
+    private const SHOW_CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400';
+
+    private const STATS_CACHE = 'public, s-maxage=900, stale-while-revalidate=3600';
+
     public function index(Request $request): JsonResponse
     {
-        $query = Organization::query();
+        $perPage = min(100, max(1, (int) $request->query('per_page', 25)));
 
-        if ($q = $request->input('q')) {
-            $query->where(function ($w) use ($q) {
-                $w->where('name', 'like', "%{$q}%")
-                    ->orWhere('nif', 'like', "%{$q}%")
-                    ->orWhere('identifier', 'like', "%{$q}%");
-            });
-        }
+        $paginated = QueryBuilder::for(Organization::class)
+            ->allowedFilters('identifier', 'nif', 'type_code', 'activity_code')
+            ->allowedIncludes('addresses', 'contacts', 'contracts')
+            ->allowedSorts('name', 'created_at')
+            ->defaultSort('name')
+            ->paginate($perPage)
+            ->appends($request->query());
 
-        return response()->json(
-            $query->withCount('contracts')
-                ->withSum('contracts', 'importe_con_iva')
-                ->orderByDesc('contracts_count')
-                ->paginate($request->input('per_page', 25))
-        );
+        return OrganizationResource::collection($paginated)
+            ->response()
+            ->header('Cache-Control', self::INDEX_CACHE);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $organization): JsonResponse
     {
-        $organization = Organization::with(['addresses', 'contacts'])->findOrFail($id);
-        $organization->setAttribute('contracts_count', Contract::where('organization_id', $id)->count());
+        $org = QueryBuilder::for(Organization::where('id', $organization))
+            ->allowedIncludes('addresses', 'contacts', 'contracts')
+            ->firstOrFail();
 
-        return response()->json($organization);
+        return OrganizationResource::make($org)
+            ->response()
+            ->header('Cache-Control', self::SHOW_CACHE);
     }
 
-    public function stats(int $id): JsonResponse
+    public function stats(int $organization, OrganizationStatsService $stats): JsonResponse
     {
-        $organization = Organization::findOrFail($id);
-        $orgId = $organization->id;
+        $org = Organization::findOrFail($organization);
 
-        $totalContracts = Contract::where('organization_id', $orgId)->count();
-        $totalAmount = (float) Contract::where('organization_id', $orgId)->sum('importe_con_iva');
-        $avgAmount = $totalContracts > 0 ? round($totalAmount / $totalContracts, 2) : 0;
-
-        $uniqueCompanies = Award::whereHas('contract', fn ($q) => $q->where('organization_id', $orgId))
-            ->distinct('company_id')
-            ->count('company_id');
-
-        $byStatus = Contract::where('organization_id', $orgId)
-            ->selectRaw('status_code, count(*) as total')
-            ->groupBy('status_code')
-            ->pluck('total', 'status_code');
-
-        $byType = Contract::where('organization_id', $orgId)
-            ->whereNotNull('tipo_contrato_code')
-            ->selectRaw('tipo_contrato_code, count(*) as total')
-            ->groupBy('tipo_contrato_code')
-            ->pluck('total', 'tipo_contrato_code');
-
-        $byYear = Contract::where('organization_id', $orgId)
-            ->selectRaw('YEAR(created_at) as year, SUM(importe_con_iva) as total')
-            ->groupBy('year')
-            ->orderBy('year')
-            ->pluck('total', 'year')
-            ->map(fn ($v) => round((float) $v, 2));
-
-        $topCompanies = DB::table('awards')
-            ->join('contracts', 'awards.contract_id', '=', 'contracts.id')
-            ->join('companies', 'awards.company_id', '=', 'companies.id')
-            ->where('contracts.organization_id', $orgId)
-            ->select(
-                'companies.id',
-                'companies.name',
-                'companies.nif',
-                DB::raw('COUNT(*) as contracts_count'),
-                DB::raw('SUM(awards.amount) as total_amount')
-            )
-            ->groupBy('companies.id', 'companies.name', 'companies.nif')
-            ->orderByDesc('total_amount')
-            ->limit(10)
-            ->get();
-
-        $recentContracts = Contract::where('organization_id', $orgId)
-            ->select('id', 'objeto', 'status_code', 'importe_con_iva', 'updated_at')
-            ->orderByDesc('updated_at')
-            ->limit(10)
-            ->get();
-
-        return response()->json([
-            'total_contracts' => $totalContracts,
-            'total_amount' => $totalAmount,
-            'avg_amount' => $avgAmount,
-            'unique_companies' => $uniqueCompanies,
-            'by_status' => $byStatus,
-            'by_type' => $byType,
-            'by_year' => $byYear,
-            'top_companies' => $topCompanies,
-            'recent_contracts' => $recentContracts,
-        ]);
+        return response()
+            ->json($stats->compute($org))
+            ->header('Cache-Control', self::STATS_CACHE);
     }
 }
