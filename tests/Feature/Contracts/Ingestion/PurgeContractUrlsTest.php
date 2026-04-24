@@ -4,6 +4,7 @@ namespace Tests\Feature\Contracts\Ingestion;
 
 use Illuminate\Support\Facades\Http;
 use Modules\Contracts\Jobs\PurgeContractUrls;
+use Modules\Contracts\Services\Cache\CloudflarePurger;
 use Tests\TestCase;
 
 class PurgeContractUrlsTest extends TestCase
@@ -18,7 +19,7 @@ class PurgeContractUrlsTest extends TestCase
         Http::fake(['api.cloudflare.com/*' => Http::response(['success' => true], 200)]);
 
         $job = new PurgeContractUrls([1, 2, 3]);
-        $job->handle(app(\Modules\Contracts\Services\Cache\CloudflarePurger::class));
+        $job->handle(app(CloudflarePurger::class));
 
         Http::assertSent(function ($req) {
             $body = $req->data();
@@ -33,7 +34,7 @@ class PurgeContractUrlsTest extends TestCase
         config(['cloudflare.api_token' => null]);
         Http::fake();
 
-        (new PurgeContractUrls([1]))->handle(app(\Modules\Contracts\Services\Cache\CloudflarePurger::class));
+        (new PurgeContractUrls([1]))->handle(app(CloudflarePurger::class));
 
         Http::assertNothingSent();
     }
