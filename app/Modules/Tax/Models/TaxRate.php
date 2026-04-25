@@ -6,6 +6,7 @@ use Database\Factories\Modules\Tax\TaxRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,8 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $fixed_amount
  * @property array<string, mixed>|null $conditions
  * @property string|null $source_url
- * @property \Illuminate\Support\Carbon|null $valid_from
- * @property \Illuminate\Support\Carbon|null $valid_to
+ * @property Carbon|null $valid_from
+ * @property Carbon|null $valid_to
  */
 class TaxRate extends Model
 {

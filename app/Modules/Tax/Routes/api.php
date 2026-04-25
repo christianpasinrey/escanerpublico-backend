@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Modules\Tax\Http\Controllers\Catalog\EconomicActivityController;
 use Modules\Tax\Http\Controllers\Catalog\ObligationCalendarController;
 use Modules\Tax\Http\Controllers\Catalog\RegimeController;
+use Modules\Tax\Http\Controllers\TaxTypeController;
 
 Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->group(function () {
-    // M1 — Catálogo
+    // M1 — Catálogo de regímenes y actividades
     Route::get('/regimes', [RegimeController::class, 'index']);
     Route::get('/regimes/{code}', [RegimeController::class, 'show']);
 
@@ -16,5 +17,10 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
 
     Route::get('/calendar', [ObligationCalendarController::class, 'show']);
 
-    // M2 (catálogo de impuestos), M3 (parámetros) y M4-M8 (calculadoras) — fases siguientes.
+    // M2 — Catálogo de impuestos y tasas
+    Route::get('/types', [TaxTypeController::class, 'index']);
+    Route::get('/types/{code}', [TaxTypeController::class, 'show'])
+        ->where('code', '[A-Z0-9_]+');
+
+    // M3 (parámetros) y M4-M8 (calculadoras) — fases siguientes.
 });
