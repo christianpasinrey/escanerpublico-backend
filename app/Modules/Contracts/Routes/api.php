@@ -5,6 +5,7 @@ use Modules\Contracts\Http\Controllers\CompanyController;
 use Modules\Contracts\Http\Controllers\ContractController;
 use Modules\Contracts\Http\Controllers\LotController;
 use Modules\Contracts\Http\Controllers\OrganizationController;
+use Modules\Contracts\Http\Controllers\TimelinesController;
 
 Route::prefix('api/v1')->middleware(['limit.includes'])->group(function () {
     Route::get('/contracts', [ContractController::class, 'index']);
@@ -19,4 +20,6 @@ Route::prefix('api/v1')->middleware(['limit.includes'])->group(function () {
     Route::get('/companies/{company}/stats', [CompanyController::class, 'stats'])->whereNumber('company');
 
     Route::get('/lots', [LotController::class, 'index']);
+
+    Route::get('/timelines', [TimelinesController::class, 'index']);
 });
