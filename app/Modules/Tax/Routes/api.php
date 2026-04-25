@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Tax\Http\Controllers\Calculators\IncomeTaxController;
 use Modules\Tax\Http\Controllers\Calculators\InvoiceController;
 use Modules\Tax\Http\Controllers\Calculators\PayrollController;
 use Modules\Tax\Http\Controllers\Catalog\EconomicActivityController;
@@ -30,5 +31,8 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
     // M5 — Calculadora de factura autónomo
     Route::post('/invoice', InvoiceController::class);
 
-    // M6-M8 (IRPF, IVA, modelos 130/131) — fases siguientes.
+    // M6 — Calculadora de IRPF anual (modelo 100)
+    Route::post('/income-tax', IncomeTaxController::class);
+
+    // M7-M8 (IVA modelo 303/390, modelos 130/131) — fases siguientes.
 });
