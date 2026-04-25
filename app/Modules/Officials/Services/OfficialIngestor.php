@@ -36,6 +36,10 @@ class OfficialIngestor
         }
 
         return DB::transaction(function () use ($item, $extracted) {
+            // Si una iteración previa del extractor falló y dejó un error stale,
+            // ahora lo limpiamos al obtener éxito.
+            CargoExtractionError::where('boe_item_id', $item->id)->delete();
+
             $official = $this->resolveOfficial($extracted['full_name'], $extracted['honorific']);
 
             $appointment = Appointment::updateOrCreate(
