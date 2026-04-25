@@ -58,6 +58,8 @@ class ContractController extends Controller
                 'snapshot_updated_at',
                 'importe_con_iva',
                 'fecha_inicio',
+                'updated_at',
+                'created_at',
                 AllowedSort::custom('relevance', new RelevanceSort),
             )
             ->defaultSort('-snapshot_updated_at');
@@ -71,13 +73,18 @@ class ContractController extends Controller
 
     public function show(string $externalId): JsonResponse
     {
-        // Routing by external_id (URL-encoded or numeric PLACSP id suffix).
+        // Routing accepts: full URL external_id (URL-encoded), trailing PLACSP numeric segment, or primary id.
         $decoded = urldecode($externalId);
         $query = Contract::query();
         if (str_starts_with($decoded, 'http')) {
             $query->where('external_id', $decoded);
+        } elseif (ctype_digit($decoded)) {
+            $query->where(function ($q) use ($decoded) {
+                $q->where('id', (int) $decoded)
+                    ->orWhere('external_id', 'LIKE', '%/'.$decoded);
+            });
         } else {
-            $query->where('external_id', 'LIKE', '%/'.$decoded);
+            $query->where('external_id', $decoded);
         }
 
         $contract = QueryBuilder::for($query)
