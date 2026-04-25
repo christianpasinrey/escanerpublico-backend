@@ -78,6 +78,10 @@ php artisan legislation:sync --type=summaries --from=2024-01-01    # sumarios di
 php artisan legislation:sync --type=consolidated                    # legislación consolidada completa
 php artisan legislation:sync --resume
 
+# Officials (extracción derivada del BOE Sección II.A)
+php artisan officials:extract                                       # solo items no procesados
+php artisan officials:extract --force                               # reprocesa todo
+
 # Tests + lint
 php artisan test
 ./vendor/bin/phpstan analyse app/Modules --level=8
@@ -155,9 +159,10 @@ app/Modules/Contracts/
 - [x] Spec 3 — Ficha de empresa pública (contratos)
 - [x] **Spec 5 — Módulo Subvenciones (BDNS)**: ingestión idempotente de la API REST de [infosubvenciones.es](https://www.infosubvenciones.es/). Comando `php artisan subsidies:sync`. API en `/api/v1/subsidies/calls` y `/api/v1/subsidies/grants`.
 - [x] **Spec 7 — Módulo Legislación (BOE)**: ingestión de la API de datos abiertos del [BOE](https://www.boe.es/datosabiertos/). Sumarios diarios + legislación consolidada. Comando `php artisan legislation:sync`. API en `/api/v1/legislation/{norms,summaries,items}`.
+- [x] **Spec 8 — Módulo Cargos Públicos**: extracción de altos cargos a partir del BOE Sección II.A (nombramientos, ceses, tomas de posesión). Comando `php artisan officials:extract`. API en `/api/v1/officials`.
 - [ ] Spec 4 — Snapshot history exploitation: queries de diff + panel de auditoría
 - [ ] Spec 6 — Cruces contratos↔subvenciones↔legislación por organismo/empresa
-- [ ] Módulo Cargos públicos (boletines autonómicos)
+- [ ] Módulo Cargos autonómicos (boletines BOPA, DOGV, DOGC, etc.)
 - [ ] Módulo Presupuestos (PGE + autonómicos)
 - [ ] API keys + rate limit por cuenta
 - [ ] Webhooks para terceros que sigan registros concretos
@@ -169,6 +174,7 @@ app/Modules/Contracts/
 | **Contracts** | [PLACSP](https://contrataciondelestado.es) atom XML | ~10M contratos | `/api/v1/contracts` |
 | **Subsidies** | [BDNS](https://www.infosubvenciones.es/) JSON REST | 625k convocatorias + 24M concesiones | `/api/v1/subsidies/calls`, `/api/v1/subsidies/grants` |
 | **Legislation** | [BOE](https://www.boe.es/datosabiertos/) JSON REST | ~80k normas consolidadas + sumarios diarios desde 2024 | `/api/v1/legislation/norms`, `/api/v1/legislation/summaries`, `/api/v1/legislation/items` |
+| **Officials** | Derivado de BOE Sección II.A | Altos cargos extraídos por regex pattern matching | `/api/v1/officials` |
 
 ## Datos y atribución
 
