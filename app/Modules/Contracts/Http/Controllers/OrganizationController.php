@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Modules\Contracts\Http\Resources\OrganizationResource;
 use Modules\Contracts\Models\Organization;
 use Modules\Contracts\Services\Stats\OrganizationStatsService;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganizationController extends Controller
@@ -23,9 +24,17 @@ class OrganizationController extends Controller
         $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
         $paginated = QueryBuilder::for(Organization::class)
+            ->withCount('contracts')
+            ->withSum('contracts', 'importe_con_iva')
             ->allowedFilters('identifier', 'nif', 'type_code', 'activity_code')
             ->allowedIncludes('addresses', 'contacts', 'contracts')
-            ->allowedSorts('name', 'created_at')
+            ->allowedSorts(
+                'name',
+                'created_at',
+                'updated_at',
+                AllowedSort::field('contracts_count'),
+                AllowedSort::field('total_amount', 'contracts_sum_importe_con_iva'),
+            )
             ->defaultSort('name')
             ->paginate($perPage)
             ->appends($request->query());
