@@ -27,7 +27,7 @@ class ContractController extends Controller
     {
         return [
             'organization', 'organization.addresses', 'organization.contacts',
-            'lots', 'lots.awards', 'lots.awards.company',
+            'lots', 'lots.awards', 'lots.awards.company', 'lots.awards.company.addresses',
             'lots.criteria',
             'notices', 'modifications', 'documents', 'snapshots',
         ];
