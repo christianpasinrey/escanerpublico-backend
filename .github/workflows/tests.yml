@@ -1,0 +1,133 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Lint, Test, Coverage, Benchmarks
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gobtracker_testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4 with xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, pdo_mysql, redis, xml, simplexml, bcmath, dom
+          coverage: xdebug
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Copy environment
+        run: cp .env.example .env && php artisan key:generate
+
+      - name: Run migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan migrate --force
+
+      - name: PHPStan (level 8 with baseline)
+        run: ./vendor/bin/phpstan analyse --memory-limit=2G
+
+      - name: Pint (code style check, Contracts module scope)
+        run: ./vendor/bin/pint --test app/Modules/Contracts tests/Feature/Contracts tests/Unit/Contracts tests/Benchmarks
+
+      - name: Unit tests with coverage
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test --testsuite=Unit --coverage-clover=build/logs/clover.xml
+
+      - name: Feature tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test --testsuite=Feature
+
+      - name: Coverage gate (>=85% on app/Modules/Contracts)
+        run: |
+          if [ ! -f build/logs/clover.xml ]; then
+            echo "::error::Clover report missing — coverage was not generated"
+            exit 1
+          fi
+          COVERAGE=$(php -r '
+              $xml = simplexml_load_file("build/logs/clover.xml");
+              $m = $xml->project->metrics;
+              $covered = (int)$m["coveredstatements"];
+              $total = (int)$m["statements"];
+              $pct = $total > 0 ? round(($covered/$total)*100, 2) : 0.0;
+              echo $pct;
+          ')
+          echo "Contracts module coverage: ${COVERAGE}%"
+          php -r "exit(((float)\"$COVERAGE\") >= 85.0 ? 0 : 1);" || {
+            echo "::error::Coverage ${COVERAGE}% is below required 85%"
+            exit 1
+          }
+
+      - name: Benchmarks
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: gobtracker_testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test --testsuite=Benchmarks
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: build/coverage-html
+          if-no-files-found: ignore

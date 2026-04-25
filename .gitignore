@@ -24,3 +24,7 @@ Homestead.yaml
 Thumbs.db
 /.superpowers
 /.worktrees
+/infection.html
+/infection.json
+/infection-summary.log
+/build/
