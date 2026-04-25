@@ -13,9 +13,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class SubsidyCallController extends Controller
 {
-    private const INDEX_CACHE = 'public, s-maxage=60, stale-while-revalidate=300';
+    // TTL bajos durante fase de ingesta inicial — subimos cuando el dataset esté completo.
+    private const INDEX_CACHE = 'public, s-maxage=15, stale-while-revalidate=60';
 
-    private const SHOW_CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400';
+    private const SHOW_CACHE = 'public, s-maxage=300, stale-while-revalidate=3600';
 
     public function index(Request $request): JsonResponse
     {
