@@ -2,6 +2,7 @@
 
 namespace App\Mcp\Resources;
 
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
@@ -46,7 +47,7 @@ final class McpResponseEnvelope
      * @return array<string, mixed>
      */
     public static function single(
-        \Illuminate\Http\Resources\Json\JsonResource $resource,
+        JsonResource $resource,
         string $source,
         ?string $note = null,
     ): array {
