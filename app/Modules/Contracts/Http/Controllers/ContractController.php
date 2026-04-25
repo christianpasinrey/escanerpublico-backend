@@ -3,6 +3,7 @@
 namespace Modules\Contracts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Pagination\FastPaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Contracts\Http\Filters\AmountBetweenFilter;
@@ -64,7 +65,9 @@ class ContractController extends Controller
             )
             ->defaultSort('-snapshot_updated_at');
 
-        $paginated = $q->paginate($perPage)->appends($request->query());
+        $page = max(1, (int) $request->query('page', '1'));
+        $hasFilters = is_array($request->query('filter')) && count($request->query('filter')) > 0;
+        $paginated = FastPaginator::paginate($q, $perPage, $page, 'contracts', $hasFilters)->appends($request->query());
 
         return ContractResource::collection($paginated)
             ->response()

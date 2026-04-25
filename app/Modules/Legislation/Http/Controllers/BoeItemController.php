@@ -3,6 +3,7 @@
 namespace Modules\Legislation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Pagination\FastPaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Legislation\Http\Resources\BoeItemResource;
@@ -20,7 +21,7 @@ class BoeItemController extends Controller
     {
         $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
-        $paginated = QueryBuilder::for(BoeItem::class)
+        $q = QueryBuilder::for(BoeItem::class)
             ->allowedFilters(
                 'organization_id',
                 'seccion_code',
@@ -32,9 +33,11 @@ class BoeItemController extends Controller
             )
             ->allowedIncludes('summary', 'organization')
             ->allowedSorts('fecha_publicacion', 'created_at')
-            ->defaultSort('-fecha_publicacion')
-            ->paginate($perPage)
-            ->appends($request->query());
+            ->defaultSort('-fecha_publicacion');
+
+        $page = max(1, (int) $request->query('page', '1'));
+        $hasFilters = is_array($request->query('filter')) && count($request->query('filter')) > 0;
+        $paginated = FastPaginator::paginate($q, $perPage, $page, 'boe_items', $hasFilters)->appends($request->query());
 
         return BoeItemResource::collection($paginated)
             ->response()
