@@ -47,6 +47,16 @@ final readonly class VatReturnResult implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        // Casillas como lista ordenada de {key, value} para preservar
+        // el orden y las claves '01', '03'… frente a normalizaciones.
+        $casillas = [];
+        foreach ($this->casillas as $key => $money) {
+            $casillas[] = [
+                'key' => (string) $key,
+                'value' => $money,
+            ];
+        }
+
         return [
             'breakdown' => $this->breakdown,
             'model' => $this->model,
@@ -59,7 +69,7 @@ final readonly class VatReturnResult implements JsonSerializable
             ],
             'result' => $this->result->value,
             'result_label' => $this->result->label(),
-            'casillas' => $this->casillas,
+            'casillas' => $casillas,
         ];
     }
 }

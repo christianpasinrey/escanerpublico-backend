@@ -176,14 +176,16 @@ class VatReturnRequest extends FormRequest
      */
     private function assertVatRateInCatalog(TaxRate $rate, FiscalYear $year): void
     {
+        // Normaliza a número canónico para evitar mismatch '21' vs '21.00' vs '21.0000'.
+        $normalized = number_format((float) $rate->percentage, 4, '.', '');
         $allowedNominal = ['21.0000', '10.0000', '5.0000', '4.0000', '0.0000'];
-        if (in_array($rate->percentage, $allowedNominal, true)) {
+        if (in_array($normalized, $allowedNominal, true)) {
             return;
         }
 
         $exists = VatProductRate::query()
             ->where('year', $year->year)
-            ->whereRaw('CAST(rate AS DECIMAL(7,4)) = CAST(? AS DECIMAL(7,4))', [$rate->percentage])
+            ->whereRaw('CAST(rate AS DECIMAL(7,4)) = CAST(? AS DECIMAL(7,4))', [$normalized])
             ->exists();
 
         if (! $exists) {
