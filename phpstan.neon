@@ -1,0 +1,13 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 8
+    paths:
+        - app/Modules/Contracts
+    # The baseline captures pre-existing issues in legacy files
+    # (PlacspParser.php, ProcessPlacspFile.php, controllers) targeted for
+    # Phase 1.1 refactor, plus Eloquent relation generics that require Larastan
+    # stubs to resolve properly. New v2 code (DTOs, migrations, models) is
+    # held to level 8 going forward.
+    treatPhpDocTypesAsCertain: false
