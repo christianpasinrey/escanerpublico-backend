@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.10.1",
         "league/csv": "^9.28",
         "nnjeim/world": "^1.1",
+        "phpoffice/phpspreadsheet": "^5.0",
         "predis/predis": "^3.4",
         "scalar/laravel": "^0.2.1",
         "smalot/pdfparser": "^2.12",
