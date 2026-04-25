@@ -19,13 +19,22 @@ class CompanyController extends Controller
 
     private const STATS_CACHE = 'public, s-maxage=900, stale-while-revalidate=3600';
 
+    /**
+     * Importe a partir del cual una adjudicación se considera dato sospechoso de la fuente PLACSP
+     * (datos atípicos publicados con dígitos extra por error humano del organismo). Quedan excluidos
+     * de las agregaciones del listado y de los rankings, pero se siguen mostrando en la ficha
+     * individual con su bandera para mantener transparencia.
+     */
+    private const SUSPECT_AMOUNT_THRESHOLD = 1_000_000_000.0;
+
     public function index(Request $request): JsonResponse
     {
         $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
+        $threshold = self::SUSPECT_AMOUNT_THRESHOLD;
 
         $paginated = QueryBuilder::for(Company::class)
-            ->withCount('awards')
-            ->withSum('awards', 'amount')
+            ->withCount(['awards as awards_count' => fn ($q) => $q->where('amount', '<', $threshold)])
+            ->withSum(['awards as awards_sum_amount' => fn ($q) => $q->where('amount', '<', $threshold)], 'amount')
             ->allowedFilters('nif', 'name')
             ->allowedIncludes('addresses', 'awards')
             ->allowedSorts(

@@ -41,10 +41,30 @@ class CompanyEndpointsTest extends TestCase
             'avg_amount',
             'unique_organizations',
             'unique_contracts',
+            'suspect_awards_count',
             'by_year',
             'by_status',
             'top_organizations',
         ]);
+    }
+
+    public function test_stats_excludes_suspect_amount_awards_from_aggregations(): void
+    {
+        $c = Company::factory()->create();
+        $contract = \Modules\Contracts\Models\Contract::factory()->create();
+        $lotLegit = ContractLot::factory()->for($contract, 'contract')->create();
+        $lotErrata = ContractLot::factory()->for($contract, 'contract')->create();
+
+        // Adjudicación legítima 50.000 €
+        Award::factory()->for($c)->for($lotLegit, 'contractLot')->create(['amount' => 50_000]);
+        // Adjudicación atípica 251.5B € (errata PLACSP)
+        Award::factory()->for($c)->for($lotErrata, 'contractLot')->create(['amount' => 251_520_154_010]);
+
+        $r = $this->getJson("/api/v1/companies/{$c->id}/stats");
+        $r->assertSuccessful();
+        $r->assertJsonPath('total_awards', 1);
+        $r->assertJsonPath('total_amount', 50000);
+        $r->assertJsonPath('suspect_awards_count', 1);
     }
 
     public function test_stats_top_organizations_includes_name_and_dir3(): void

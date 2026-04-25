@@ -66,4 +66,23 @@ class OrganizationEndpointsTest extends TestCase
         $r->assertJsonPath('top_companies.0.nif', 'B98765432');
         $r->assertJsonPath('top_companies.0.contracts_count', 1);
     }
+
+    public function test_top_companies_excludes_suspect_amount_awards(): void
+    {
+        $org = Organization::factory()->create();
+        $contract = Contract::factory()->for($org, 'organization')->create();
+        $lot = \Modules\Contracts\Models\ContractLot::factory()->for($contract, 'contract')->create();
+
+        $legit = \Modules\Contracts\Models\Company::factory()->create(['name' => 'Empresa Legítima', 'nif' => 'B11111111']);
+        $erratic = \Modules\Contracts\Models\Company::factory()->create(['name' => 'Talleres Errata', 'nif' => 'B22222222']);
+
+        \Modules\Contracts\Models\Award::factory()->for($legit)->for($lot, 'contractLot')->create(['amount' => 100_000]);
+        // Errata PLACSP — 251.5B €. No debe encabezar el ranking.
+        \Modules\Contracts\Models\Award::factory()->for($erratic)->for($lot, 'contractLot')->create(['amount' => 251_520_154_010]);
+
+        $r = $this->getJson("/api/v1/organizations/{$org->id}/stats");
+        $r->assertSuccessful();
+        // El primer puesto debe ser la empresa legítima, no la del importe sospechoso.
+        $r->assertJsonPath('top_companies.0.name', 'Empresa Legítima');
+    }
 }
