@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         apiPrefix: 'api',
+        then: function (): void {
+            // Rutas MCP (Model Context Protocol) — servidor agente compatible
+            // con Claude Desktop, ChatGPT, Cursor, etc.
+            require __DIR__.'/../routes/ai.php';
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
