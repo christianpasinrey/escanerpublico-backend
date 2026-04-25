@@ -42,6 +42,8 @@ class CompanyShowTool extends Tool
             ));
         }
 
+        // Desglose por organismo: Tool prepara la query agregada y la inyecta como
+        // atributo dinámico. La transformación fila-a-fila ocurre en el Resource.
         $organisms = DB::table('awards')
             ->join('contract_lots', 'contract_lots.id', '=', 'awards.contract_lot_id')
             ->join('contracts', 'contracts.id', '=', 'contract_lots.contract_id')
@@ -59,18 +61,9 @@ class CompanyShowTool extends Tool
             ->groupBy('contracts.organization_id', 'organizations.name', 'organizations.nif')
             ->orderByDesc('total')
             ->limit(10)
-            ->get()
-            ->map(fn ($r) => [
-                'organization_id' => (int) $r->organization_id,
-                'name' => $r->name,
-                'nif' => $r->nif,
-                'awards_count' => (int) $r->awards_count,
-                'total' => (float) $r->total,
-                'suspect_amount' => ((float) $r->total) >= 1_000_000_000.0,
-            ])
-            ->all();
+            ->get();
 
-        $company->setAttribute('organisms_breakdown', $organisms);
+        $company->setAttribute('organisms_breakdown_raw', $organisms);
 
         return Response::json(McpResponseEnvelope::single(
             McpCompanyDetailResource::make($company),

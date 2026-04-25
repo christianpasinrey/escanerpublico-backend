@@ -45,13 +45,7 @@ class OrganizationStatsTool extends Tool
             ->selectRaw('YEAR(snapshot_updated_at) as year, COUNT(*) as count, COALESCE(SUM(importe_con_iva), 0) as amount')
             ->groupBy('year')
             ->orderBy('year', 'desc')
-            ->get()
-            ->map(fn ($r) => [
-                'year' => (int) $r->year,
-                'count' => (int) $r->count,
-                'amount' => (float) $r->amount,
-            ])
-            ->all();
+            ->get();
 
         $byStatus = Contract::query()
             ->where('organization_id', $id)
@@ -59,13 +53,7 @@ class OrganizationStatsTool extends Tool
             ->selectRaw('status_code, COUNT(*) as count, COALESCE(SUM(importe_con_iva), 0) as amount')
             ->groupBy('status_code')
             ->orderByDesc('count')
-            ->get()
-            ->map(fn ($r) => [
-                'status' => (string) $r->status_code,
-                'count' => (int) $r->count,
-                'amount' => (float) $r->amount,
-            ])
-            ->all();
+            ->get();
 
         $topCompanies = DB::table('awards')
             ->join('contract_lots', 'contract_lots.id', '=', 'awards.contract_lot_id')
@@ -84,16 +72,7 @@ class OrganizationStatsTool extends Tool
             ->groupBy('awards.company_id', 'companies.name', 'companies.nif')
             ->orderByDesc('total')
             ->limit(10)
-            ->get()
-            ->map(fn ($r) => [
-                'company_id' => (int) $r->company_id,
-                'name' => $r->name,
-                'nif' => $r->nif,
-                'awards_count' => (int) $r->awards_count,
-                'total' => (float) $r->total,
-                'suspect_amount' => ((float) $r->total) >= 1_000_000_000.0,
-            ])
-            ->all();
+            ->get();
 
         $payload = [
             'organization_id' => $id,
@@ -106,7 +85,7 @@ class OrganizationStatsTool extends Tool
         return Response::json(McpResponseEnvelope::single(
             McpOrganizationStatsResource::make($payload),
             source: 'PLACSP — agregados por organismo',
-            note: 'Excluye contratos anulados. Cifras >= 1.000 M € pueden ser erratas del feed.',
+            note: 'Excluye contratos anulados. Cifras >= 1.000 M EUR pueden ser erratas del feed.',
         ));
     }
 
