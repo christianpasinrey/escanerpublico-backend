@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Tax\Http\Controllers\Calculators\PayrollController;
 use Modules\Tax\Http\Controllers\Catalog\EconomicActivityController;
 use Modules\Tax\Http\Controllers\Catalog\ObligationCalendarController;
 use Modules\Tax\Http\Controllers\Catalog\RegimeController;
@@ -22,5 +23,6 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
     Route::get('/types/{code}', [TaxTypeController::class, 'show'])
         ->where('code', '[A-Z0-9_]+');
 
-    // M3 (parámetros) y M4-M8 (calculadoras) — fases siguientes.
+    // M4 — Calculadoras
+    Route::post('/payroll', PayrollController::class);
 });
