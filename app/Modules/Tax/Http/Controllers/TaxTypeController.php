@@ -66,10 +66,17 @@ class TaxTypeController extends Controller
     /**
      * Muestra el detalle de un tax_type por su `code`.
      *
-     * Si existen varias filas con el mismo code (caso típico: tributos cedidos
-     * con scope=regional para distintas CCAA + uno estatal con scope=state),
-     * el cliente debe desambiguar con `?region_code=MD` o `?scope=regional`.
-     * Si la consulta es ambigua se responde 422.
+     * Si el código existe en varias filas (típico para tributos cedidos:
+     * versión estatal + versiones autonómicas), se devuelve la fila más
+     * representativa siguiendo este orden de preferencia:
+     *
+     *   1. Si hay filtros explícitos (region_code/scope), aplicarlos.
+     *   2. Si existe una fila estatal (scope=state), devolverla.
+     *   3. Si solo hay regionales, devolver la primera ordenada por region_code.
+     *
+     * En cualquier caso, si hay versiones adicionales el resource expone
+     * `regional_variants` con la lista de las restantes para que el cliente
+     * pueda navegar entre ellas.
      */
     public function show(Request $request, string $code): JsonResponse
     {
@@ -100,20 +107,25 @@ class TaxTypeController extends Controller
             throw new NotFoundHttpException("No se encontró tax_type con code={$code}");
         }
 
-        if ($matches->count() > 1) {
-            return response()->json([
-                'message' => 'Código ambiguo: existen varias filas para este code. Especifique scope y/o region_code.',
-                'matches' => $matches->map(fn (TaxType $t) => [
-                    'id' => $t->id,
-                    'code' => $t->code,
-                    'scope' => $t->scope?->value,
-                    'region_code' => $t->region_code,
-                    'name' => $t->name,
-                ])->all(),
-            ], 422);
-        }
+        // Preferir fila estatal cuando hay varias y no se ha filtrado por region/scope.
+        $primary = $matches->first(fn (TaxType $t) => $t->region_code === null) ?? $matches->first();
 
-        return TaxTypeResource::make($matches->first())
+        // Listado de variantes regionales (todas las filas excepto la principal).
+        $variants = $matches
+            ->reject(fn (TaxType $t) => $t->id === $primary->id)
+            ->values()
+            ->map(fn (TaxType $t) => [
+                'id' => $t->id,
+                'code' => $t->code,
+                'scope' => $t->scope instanceof \BackedEnum ? $t->scope->value : (string) $t->scope,
+                'region_code' => $t->region_code,
+                'name' => $t->name,
+                'rates_count' => $t->rates_count ?? 0,
+            ])
+            ->all();
+
+        return TaxTypeResource::make($primary)
+            ->additional(['meta' => ['regional_variants' => $variants]])
             ->response()
             ->header('Cache-Control', self::SHOW_CACHE);
     }
