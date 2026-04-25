@@ -20,6 +20,8 @@ class CompanyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'nif' => $this->nif,
+            'awards_count' => $this->whenCounted('awards'),
+            'awards_sum_amount' => $this->awards_sum_amount ?? null,
             'addresses' => AddressResource::collection($this->whenLoaded('addresses')),
             'contacts' => ContactResource::collection($this->whenLoaded('contacts')),
             'awards' => AwardResource::collection($this->whenLoaded('awards')),
