@@ -23,6 +23,10 @@ class SyncContracts extends Command
 
     public function handle(): int
     {
+        // Limpiar resolver cache: si la BD fue wipeada (migrate:fresh) la cache Redis
+        // tendría IDs huérfanos que rompen los FKs en contracts.organization_id.
+        \Illuminate\Support\Facades\Cache::tags(['placsp_import'])->flush();
+
         $months = $this->resolveMonths();
 
         $this->info("Sincronizando {$months->count()} mes(es) de contratos PLACSP...");
