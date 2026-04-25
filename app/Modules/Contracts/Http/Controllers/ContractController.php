@@ -2,191 +2,90 @@
 
 namespace Modules\Contracts\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Modules\Contracts\Http\Filters\AmountBetweenFilter;
+use Modules\Contracts\Http\Filters\SearchFilter;
+use Modules\Contracts\Http\Resources\ContractResource;
+use Modules\Contracts\Http\Sorts\RelevanceSort;
 use Modules\Contracts\Models\Contract;
-use Modules\Contracts\Models\ContractNotice;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
-class ContractController
+class ContractController extends Controller
 {
+    private const INDEX_CACHE = 'public, s-maxage=60, stale-while-revalidate=300';
+
+    private const SHOW_CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400';
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedIncludes(): array
+    {
+        return [
+            'organization', 'organization.addresses', 'organization.contacts',
+            'lots', 'lots.awards', 'lots.awards.company',
+            'lots.criteria',
+            'notices', 'modifications', 'documents', 'snapshots',
+        ];
+    }
+
     public function index(Request $request): JsonResponse
     {
-        $query = Contract::query();
+        $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
-        // Búsqueda texto libre
-        if ($q = $request->input('q')) {
-            $query->where(function ($w) use ($q) {
-                $w->where('objeto', 'like', "%{$q}%")
-                    ->orWhere('expediente', 'like', "%{$q}%")
-                    ->orWhereHas('organization', fn ($o) => $o->where('name', 'like', "%{$q}%"));
-            });
-        }
-
-        // Filtros
-        if ($status = $request->input('status')) {
-            $query->status($status);
-        }
-
-        if ($tipo = $request->input('tipo')) {
-            $query->tipo($tipo);
-        }
-
-        if ($procedimiento = $request->input('procedimiento')) {
-            $query->procedimiento($procedimiento);
-        }
-
-        if ($importeMin = $request->input('importe_min')) {
-            $query->importeMin((float) $importeMin);
-        }
-
-        if ($importeMax = $request->input('importe_max')) {
-            $query->importeMax((float) $importeMax);
-        }
-
-        if ($ccaa = $request->input('ccaa')) {
-            $query->where('comunidad_autonoma', $ccaa);
-        }
-
-        if ($organo = $request->input('organo')) {
-            $query->whereHas('organization', fn ($o) => $o->where('name', 'like', "%{$organo}%"));
-        }
-
-        if ($adjudicatario = $request->input('adjudicatario')) {
-            $query->whereHas('awards', fn ($a) => $a->whereHas('company', fn ($c) => $c->where('name', 'like', "%{$adjudicatario}%")
-                ->orWhere('nif', 'like', "%{$adjudicatario}%")
+        $q = QueryBuilder::for(Contract::class)
+            ->allowedFilters(
+                AllowedFilter::exact('status_code'),
+                AllowedFilter::exact('tipo_contrato_code'),
+                AllowedFilter::exact('organization_id'),
+                AllowedFilter::exact('nuts_code'),
+                AllowedFilter::exact('funding_program_code'),
+                AllowedFilter::exact('over_threshold_indicator'),
+                AllowedFilter::custom('search', new SearchFilter),
+                AllowedFilter::custom('amount_between', new AmountBetweenFilter),
             )
-            );
-        }
+            ->allowedIncludes(...$this->allowedIncludes())
+            ->allowedFields(
+                'id', 'external_id', 'expediente', 'objeto', 'status_code', 'tipo_contrato_code',
+                'importe_con_iva', 'importe_sin_iva', 'valor_estimado', 'fecha_inicio', 'fecha_fin',
+                'snapshot_updated_at', 'annulled_at', 'organization_id',
+            )
+            ->allowedSorts(
+                'snapshot_updated_at',
+                'importe_con_iva',
+                'fecha_inicio',
+                AllowedSort::custom('relevance', new RelevanceSort),
+            )
+            ->defaultSort('-snapshot_updated_at');
 
-        if ($fechaDesde = $request->input('fecha_desde')) {
-            $query->where('updated_at', '>=', $fechaDesde);
-        }
+        $paginated = $q->paginate($perPage)->appends($request->query());
 
-        if ($fechaHasta = $request->input('fecha_hasta')) {
-            $query->where('updated_at', '<=', $fechaHasta);
-        }
-
-        // Ordenación
-        $sortField = $request->input('sort', 'fecha_presentacion_limite');
-        $sortDir = $request->input('dir', 'desc');
-        $allowedSorts = ['fecha_presentacion_limite', 'importe_con_iva', 'expediente', 'updated_at'];
-        if (in_array($sortField, $allowedSorts)) {
-            $query->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
-        }
-
-        $contracts = $query->with('organization:id,name')->paginate($request->input('per_page', 25));
-        Log::info("Consulta de contratos: {$contracts->total()} resultados para q={$q}, status={$status}, tipo={$tipo}, procedimiento={$procedimiento}, importe_min={$importeMin}, importe_max={$importeMax}, ccaa={$ccaa}, organo={$organo}, adjudicatario={$adjudicatario}, fecha_desde={$fechaDesde}, fecha_hasta={$fechaHasta}");
-
-        return response()->json($contracts);
+        return ContractResource::collection($paginated)
+            ->response()
+            ->header('Cache-Control', self::INDEX_CACHE);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $externalId): JsonResponse
     {
-        $contract = Contract::with([
-            'organization.addresses',
-            'organization.contacts',
-            'awards.company',
-            'notices',
-            'documents',
-        ])->findOrFail($id);
-
-        return response()->json([
-            'contract' => $contract,
-            'timeline' => $this->buildTimeline($contract),
-        ]);
-    }
-
-    public function stats(): JsonResponse
-    {
-        return response()->json([
-            'total' => Contract::count(),
-            'por_estado' => Contract::selectRaw('status_code, count(*) as total')
-                ->groupBy('status_code')
-                ->pluck('total', 'status_code'),
-            'por_tipo' => Contract::selectRaw('tipo_contrato_code, count(*) as total')
-                ->groupBy('tipo_contrato_code')
-                ->pluck('total', 'tipo_contrato_code'),
-            'importe_total' => Contract::sum('importe_con_iva'),
-            'labels' => [
-                'status' => Contract::STATUS_LABELS,
-                'tipos' => Contract::TIPO_LABELS,
-                'procedimientos' => Contract::PROCEDIMIENTO_LABELS,
-            ],
-        ]);
-    }
-
-    public function filters(): JsonResponse
-    {
-        return response()->json([
-            'status' => Contract::STATUS_LABELS,
-            'tipos' => Contract::TIPO_LABELS,
-            'procedimientos' => Contract::PROCEDIMIENTO_LABELS,
-            'comunidades' => Contract::whereNotNull('comunidad_autonoma')
-                ->distinct()
-                ->pluck('comunidad_autonoma')
-                ->sort()
-                ->values(),
-        ]);
-    }
-
-    private function buildTimeline(Contract $contract): array
-    {
-        $events = [];
-
-        foreach ($contract->notices as $notice) {
-            if (! $notice->issue_date) {
-                continue;
-            }
-            $events[] = [
-                'date' => $notice->issue_date->toDateString(),
-                'type' => $notice->notice_type_code,
-                'label' => ContractNotice::NOTICE_TYPE_LABELS[$notice->notice_type_code] ?? $notice->notice_type_code,
-                'status' => match ($notice->notice_type_code) {
-                    'DOC_CN' => 'PUB',
-                    'DOC_CAN_ADJ' => 'ADJ',
-                    'DOC_FORM' => 'RES',
-                    default => null,
-                },
-                'document_uri' => $notice->document_uri,
-                'document_filename' => $notice->document_filename,
-            ];
+        // Routing by external_id (URL-encoded or numeric PLACSP id suffix).
+        $decoded = urldecode($externalId);
+        $query = Contract::query();
+        if (str_starts_with($decoded, 'http')) {
+            $query->where('external_id', $decoded);
+        } else {
+            $query->where('external_id', 'LIKE', '%/'.$decoded);
         }
 
-        if ($contract->fecha_presentacion_limite) {
-            $events[] = [
-                'date' => $contract->fecha_presentacion_limite->toDateString(),
-                'type' => 'DEADLINE', 'label' => 'Fin plazo presentación',
-                'status' => 'EV', 'document_uri' => null, 'document_filename' => null,
-            ];
-        }
+        $contract = QueryBuilder::for($query)
+            ->allowedIncludes(...$this->allowedIncludes())
+            ->firstOrFail();
 
-        $award = $contract->awards->first();
-
-        if ($award?->award_date) {
-            $hasAwardNotice = collect($events)->contains(fn ($e) => $e['type'] === 'DOC_CAN_ADJ');
-            if (! $hasAwardNotice) {
-                $events[] = [
-                    'date' => $award->award_date->toDateString(),
-                    'type' => 'AWARD', 'label' => 'Adjudicación',
-                    'status' => 'ADJ', 'document_uri' => null, 'document_filename' => null,
-                ];
-            }
-        }
-
-        if ($award?->formalization_date) {
-            $hasFormNotice = collect($events)->contains(fn ($e) => $e['type'] === 'DOC_FORM');
-            if (! $hasFormNotice) {
-                $events[] = [
-                    'date' => $award->formalization_date->toDateString(),
-                    'type' => 'FORMALIZATION', 'label' => 'Formalización',
-                    'status' => 'RES', 'document_uri' => null, 'document_filename' => null,
-                ];
-            }
-        }
-
-        usort($events, fn ($a, $b) => $a['date'] <=> $b['date']);
-
-        return $events;
+        return ContractResource::make($contract)
+            ->response()
+            ->header('Cache-Control', self::SHOW_CACHE);
     }
 }
