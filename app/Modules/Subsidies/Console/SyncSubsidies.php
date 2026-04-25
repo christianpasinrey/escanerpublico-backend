@@ -14,7 +14,7 @@ class SyncSubsidies extends Command
         {--type=grants : "calls" o "grants"}
         {--from= : Fecha inicio dd/MM/yyyy (opcional)}
         {--to= : Fecha fin dd/MM/yyyy (opcional)}
-        {--page-size=100 : Registros por página BDNS}
+        {--page-size=50 : Registros por página BDNS (50 por defecto, máx 100; bajar si hay timeouts)}
         {--max-pages= : Límite de páginas (smoke testing)}
         {--resume : Reanudar el último run pausado o fallido}
         {--vpd= : Filtro vpd BDNS opcional (e.g. GE)}';
@@ -49,13 +49,29 @@ class SyncSubsidies extends Command
         $maxPages = $this->option('max-pages') !== null ? (int) $this->option('max-pages') : null;
 
         $stats = ['inserted' => 0, 'updated' => 0, 'skipped' => 0, 'failed' => 0];
+        $consecutiveFailedPages = 0;
+        $maxConsecutiveFails = 10;
 
         try {
             $page = $run->cursor_page;
             while (true) {
-                $payload = $type === 'calls'
-                    ? $client->searchCalls($page, $pageSize, $filters)
-                    : $client->searchGrants($page, $pageSize, $filters);
+                try {
+                    $payload = $type === 'calls'
+                        ? $client->searchCalls($page, $pageSize, $filters)
+                        : $client->searchGrants($page, $pageSize, $filters);
+                    $consecutiveFailedPages = 0;
+                } catch (\Throwable $e) {
+                    $consecutiveFailedPages++;
+                    $this->warn(sprintf('page %d failed (try %d/%d): %s', $page, $consecutiveFailedPages, $maxConsecutiveFails, $e->getMessage()));
+                    if ($consecutiveFailedPages >= $maxConsecutiveFails) {
+                        throw new \RuntimeException("Aborted after {$maxConsecutiveFails} consecutive page failures starting at page {$page}: ".$e->getMessage(), 0, $e);
+                    }
+                    $run->update(['cursor_page' => $page + 1]);
+                    $page++;
+                    sleep(min(60, 5 * $consecutiveFailedPages));
+
+                    continue;
+                }
 
                 $totalPages = (int) ($payload['totalPages'] ?? 0);
                 $totalElements = (int) ($payload['totalElements'] ?? 0);
