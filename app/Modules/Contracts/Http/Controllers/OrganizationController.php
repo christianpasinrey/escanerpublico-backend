@@ -13,7 +13,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganizationController extends Controller
 {
-    private const INDEX_CACHE = 'public, s-maxage=60, stale-while-revalidate=300';
+    private const INDEX_CACHE = 'public, s-maxage=300, stale-while-revalidate=900';
 
     private const SHOW_CACHE = 'public, s-maxage=3600, stale-while-revalidate=86400';
 

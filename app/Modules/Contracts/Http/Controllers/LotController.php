@@ -24,6 +24,6 @@ class LotController extends Controller
 
         return LotResource::collection($paginated)
             ->response()
-            ->header('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+            ->header('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     }
 }

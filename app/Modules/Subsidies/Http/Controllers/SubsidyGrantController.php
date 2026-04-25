@@ -13,7 +13,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class SubsidyGrantController extends Controller
 {
     // TTL bajos durante fase de ingesta inicial — subimos cuando el dataset esté completo.
-    private const INDEX_CACHE = 'public, s-maxage=15, stale-while-revalidate=60';
+    private const INDEX_CACHE = 'public, s-maxage=300, stale-while-revalidate=900';
 
     private const SHOW_CACHE = 'public, s-maxage=300, stale-while-revalidate=3600';
 
