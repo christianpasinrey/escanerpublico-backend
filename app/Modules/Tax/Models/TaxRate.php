@@ -2,11 +2,31 @@
 
 namespace Modules\Tax\Models;
 
+use Database\Factories\Modules\Tax\TaxRateFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $tax_type_id
+ * @property int $year
+ * @property string|null $region_code
+ * @property string|null $rate
+ * @property string|null $base_min
+ * @property string|null $base_max
+ * @property string|null $fixed_amount
+ * @property array<string, mixed>|null $conditions
+ * @property string|null $source_url
+ * @property Carbon|null $valid_from
+ * @property Carbon|null $valid_to
+ */
 class TaxRate extends Model
 {
+    /** @use HasFactory<TaxRateFactory> */
+    use HasFactory;
+
     protected $table = 'tax_rates';
 
     protected $fillable = [
@@ -34,8 +54,16 @@ class TaxRate extends Model
         'valid_to' => 'date',
     ];
 
+    /**
+     * @return BelongsTo<TaxType, $this>
+     */
     public function taxType(): BelongsTo
     {
         return $this->belongsTo(TaxType::class, 'tax_type_id');
+    }
+
+    protected static function newFactory(): TaxRateFactory
+    {
+        return TaxRateFactory::new();
     }
 }

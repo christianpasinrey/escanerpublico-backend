@@ -5,6 +5,7 @@ namespace Modules\Tax;
 use Illuminate\Support\ServiceProvider;
 use Modules\Tax\Console\DetectBoeChanges;
 use Modules\Tax\Console\ReportRegimeCoverage;
+use Modules\Tax\Console\ReportTypesCoverage;
 use Modules\Tax\Console\SyncCnae;
 use Modules\Tax\Console\SyncIae;
 use Modules\Tax\Console\ValidateTaxParameters;
@@ -36,6 +37,7 @@ class TaxServiceProvider extends ServiceProvider
                 SyncCnae::class,
                 SyncIae::class,
                 ReportRegimeCoverage::class,
+                ReportTypesCoverage::class,
             ]);
         }
     }
