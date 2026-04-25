@@ -77,7 +77,7 @@ class RegimenGeneralVatTest extends TestCase
      * Fuentes: art. 75 LIVA (devengo), art. 92 LIVA (deducción),
      * Orden HFP/3666/2024 modelo 303.
      */
-    public function test_golden_regimen_general_2T_2025_emitidas_y_recibidas(): void
+    public function test_golden_regimen_general_2_t_2025_emitidas_y_recibidas(): void
     {
         $tx = [];
         for ($i = 0; $i < 5; $i++) {
@@ -182,7 +182,7 @@ class RegimenGeneralVatTest extends TestCase
      * Cuota líquida negativa en 1T → A_COMPENSAR (no A_DEVOLVER).
      * Casilla 72 = importe absoluto.
      */
-    public function test_golden_1T_a_compensar(): void
+    public function test_golden_1_t_a_compensar(): void
     {
         $input = new VatReturnInput(
             regime: RegimeCode::fromString('IVA_GEN'),

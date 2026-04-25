@@ -48,7 +48,7 @@ class RegimenSimplificadoVatTest extends TestCase
      * IVA soportado en compras del 1T: 50,00 €.
      * Cuota líquida: 393,60 − 50,00 = 343,60 € → A_INGRESAR.
      */
-    public function test_golden_simplificado_bar_1T_2025(): void
+    public function test_golden_simplificado_bar_1_t_2025(): void
     {
         $compra = new VatTransactionInput(
             direction: VatTransactionDirection::INCOMING,
@@ -118,7 +118,7 @@ class RegimenSimplificadoVatTest extends TestCase
      * Si IVA soportado supera la cuota módulos del período, queda a
      * compensar (período intermedio) o a devolver (último período).
      */
-    public function test_simplificado_4T_a_devolver_cuando_soportado_supera_modulos(): void
+    public function test_simplificado_4_t_a_devolver_cuando_soportado_supera_modulos(): void
     {
         $compra = new VatTransactionInput(
             direction: VatTransactionDirection::INCOMING,

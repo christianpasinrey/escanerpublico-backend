@@ -88,9 +88,9 @@ class Modelo303CasillasMapper
      * Construye el mapa casilla → Money para una autoliquidación.
      *
      * @param  array<string, array{base: Money, vat: Money}>  $vatBucketsByRate
-     *         clave = TaxRate->percentage del tipo IVA, valor = base + cuota
+     *                                                                           clave = TaxRate->percentage del tipo IVA, valor = base + cuota
      * @param  array<string, array{base: Money, vat: Money}>  $surchargeBucketsByRate
-     *         clave = TaxRate->percentage del recargo, valor = base + cuota
+     *                                                                                 clave = TaxRate->percentage del recargo, valor = base + cuota
      * @return array<string, Money>
      */
     public function map(

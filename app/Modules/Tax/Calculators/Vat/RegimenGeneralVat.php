@@ -2,6 +2,7 @@
 
 namespace Modules\Tax\Calculators\Vat;
 
+use Carbon\CarbonImmutable;
 use Modules\Tax\DTOs\Breakdown;
 use Modules\Tax\DTOs\BreakdownCategory;
 use Modules\Tax\DTOs\BreakdownLine;
@@ -353,7 +354,7 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
         );
     }
 
-    protected function criterioCajaAccrualDate(VatTransactionInput $tx): \Carbon\CarbonImmutable
+    protected function criterioCajaAccrualDate(VatTransactionInput $tx): CarbonImmutable
     {
         // En régimen general este método no se usa, pero compartimos la
         // signatura para que CriterioCajaVat pueda override sólo el doCalculate.

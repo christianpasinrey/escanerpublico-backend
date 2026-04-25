@@ -63,7 +63,7 @@ class CriterioCajaVatTest extends TestCase
      *
      * Fuente: art. 163 decies LIVA — el devengo se traslada al cobro.
      */
-    public function test_golden_caja_factura_marzo_cobrada_abril_no_se_devenga_en_1T(): void
+    public function test_golden_caja_factura_marzo_cobrada_abril_no_se_devenga_en_1_t(): void
     {
         $input = new VatReturnInput(
             regime: RegimeCode::fromString('IVA_CAJA'),
@@ -84,7 +84,7 @@ class CriterioCajaVatTest extends TestCase
     /**
      * GOLDEN — En 2T 2025 sí se devenga la factura del ejemplo anterior.
      */
-    public function test_golden_caja_misma_factura_se_devenga_en_2T(): void
+    public function test_golden_caja_misma_factura_se_devenga_en_2_t(): void
     {
         $input = new VatReturnInput(
             regime: RegimeCode::fromString('IVA_CAJA'),
