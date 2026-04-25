@@ -37,6 +37,33 @@ class OrganizationEndpointsTest extends TestCase
         ]);
         $r = $this->getJson("/api/v1/organizations/{$o->id}/stats");
         $r->assertSuccessful();
-        $r->assertJsonStructure(['total_contracts', 'total_amount', 'by_status', 'by_year']);
+        $r->assertJsonStructure([
+            'total_contracts',
+            'total_amount',
+            'avg_amount',
+            'unique_companies',
+            'by_status',
+            'by_type',
+            'by_year',
+            'top_companies',
+        ]);
+    }
+
+    public function test_stats_top_companies_includes_name_and_nif(): void
+    {
+        $org = Organization::factory()->create();
+        $contract = Contract::factory()->for($org, 'organization')->create();
+        $lot = \Modules\Contracts\Models\ContractLot::factory()->for($contract, 'contract')->create();
+        $company = \Modules\Contracts\Models\Company::factory()->create([
+            'name' => 'ACME Construcciones SL',
+            'nif' => 'B98765432',
+        ]);
+        \Modules\Contracts\Models\Award::factory()->for($company)->for($lot, 'contractLot')->create(['amount' => 75000]);
+
+        $r = $this->getJson("/api/v1/organizations/{$org->id}/stats");
+        $r->assertSuccessful();
+        $r->assertJsonPath('top_companies.0.name', 'ACME Construcciones SL');
+        $r->assertJsonPath('top_companies.0.nif', 'B98765432');
+        $r->assertJsonPath('top_companies.0.contracts_count', 1);
     }
 }

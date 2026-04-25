@@ -47,6 +47,25 @@ class OrganizationStatsService
             ->distinct('awards.company_id')
             ->count('awards.company_id');
 
+        $topCompanies = DB::table('awards')
+            ->join('contract_lots', 'awards.contract_lot_id', '=', 'contract_lots.id')
+            ->join('companies', 'awards.company_id', '=', 'companies.id')
+            ->whereIn('contract_lots.contract_id', $contractIds)
+            ->whereNotNull('awards.company_id')
+            ->selectRaw('companies.id, companies.name, companies.nif, COUNT(DISTINCT contract_lots.contract_id) as contracts_count, SUM(awards.amount) as total_amount')
+            ->groupBy('companies.id', 'companies.name', 'companies.nif')
+            ->orderByDesc('total_amount')
+            ->limit(10)
+            ->get()
+            ->map(fn ($r) => [
+                'id' => (int) $r->id,
+                'name' => $r->name,
+                'nif' => $r->nif,
+                'contracts_count' => (int) $r->contracts_count,
+                'total_amount' => (float) $r->total_amount,
+            ])
+            ->toArray();
+
         return [
             'total_contracts' => $totalContracts,
             'total_amount' => $totalAmount,
@@ -55,6 +74,7 @@ class OrganizationStatsService
             'by_status' => $byStatus,
             'by_type' => $byType,
             'by_year' => $byYear,
+            'top_companies' => $topCompanies,
         ];
     }
 }

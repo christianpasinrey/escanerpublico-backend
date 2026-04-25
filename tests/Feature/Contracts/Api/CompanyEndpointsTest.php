@@ -35,6 +35,33 @@ class CompanyEndpointsTest extends TestCase
         $c = Company::factory()->create();
         $r = $this->getJson("/api/v1/companies/{$c->id}/stats");
         $r->assertSuccessful();
-        $r->assertJsonStructure(['total_awards', 'total_amount', 'by_year']);
+        $r->assertJsonStructure([
+            'total_awards',
+            'total_amount',
+            'avg_amount',
+            'unique_organizations',
+            'unique_contracts',
+            'by_year',
+            'by_status',
+            'top_organizations',
+        ]);
+    }
+
+    public function test_stats_top_organizations_includes_name_and_dir3(): void
+    {
+        $org = \Modules\Contracts\Models\Organization::factory()->create([
+            'name' => 'Ayuntamiento de Test',
+            'identifier' => 'A12345678',
+        ]);
+        $contract = \Modules\Contracts\Models\Contract::factory()->for($org, 'organization')->create();
+        $lot = ContractLot::factory()->for($contract, 'contract')->create();
+        $c = Company::factory()->create();
+        Award::factory()->for($c)->for($lot, 'contractLot')->create(['amount' => 50000]);
+
+        $r = $this->getJson("/api/v1/companies/{$c->id}/stats");
+        $r->assertSuccessful();
+        $r->assertJsonPath('top_organizations.0.name', 'Ayuntamiento de Test');
+        $r->assertJsonPath('top_organizations.0.dir3_code', 'A12345678');
+        $r->assertJsonPath('top_organizations.0.contracts_count', 1);
     }
 }
