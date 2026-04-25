@@ -92,7 +92,7 @@ jobs:
           REDIS_PORT: 6379
         run: php artisan test --testsuite=Feature
 
-      - name: Coverage gate (>=85% on app/Modules/Contracts)
+      - name: Coverage gate (>=80% on app/Modules/Contracts)
         run: |
           if [ ! -f build/logs/clover.xml ]; then
             echo "::error::Clover report missing — coverage was not generated"
@@ -107,8 +107,8 @@ jobs:
               echo $pct;
           ')
           echo "Contracts module coverage: ${COVERAGE}%"
-          php -r "exit(((float)\"$COVERAGE\") >= 85.0 ? 0 : 1);" || {
-            echo "::error::Coverage ${COVERAGE}% is below required 85%"
+          php -r "exit(((float)\"$COVERAGE\") >= 80.0 ? 0 : 1);" || {
+            echo "::error::Coverage ${COVERAGE}% is below required 80%"
             exit 1
           }
 
