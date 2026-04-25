@@ -5,57 +5,70 @@ namespace Modules\Officials\Services;
 /**
  * Extrae nombramientos/ceses individuales del título de una entrada del BOE Sección II.A.
  *
- * Patrones tras analizar 100+ entradas reales del BOE:
+ * Estrategia (tras analizar muestras reales del BOE 2023-2026):
  *
- *   "se nombra a Don Juan Pérez García Director General de Tributos."
- *   "se nombra a Doña María López Sánchez Subsecretaria de Hacienda."
- *   "el cese de Don Antonio Ruiz como Director General de Patrimonio."
- *   "cesa Doña Ana Sánchez como Subsecretaria de Industria."
- *   "se dispone el cese de D. José Pérez como Director."
+ *   1. Localizar el "anchor" más distintivo: <honorific> <NAME>.
+ *      Honorific usual en BOE: "don", "doña", "D.", "D.ª", "Don", "Doña" (mezcla
+ *      de minúsculas y mayúsculas — el BOE las usa en minúsculas dentro del cuerpo).
+ *   2. Inferir event_type del verbo presente en el título:
+ *        - "nombra/designa/acuerda nombrar" → appointment
+ *        - "cese/cesa/dispone el cese"      → cessation
+ *        - "jubilación/jubila"              → cessation (cesa por jubilación)
+ *        - "toma posesión"                  → posession
+ *   3. Localizar el cargo: la primera ocurrencia de un cargo conocido (CARGO_KEYWORDS)
+ *      en el título.
  *
- * Devuelve null si:
- *   - El título no encaja con ninguno de los patrones de nombramiento individual.
- *   - Es un nombramiento colectivo ("se nombran funcionarios", "se promueve a...").
- *   - Es una resolución administrativa que no nombra a una persona física concreta.
+ * Esto es MÁS ROBUSTO que un único regex monolítico porque el orden cargo↔nombre
+ * varía en BOE y los predicados de cargo a veces incluyen subordinadas largas.
+ *
+ * Patrones colectivos (oposiciones, promociones masivas) se descartan.
  */
 class CargoExtractor
 {
     /**
-     * Anchor de cargos conocidos. El name regex puede ser greedy hasta encontrar
-     * una de estas palabras (que casi siempre prefijan el cargo en BOE Sección II.A).
+     * Lista de prefijos de cargo. Ampliable a medida que aparezcan nuevos.
      */
-    private const CARGO_KEYWORDS = '(?:Director|Directora|Subdirector|Subdirectora|Secretari[oa]|Subsecretari[oa]|Vicesecretari[oa]|Vicepresident[ea]|Presidente|Presidenta|Vocal|Comisionad[oa]|Consejer[oa]|Delegad[oa]|Embajador|Embajadora|C[óo]nsul|Magistrad[oa]|Fiscal|General|Coronel|Brigada|Almirante|Jefe|Jefa|Interventor|Interventora|Tesorer[oa]|Inspector|Inspectora|Letrad[oa]|Asesor|Asesora|Coordinador|Coordinadora|Gerente|Decano|Decana|Rector|Rectora)';
+    private const CARGO_KEYWORDS_LIST = [
+        'Director', 'Directora', 'Subdirector', 'Subdirectora',
+        'Secretario', 'Secretaria', 'Subsecretario', 'Subsecretaria', 'Vicesecretario', 'Vicesecretaria',
+        'Vicepresidente', 'Vicepresidenta', 'Presidente', 'Presidenta',
+        'Vocal', 'Comisionado', 'Comisionada', 'Consejero', 'Consejera',
+        'Delegado', 'Delegada', 'Subdelegado', 'Subdelegada',
+        'Embajador', 'Embajadora', 'Cónsul', 'Consul',
+        'Magistrado', 'Magistrada', 'Fiscal',
+        'General', 'Coronel', 'Brigada', 'Almirante',
+        'Jefe', 'Jefa',
+        'Interventor', 'Interventora', 'Tesorero', 'Tesorera',
+        'Inspector', 'Inspectora', 'Letrado', 'Letrada',
+        'Asesor', 'Asesora', 'Coordinador', 'Coordinadora',
+        'Gerente', 'Decano', 'Decana', 'Rector', 'Rectora', 'Vicerrector', 'Vicerrectora',
+        'Catedrático', 'Catedrática', 'Profesor', 'Profesora',
+        'Notario', 'Notaria', 'Registrador', 'Registradora',
+        'Abogado', 'Abogada', 'Procurador', 'Procuradora',
+        'Comisario', 'Comisaria',
+        'Capitán', 'Teniente', 'Comandante',
+        'Subinspector', 'Subinspectora',
+        'Adjunto', 'Adjunta',
+    ];
 
-    /** @var array<string, string> */
-    private array $patterns;
+    /** Honorific patterns. Aceptan mayúscula o minúscula inicial. */
+    private const HONORIFIC_REGEX = '(?:[Dd]\.ª|[Dd]ña\.?|[Dd]oña|[Dd]on|[Dd]\.)';
 
-    public function __construct()
-    {
-        $cargo = '(?P<cargo>'.self::CARGO_KEYWORDS.'[^.]*?)';
-        $h = '(?P<honorific>D\.|D\.ª|Don|Doña|Dña\.?)';
-        $n = '(?P<name>[A-ZÁÉÍÓÚÑ][\p{L}\s\-]+?)';
-
-        $this->patterns = [
-            'appointment' => "/se\\s+nombra\\s+a\\s+{$h}\\s+{$n}\\s+(?:como\\s+)?{$cargo}[.,]/u",
-            'cessation' => "/(?:el\\s+cese\\s+de|cesa)\\s+{$h}\\s+{$n}\\s+(?:como\\s+)?{$cargo}[.,]/u",
-            'posession' => "/toma(?:\\s+de)?\\s+posesi[oó]n\\s+{$h}\\s+{$n}\\s+(?:como\\s+)?{$cargo}[.,]/u",
-        ];
-    }
-
-    /** @var array<int, string> */
+    /**
+     * Pistas de eventos colectivos / no aplicables que descartamos en cuanto los detectemos.
+     */
     private const COLLECTIVE_HINTS = [
-        'se nombran',
-        'se promueve a',
-        'se ascienden',
-        'funcionarios de carrera',
-        'lista de aprobados',
-        'oposiciones libres',
-        'concurso de méritos',
-        'turno de promoción',
+        'se nombran', 'se promueve a', 'se ascienden', 'se promueven', 'se asciende a',
+        'funcionarios de carrera', 'lista de aprobados', 'lista de admitidos',
+        'oposiciones libres', 'concurso de méritos', 'concurso general', 'concurso específico',
+        'turno de promoción', 'pruebas selectivas', 'proceso selectivo',
+        'libre designación', 'puesto de trabajo',
+        'catedráticas y catedráticos', 'profesores titulares y catedráticos',
+        'personal funcionario', 'plaza vacante',
     ];
 
     /**
-     * @return array{event_type: string, honorific: string, full_name: string, cargo: string}|null
+     * @return array{event_type: string, honorific: ?string, full_name: string, cargo: string}|null
      */
     public function extract(?string $titulo): ?array
     {
@@ -65,38 +78,107 @@ class CargoExtractor
 
         $lower = mb_strtolower($titulo, 'UTF-8');
         foreach (self::COLLECTIVE_HINTS as $hint) {
-            if (str_contains($lower, $hint)) {
+            if (str_contains($lower, mb_strtolower($hint, 'UTF-8'))) {
                 return null;
             }
         }
 
-        foreach ($this->patterns as $eventType => $pattern) {
-            if (preg_match($pattern, $titulo, $m) === 1) {
-                $name = trim($m['name']);
-                $cargo = $this->cleanCargo($m['cargo']);
-                if ($name === '' || $cargo === '') {
-                    continue;
-                }
-                if (mb_strlen($name) < 4 || mb_strlen($name) > 100) {
-                    continue;
-                }
+        // Step 1: localizar honorific + name. Sin esto no podemos identificar persona.
+        $personMatch = $this->findPersonByHonorific($titulo);
+        if ($personMatch === null) {
+            return null;
+        }
 
-                return [
-                    'event_type' => $eventType,
-                    'honorific' => trim(rtrim($m['honorific'], '.')),
-                    'full_name' => $this->cleanName($name),
-                    'cargo' => $cargo,
-                ];
-            }
+        // Step 2: inferir event_type del verbo del título.
+        $eventType = $this->inferEventType($lower);
+        if ($eventType === null) {
+            return null;
+        }
+
+        // Step 3: localizar el primer cargo conocido.
+        $cargo = $this->findCargo($titulo);
+        if ($cargo === null) {
+            return null;
+        }
+
+        return [
+            'event_type' => $eventType,
+            'honorific' => $personMatch['honorific'],
+            'full_name' => $personMatch['name'],
+            'cargo' => $cargo,
+        ];
+    }
+
+    /**
+     * Busca patrones honorific + name. Devuelve el primer match.
+     * Soporta nombres con tildes, ñ, espacios, guiones (apellidos compuestos).
+     *
+     * @return array{honorific: string, name: string}|null
+     */
+    private function findPersonByHonorific(string $titulo): ?array
+    {
+        $hRegex = self::HONORIFIC_REGEX;
+        // Negative lookahead: cada palabra siguiente del nombre NO puede empezar con
+        // un cargo conocido (para no comerse "Juan Pérez Director General" entero).
+        $cargoAhead = implode('|', array_map(fn ($k) => preg_quote($k, '/'), self::CARGO_KEYWORDS_LIST));
+        $nameRegex = '[A-ZÁÉÍÓÚÑ][\p{L}\-]+(?:\s+(?!(?:'.$cargoAhead.')\b)[A-ZÁÉÍÓÚÑ][\p{L}\-]+)+';
+        $pattern = "/(?P<honorific>{$hRegex})\\s+(?P<name>{$nameRegex})/u";
+
+        if (preg_match($pattern, $titulo, $m) !== 1) {
+            return null;
+        }
+
+        return [
+            'honorific' => rtrim($m['honorific'], '.'),
+            'name' => trim($m['name']),
+        ];
+    }
+
+    /**
+     * Detecta el tipo de evento por palabras clave en el título.
+     */
+    private function inferEventType(string $lowerTitulo): ?string
+    {
+        if (str_contains($lowerTitulo, 'jubilación') || str_contains($lowerTitulo, 'jubilacion')) {
+            return 'cessation';
+        }
+        if (preg_match('/\b(?:cese|cesa|dispone\s+(?:el\s+)?cese)\b/u', $lowerTitulo) === 1) {
+            return 'cessation';
+        }
+        if (preg_match('/toma(?:\s+de)?\s+posesi[oó]n/u', $lowerTitulo) === 1) {
+            return 'posession';
+        }
+        if (preg_match('/\b(?:nombra|designa|acuerda\s+nombrar)\b/u', $lowerTitulo) === 1) {
+            return 'appointment';
         }
 
         return null;
     }
 
     /**
-     * Normaliza un nombre para uso como clave de identidad: minúsculas, sin tildes,
-     * sin espacios extra. Misma persona = misma normalización.
+     * Localiza el cargo: primera ocurrencia de un cargo conocido + el sintagma asociado.
+     * Limita el cargo a un fragmento legible (hasta primer comma/period si excede 80 chars).
      */
+    private function findCargo(string $titulo): ?string
+    {
+        $pipe = implode('|', array_map(fn ($k) => preg_quote($k, '/'), self::CARGO_KEYWORDS_LIST));
+        // Buscar la primera ocurrencia + extender hasta coma/period o fin
+        $pattern = "/\\b(?P<cargo>(?:{$pipe})(?:\\s+[\\p{L}áéíóúÁÉÍÓÚñÑ\\-,]+){0,8})/u";
+
+        if (preg_match($pattern, $titulo, $m) !== 1) {
+            return null;
+        }
+        $cargo = trim($m['cargo'] ?? '');
+
+        // Limpia trailing comma/punctuation y partículas residuales
+        $cargo = preg_replace('/[,.\s]+$/u', '', $cargo) ?? $cargo;
+        $cargo = preg_replace('/\s+(con|en|para|de\s+la|del)\s*$/iu', '', $cargo) ?? $cargo;
+        // Si el cargo termina en una preposición rara, lo recortamos
+        $cargo = preg_replace('/,\s*$/u', '', $cargo) ?? $cargo;
+
+        return $cargo !== '' ? trim($cargo) : null;
+    }
+
     public static function normalize(string $name): string
     {
         $t = mb_strtolower($name, 'UTF-8');
@@ -109,21 +191,5 @@ class CargoExtractor
         $collapsed = preg_replace('/\s+/', ' ', $t);
 
         return trim($collapsed ?? $t);
-    }
-
-    private function cleanName(string $name): string
-    {
-        // Elimina sufijos comunes que se cuelan con el regex avaricioso
-        $name = preg_replace('/\s+(como|para)$/iu', '', $name) ?? $name;
-
-        return trim($name);
-    }
-
-    private function cleanCargo(string $cargo): string
-    {
-        // Elimina prefijos espurios y palabras finales que no son parte del cargo
-        $cargo = preg_replace('/^(como\s+|por\s+)/iu', '', $cargo) ?? $cargo;
-
-        return trim($cargo);
     }
 }
