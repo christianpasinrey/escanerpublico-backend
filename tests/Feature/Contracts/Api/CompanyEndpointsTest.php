@@ -5,7 +5,9 @@ namespace Tests\Feature\Contracts\Api;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Contracts\Models\Award;
 use Modules\Contracts\Models\Company;
+use Modules\Contracts\Models\Contract;
 use Modules\Contracts\Models\ContractLot;
+use Modules\Contracts\Models\Organization;
 use Tests\TestCase;
 
 class CompanyEndpointsTest extends TestCase
@@ -59,7 +61,7 @@ class CompanyEndpointsTest extends TestCase
     public function test_stats_excludes_suspect_amount_awards_from_aggregations(): void
     {
         $c = Company::factory()->create();
-        $contract = \Modules\Contracts\Models\Contract::factory()->create();
+        $contract = Contract::factory()->create();
         $lotLegit = ContractLot::factory()->for($contract, 'contract')->create();
         $lotErrata = ContractLot::factory()->for($contract, 'contract')->create();
 
@@ -77,11 +79,11 @@ class CompanyEndpointsTest extends TestCase
 
     public function test_stats_top_organizations_includes_name_and_dir3(): void
     {
-        $org = \Modules\Contracts\Models\Organization::factory()->create([
+        $org = Organization::factory()->create([
             'name' => 'Ayuntamiento de Test',
             'identifier' => 'A12345678',
         ]);
-        $contract = \Modules\Contracts\Models\Contract::factory()->for($org, 'organization')->create();
+        $contract = Contract::factory()->for($org, 'organization')->create();
         $lot = ContractLot::factory()->for($contract, 'contract')->create();
         $c = Company::factory()->create();
         Award::factory()->for($c)->for($lot, 'contractLot')->create(['amount' => 50000]);

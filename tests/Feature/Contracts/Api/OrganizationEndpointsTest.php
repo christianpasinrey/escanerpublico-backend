@@ -3,7 +3,10 @@
 namespace Tests\Feature\Contracts\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Contracts\Models\Award;
+use Modules\Contracts\Models\Company;
 use Modules\Contracts\Models\Contract;
+use Modules\Contracts\Models\ContractLot;
 use Modules\Contracts\Models\Organization;
 use Tests\TestCase;
 
@@ -53,12 +56,12 @@ class OrganizationEndpointsTest extends TestCase
     {
         $org = Organization::factory()->create();
         $contract = Contract::factory()->for($org, 'organization')->create();
-        $lot = \Modules\Contracts\Models\ContractLot::factory()->for($contract, 'contract')->create();
-        $company = \Modules\Contracts\Models\Company::factory()->create([
+        $lot = ContractLot::factory()->for($contract, 'contract')->create();
+        $company = Company::factory()->create([
             'name' => 'ACME Construcciones SL',
             'nif' => 'B98765432',
         ]);
-        \Modules\Contracts\Models\Award::factory()->for($company)->for($lot, 'contractLot')->create(['amount' => 75000]);
+        Award::factory()->for($company)->for($lot, 'contractLot')->create(['amount' => 75000]);
 
         $r = $this->getJson("/api/v1/organizations/{$org->id}/stats");
         $r->assertSuccessful();
@@ -71,14 +74,14 @@ class OrganizationEndpointsTest extends TestCase
     {
         $org = Organization::factory()->create();
         $contract = Contract::factory()->for($org, 'organization')->create();
-        $lot = \Modules\Contracts\Models\ContractLot::factory()->for($contract, 'contract')->create();
+        $lot = ContractLot::factory()->for($contract, 'contract')->create();
 
-        $legit = \Modules\Contracts\Models\Company::factory()->create(['name' => 'Empresa Legítima', 'nif' => 'B11111111']);
-        $erratic = \Modules\Contracts\Models\Company::factory()->create(['name' => 'Talleres Errata', 'nif' => 'B22222222']);
+        $legit = Company::factory()->create(['name' => 'Empresa Legítima', 'nif' => 'B11111111']);
+        $erratic = Company::factory()->create(['name' => 'Talleres Errata', 'nif' => 'B22222222']);
 
-        \Modules\Contracts\Models\Award::factory()->for($legit)->for($lot, 'contractLot')->create(['amount' => 100_000]);
+        Award::factory()->for($legit)->for($lot, 'contractLot')->create(['amount' => 100_000]);
         // Errata PLACSP — 251.5B €. No debe encabezar el ranking.
-        \Modules\Contracts\Models\Award::factory()->for($erratic)->for($lot, 'contractLot')->create(['amount' => 251_520_154_010]);
+        Award::factory()->for($erratic)->for($lot, 'contractLot')->create(['amount' => 251_520_154_010]);
 
         $r = $this->getJson("/api/v1/organizations/{$org->id}/stats");
         $r->assertSuccessful();

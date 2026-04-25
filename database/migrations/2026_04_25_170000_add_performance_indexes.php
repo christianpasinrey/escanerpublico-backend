@@ -53,7 +53,7 @@ return new class extends Migration
         // Intentamos online primero. Si la versión MySQL no lo soporta, fallback al modo por defecto.
         try {
             DB::statement("ALTER TABLE `{$table}` ADD INDEX `{$name}` {$columns}, ALGORITHM=INPLACE, LOCK=NONE");
-        } catch (\Throwable) {
+        } catch (Throwable) {
             DB::statement("ALTER TABLE `{$table}` ADD INDEX `{$name}` {$columns}");
         }
     }
@@ -68,7 +68,7 @@ return new class extends Migration
         }
         try {
             DB::statement("ALTER TABLE `{$table}` DROP INDEX `{$name}`, ALGORITHM=INPLACE, LOCK=NONE");
-        } catch (\Throwable) {
+        } catch (Throwable) {
             DB::statement("ALTER TABLE `{$table}` DROP INDEX `{$name}`");
         }
     }

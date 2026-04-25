@@ -40,7 +40,7 @@ class BdnsClient
      * Página de convocatorias (calls for grants).
      *
      * @param  array<string, scalar>  $filters  fechaDesde=dd/MM/yyyy, fechaHasta=dd/MM/yyyy, vpd, etc. (BDNS-specific)
-     * @return array<string, mixed>  Spring Page: content[], pageable, totalElements, totalPages, last, first
+     * @return array<string, mixed> Spring Page: content[], pageable, totalElements, totalPages, last, first
      */
     public function searchCalls(int $page = 0, int $pageSize = 100, array $filters = []): array
     {
@@ -51,7 +51,7 @@ class BdnsClient
      * Página de concesiones (granted subsidies).
      *
      * @param  array<string, scalar>  $filters  fechaDesde, fechaHasta, etc.
-     * @return array<string, mixed>  Spring Page
+     * @return array<string, mixed> Spring Page
      */
     public function searchGrants(int $page = 0, int $pageSize = 100, array $filters = []): array
     {
@@ -70,6 +70,7 @@ class BdnsClient
             ->retry(self::RETRY_TIMES, self::RETRY_SLEEP_MS, function (\Throwable $exception, PendingRequest $request) {
                 if ($exception instanceof RequestException) {
                     $status = $exception->response->status();
+
                     // Reintenta sólo en 5xx y 429. 4xx restantes son errores de cliente.
                     return in_array($status, [429, 500, 502, 503, 504], true);
                 }

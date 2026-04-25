@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Subsidies;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Contracts\Models\Company;
 use Modules\Contracts\Models\Organization;
@@ -43,14 +44,14 @@ class FoundationTest extends TestCase
     public function test_unique_constraint_on_source_external_id_for_grants(): void
     {
         SubsidyGrant::factory()->create(['source' => 'BDNS', 'external_id' => 12345]);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         SubsidyGrant::factory()->create(['source' => 'BDNS', 'external_id' => 12345]);
     }
 
     public function test_unique_constraint_on_source_external_id_for_calls(): void
     {
         SubsidyCall::factory()->create(['source' => 'BDNS', 'external_id' => 999]);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         SubsidyCall::factory()->create(['source' => 'BDNS', 'external_id' => 999]);
     }
 

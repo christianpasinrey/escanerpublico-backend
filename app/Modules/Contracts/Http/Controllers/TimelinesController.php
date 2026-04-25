@@ -5,6 +5,7 @@ namespace Modules\Contracts\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -122,7 +123,7 @@ class TimelinesController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, \stdClass>  $rows
+     * @param  Collection<int, \stdClass>  $rows
      * @return array<string, int>
      */
     private function normalize($rows): array

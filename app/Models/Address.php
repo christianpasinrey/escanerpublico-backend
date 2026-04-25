@@ -13,8 +13,23 @@ class Address extends Model
 {
     protected $guarded = ['id'];
 
-    public function addressable(): MorphTo { return $this->morphTo(); }
-    public function city(): BelongsTo { return $this->belongsTo(City::class); }
-    public function state(): BelongsTo { return $this->belongsTo(State::class); }
-    public function country(): BelongsTo { return $this->belongsTo(Country::class); }
+    public function addressable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

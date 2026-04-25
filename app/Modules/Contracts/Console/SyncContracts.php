@@ -4,6 +4,7 @@ namespace Modules\Contracts\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Modules\Contracts\Jobs\ProcessPlacspFile;
 use ZipArchive;
@@ -25,7 +26,7 @@ class SyncContracts extends Command
     {
         // Limpiar resolver cache: si la BD fue wipeada (migrate:fresh) la cache Redis
         // tendría IDs huérfanos que rompen los FKs en contracts.organization_id.
-        \Illuminate\Support\Facades\Cache::tags(['placsp_import'])->flush();
+        Cache::tags(['placsp_import'])->flush();
 
         $months = $this->resolveMonths();
 
