@@ -9,9 +9,9 @@ class LimitNestedIncludesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_rejects_include_with_more_than_3_nesting_levels(): void
+    public function test_rejects_include_with_more_than_4_nesting_levels(): void
     {
-        $resp = $this->getJson('/api/v1/contracts?include=a.b.c.d');
+        $resp = $this->getJson('/api/v1/contracts?include=a.b.c.d.e');
         $resp->assertStatus(400);
         $resp->assertJsonPath('error', 'include_too_deep');
     }
