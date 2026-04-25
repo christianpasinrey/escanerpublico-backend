@@ -80,7 +80,7 @@ return [
      * `scramble.api_path` and `scramble.api_domain` config variables.
      */
     'servers' => [
-        'Default' => env('APP_URL', 'http://localhost'),
+        'Default' => rtrim(env('APP_URL', 'http://localhost'), '/').'/api/v1',
     ],
 
     /**
