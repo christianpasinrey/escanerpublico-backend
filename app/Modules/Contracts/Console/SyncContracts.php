@@ -13,7 +13,8 @@ class SyncContracts extends Command
     protected $signature = 'contracts:sync
         {--month= : Mes a sincronizar (formato YYYYMM, ej: 202603). Por defecto el mes actual}
         {--all : Descargar todos los meses disponibles desde 2018}
-        {--sync : Ejecutar el procesamiento de forma síncrona en lugar de por cola}';
+        {--sync : Ejecutar el procesamiento de forma síncrona en lugar de por cola}
+        {--force-download : Descargar aunque existan atoms locales extraídos}';
 
     protected $description = 'Descarga y procesa contratos de la PLACSP (Plataforma de Contratación del Sector Público)';
 
@@ -65,6 +66,24 @@ class SyncContracts extends Command
 
         $dirPath = storage_path("app/placsp/{$month}");
         $zipPath = "{$dirPath}/{$zipFilename}";
+        $extractPath = "{$dirPath}/extracted";
+
+        // Local-first: si ya hay atoms extraídos y no se fuerza, saltar descarga.
+        if (! $this->option('force-download') && is_dir($extractPath)) {
+            $existingAtoms = glob("{$extractPath}/*.atom") ?: [];
+            if ($existingAtoms !== []) {
+                $this->line("  Atoms locales encontrados ({$month}): ".count($existingAtoms).' — saltando descarga.');
+                foreach ($existingAtoms as $atomFile) {
+                    if ($this->option('sync')) {
+                        dispatch_sync(new ProcessPlacspFile($atomFile));
+                    } else {
+                        ProcessPlacspFile::dispatch($atomFile);
+                    }
+                }
+
+                return;
+            }
+        }
 
         // Crear directorio
         if (! is_dir($dirPath)) {
@@ -92,8 +111,7 @@ class SyncContracts extends Command
             return;
         }
 
-        // Descomprimir
-        $extractPath = "{$dirPath}/extracted";
+        // Descomprimir (extractPath ya fue definido arriba en local-first check)
         if (! is_dir($extractPath)) {
             mkdir($extractPath, 0755, true);
         }

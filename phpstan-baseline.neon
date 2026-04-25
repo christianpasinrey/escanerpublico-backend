@@ -1,6 +1,48 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\ReprocessRun\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ReprocessAtomRun\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ReprocessRun\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ReprocessRun\:\:findOrFail\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ReprocessRun\:\:whereIn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Parameter \#2 \$datetime of static method DateTime\:\:createFromFormat\(\) expects string, array\|float\|int\<min, \-1\>\|int\<1, max\>\|string\|true given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, array\|float\|int\<min, \-1\>\|int\<1, max\>\|string\|true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Console/ReprocessContracts.php
+
+		-
 			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -115,134 +157,14 @@ parameters:
 			path: app/Modules/Contracts/Http/Controllers/OrganizationController.php
 
 		-
-			message: '#^Call to an undefined static method App\\Models\\Address\:\:updateOrCreate\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ParseError\:\:create\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
 			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
 
 		-
-			message: '#^Call to an undefined static method App\\Models\\Contact\:\:create\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ReprocessAtomRun\:\:find\(\)\.$#'
 			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method App\\Models\\Contact\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Award\:\:upsert\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:insertOrIgnore\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:upsert\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:whereIn\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractDocument\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractDocument\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractNotice\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractNotice\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:insertOrIgnore\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:persistOrganizationMeta\(\) has parameter \$orgMeta with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:processBatch\(\) has parameter \$entries with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:resolveCompanyFromCache\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Method Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:resolveOrganizationFromCache\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Offset ''_documents'' on array\{_notices\: mixed, _documents\: mixed\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Offset ''_notices'' on array\{_notices\: mixed, _documents\: mixed\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Property Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:\$companiesCache type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
-
-		-
-			message: '#^Property Modules\\Contracts\\Jobs\\ProcessPlacspFile\:\:\$organizationsCache type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: app/Modules/Contracts/Jobs/ProcessPlacspFile.php
 
@@ -581,6 +503,174 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Modules/Contracts/Models/ReprocessRun.php
+
+		-
+			message: '#^Anonymous function has an unused use \$errored\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Address\:\:updateOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Contact\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Contact\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Award\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\AwardingCriterion\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:insertOrIgnore\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:whereIn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Contract\:\:whereIn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractDocument\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractLot\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractLot\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractModification\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractNotice\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\ContractSnapshot\:\:insertOrIgnore\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:insertOrIgnore\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:whereIn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/ContractIngestor.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$nif\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$identifier\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$nif\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:select\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:select\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Modules/Contracts/Services/EntityResolver.php
 
 		-
 			message: '#^Method Modules\\Contracts\\Services\\PlacspParser\:\:parseAtomFile\(\) return type has no value type specified in iterable type array\.$#'

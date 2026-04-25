@@ -215,15 +215,31 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
+                'connection' => 'redis',
+                'queue' => ['default', 'contracts-reprocess'],
+                'balance' => 'auto',
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
+            ],
+            'supervisor-reprocess' => [
+                'connection' => 'redis',
+                'queue' => ['contracts-reprocess'],
+                'balance' => 'simple',
+                'minProcesses' => 1,
+                'maxProcesses' => 4,
+                'tries' => 3,
+                'timeout' => 600,
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
+                'connection' => 'redis',
+                'queue' => ['default', 'contracts-reprocess'],
+                'balance' => 'auto',
                 'maxProcesses' => 3,
+                'tries' => 3,
             ],
         ],
     ],
