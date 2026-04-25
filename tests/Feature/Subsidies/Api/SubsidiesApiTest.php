@@ -131,6 +131,6 @@ class SubsidiesApiTest extends TestCase
         SubsidyCall::factory()->create();
         $r = $this->getJson('/api/v1/subsidies/calls');
         $r->assertSuccessful();
-        $r->assertHeader('Cache-Control', 'public, s-maxage=15, stale-while-revalidate=60');
+        $r->assertHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     }
 }

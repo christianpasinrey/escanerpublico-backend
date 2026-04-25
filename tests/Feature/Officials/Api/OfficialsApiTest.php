@@ -83,6 +83,6 @@ class OfficialsApiTest extends TestCase
         PublicOfficial::factory()->create();
         $r = $this->getJson('/api/v1/officials');
         $r->assertSuccessful();
-        $r->assertHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+        $r->assertHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     }
 }
