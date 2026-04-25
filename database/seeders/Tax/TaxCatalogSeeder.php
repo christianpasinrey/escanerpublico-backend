@@ -26,6 +26,7 @@ class TaxCatalogSeeder extends Seeder
             TaxRegionalTypesSeeder::class,
             TaxStateFeesSeeder::class,
             TaxRatesSeeder::class,
+            TaxRatesGapsSeeder::class,
         ]);
     }
 }
