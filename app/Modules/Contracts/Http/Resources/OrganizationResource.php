@@ -25,6 +25,11 @@ class OrganizationResource extends JsonResource
             'activity_code' => $this->activity_code,
             'buyer_profile_uri' => $this->buyer_profile_uri,
             'hierarchy' => $this->hierarchy,
+            'contracts_count' => $this->whenCounted('contracts'),
+            'contracts_sum_importe_con_iva' => $this->when(
+                isset($this->contracts_sum_importe_con_iva),
+                fn () => $this->contracts_sum_importe_con_iva,
+            ),
             'addresses' => AddressResource::collection($this->whenLoaded('addresses')),
             'contacts' => ContactResource::collection($this->whenLoaded('contacts')),
             'contracts' => ContractResource::collection($this->whenLoaded('contracts')),
