@@ -58,6 +58,7 @@ class CompanyController extends Controller
         $model = QueryBuilder::for(Company::where('id', $company))
             ->allowedIncludes(
                 'addresses',
+                'contacts',
                 'awards',
                 'awards.contractLot',
                 'awards.contractLot.contract',

@@ -30,6 +30,14 @@ class CompanyEndpointsTest extends TestCase
         $r->assertJsonCount(1, 'data.awards');
     }
 
+    public function test_show_allows_contacts_addresses_and_nested_awards_includes(): void
+    {
+        $c = Company::factory()->create();
+        $r = $this->getJson("/api/v1/companies/{$c->id}?include=addresses,contacts,awards.contractLot.contract.organization");
+        $r->assertSuccessful();
+        // No 400 — Spatie QueryBuilder acepta todos los includes anidados que la ficha frontend solicita.
+    }
+
     public function test_stats(): void
     {
         $c = Company::factory()->create();
