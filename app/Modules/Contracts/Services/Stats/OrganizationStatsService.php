@@ -9,6 +9,12 @@ use Modules\Contracts\Models\Organization;
 class OrganizationStatsService
 {
     /**
+     * Importe a partir del cual una adjudicación se considera dato atípico de PLACSP
+     * (errores humanos en publicación). Excluido del ranking top_companies.
+     */
+    public const SUSPECT_AMOUNT_THRESHOLD = 1_000_000_000.0;
+
+    /**
      * @return array<string, mixed>
      */
     public function compute(Organization $org): array
@@ -52,6 +58,7 @@ class OrganizationStatsService
             ->join('companies', 'awards.company_id', '=', 'companies.id')
             ->whereIn('contract_lots.contract_id', $contractIds)
             ->whereNotNull('awards.company_id')
+            ->where('awards.amount', '<', self::SUSPECT_AMOUNT_THRESHOLD)
             ->selectRaw('companies.id, companies.name, companies.nif, COUNT(DISTINCT contract_lots.contract_id) as contracts_count, SUM(awards.amount) as total_amount')
             ->groupBy('companies.id', 'companies.name', 'companies.nif')
             ->orderByDesc('total_amount')
