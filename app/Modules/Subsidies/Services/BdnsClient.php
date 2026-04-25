@@ -24,11 +24,15 @@ class BdnsClient
 
     public const USER_AGENT = 'GobTracker/1.0 (escaner-publico-backend; +https://gobtracker.tailor-bytes.com)';
 
-    public const TIMEOUT_SECONDS = 30;
+    // BDNS responde lento bajo carga (sobre todo concesiones con filtros de fecha en
+    // queries que afectan a millones de filas). Margen amplio para evitar timeouts.
+    public const TIMEOUT_SECONDS = 120;
 
-    public const RETRY_TIMES = 3;
+    public const CONNECT_TIMEOUT_SECONDS = 15;
 
-    public const RETRY_SLEEP_MS = 1000;
+    public const RETRY_TIMES = 5;
+
+    public const RETRY_SLEEP_MS = 2000;
 
     public const SLEEP_BETWEEN_MS = 250;
 
@@ -106,7 +110,9 @@ class BdnsClient
         return Http::withHeaders([
             'User-Agent' => self::USER_AGENT,
             'Accept' => 'application/json',
-        ])->timeout(self::TIMEOUT_SECONDS);
+        ])
+            ->timeout(self::TIMEOUT_SECONDS)
+            ->connectTimeout(self::CONNECT_TIMEOUT_SECONDS);
     }
 
     /**
