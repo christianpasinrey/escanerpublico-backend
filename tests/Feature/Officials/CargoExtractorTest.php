@@ -92,4 +92,59 @@ class CargoExtractorTest extends TestCase
         $this->assertNotNull($r);
         $this->assertSame('Pedro Martínez', $r['full_name']);
     }
+
+    // ===== Tests con datos REALES del BOE (samples directos de prod) =====
+
+    public function test_extracts_real_boe_format_cargo_first_with_lowercase_don(): void
+    {
+        $r = $this->extractor->extract('Resolución de 22 de diciembre de 2023, de la Universidad de Alcalá, por la que se nombra Catedrático de Universidad a don Pedro Cuesta Valiño.');
+
+        $this->assertNotNull($r);
+        $this->assertSame('appointment', $r['event_type']);
+        $this->assertSame('Pedro Cuesta Valiño', $r['full_name']);
+        $this->assertStringContainsString('Catedrático de Universidad', $r['cargo']);
+    }
+
+    public function test_extracts_profesor_titular_with_intermediate_clause(): void
+    {
+        $r = $this->extractor->extract('Resolución de 22 de diciembre de 2023, conjunta de la Universidad de Oviedo y el Servicio de Salud del Principado de Asturias, por la que se nombra Profesor Titular de Universidad, con plaza vinculada, a don Gonzalo Solís Sánchez.');
+
+        $this->assertNotNull($r);
+        $this->assertSame('appointment', $r['event_type']);
+        $this->assertSame('Gonzalo Solís Sánchez', $r['full_name']);
+        $this->assertStringContainsString('Profesor Titular de Universidad', $r['cargo']);
+    }
+
+    public function test_extracts_jubilation_notario_as_cessation(): void
+    {
+        $r = $this->extractor->extract('Resolución de 22 de diciembre de 2023, de la Dirección General de Seguridad Jurídica y Fe Pública, por la que se declara la jubilación del notario de Avilés don Tomás Domínguez Bautista.');
+
+        $this->assertNotNull($r);
+        $this->assertSame('cessation', $r['event_type']);
+        $this->assertSame('Tomás Domínguez Bautista', $r['full_name']);
+    }
+
+    public function test_extracts_jubilation_dona_post_name(): void
+    {
+        $r = $this->extractor->extract('Resolución de 27 de diciembre de 2023, de la Dirección General para el Servicio Público de Justicia, por la que se declara la jubilación de doña María Victoria Gutiérrez Díaz, Fiscal con destino en la Sección Territorial de Málaga.');
+
+        $this->assertNotNull($r);
+        $this->assertSame('cessation', $r['event_type']);
+        $this->assertSame('María Victoria Gutiérrez Díaz', $r['full_name']);
+    }
+
+    public function test_skips_libre_designacion(): void
+    {
+        $this->assertNull($this->extractor->extract('Resolución de 21 de diciembre de 2023, de la Subsecretaría, por la que se resuelve la convocatoria de libre designación, efectuada por Resolución de 13 de noviembre de 2023.'));
+    }
+
+    public function test_skips_plural_catedraticos(): void
+    {
+        $this->assertNull($this->extractor->extract('Resolución de 21 de diciembre de 2023, de la Universidad de Murcia, por la que se nombran Catedráticas y Catedráticos de Universidad.'));
+    }
+
+    public function test_skips_personal_funcionario_carrera(): void
+    {
+        $this->assertNull($this->extractor->extract('Resolución de 26 de diciembre de 2023, de la Secretaría de Estado de Función Pública, por la que se nombra personal funcionario de carrera, por el sistema de promoción interna.'));
+    }
 }
