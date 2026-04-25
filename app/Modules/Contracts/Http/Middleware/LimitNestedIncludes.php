@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LimitNestedIncludes
 {
-    public function handle(Request $request, Closure $next, int $maxDepth = 4): Response
+    public function handle(Request $request, Closure $next, int $maxDepth = 3): Response
     {
         $rawInclude = $request->query('include', '');
         $include = is_string($rawInclude) ? $rawInclude : '';
