@@ -11,6 +11,7 @@ use Modules\Tax\Calculators\IncomeTax\RendimientosTrabajoSimulator;
 use Modules\Tax\Calculators\Invoice\InvoiceCalculator;
 use Modules\Tax\Calculators\Payroll\PayrollCalculator;
 use Modules\Tax\Calculators\Payroll\RegimenGeneralPayroll;
+use Modules\Tax\Calculators\Vat\VatReturnCalculator;
 use Modules\Tax\Console\DetectBoeChanges;
 use Modules\Tax\Console\ReportRegimeCoverage;
 use Modules\Tax\Console\ReportTypesCoverage;
@@ -33,6 +34,9 @@ use Modules\Tax\Services\MinimumPersonalCalculator;
 use Modules\Tax\Services\ObligationsResolver;
 use Modules\Tax\Services\SocialSecurityResolver;
 use Modules\Tax\Services\TaxParameterRepository;
+use Modules\Tax\Services\Vat\Modelo303CasillasMapper;
+use Modules\Tax\Services\Vat\VatPeriodResolver;
+use Modules\Tax\Services\Vat\VatRegimeValidator;
 
 class TaxServiceProvider extends ServiceProvider
 {
@@ -68,6 +72,12 @@ class TaxServiceProvider extends ServiceProvider
         $this->app->singleton(EstimacionObjetivaModulos::class);
         $this->app->singleton(RendimientosTrabajoSimulator::class);
         $this->app->singleton(IncomeTaxCalculator::class);
+
+        // M7 — Servicios de la calculadora de autoliquidación IVA (303/390)
+        $this->app->singleton(VatPeriodResolver::class);
+        $this->app->singleton(VatRegimeValidator::class);
+        $this->app->singleton(Modelo303CasillasMapper::class);
+        $this->app->singleton(VatReturnCalculator::class);
     }
 
     public function boot(): void
