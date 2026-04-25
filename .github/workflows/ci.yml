@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: pdo_mysql, redis
           coverage: none
 
@@ -52,4 +52,4 @@ jobs:
           DB_DATABASE: escaner_publico_test
           DB_USERNAME: root
           DB_PASSWORD: root
-        run: php artisan test
+        run: php artisan test --without-tty --no-coverage

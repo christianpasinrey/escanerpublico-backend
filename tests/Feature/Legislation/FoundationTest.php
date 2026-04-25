@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Legislation;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Contracts\Models\Organization;
 use Modules\Legislation\Models\BoeItem;
@@ -26,14 +27,14 @@ class FoundationTest extends TestCase
     public function test_legislation_norm_unique_source_external(): void
     {
         LegislationNorm::factory()->create(['source' => 'BOE', 'external_id' => 'BOE-A-2024-1']);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         LegislationNorm::factory()->create(['source' => 'BOE', 'external_id' => 'BOE-A-2024-1']);
     }
 
     public function test_boe_summary_unique_identificador(): void
     {
         BoeSummary::factory()->create(['source' => 'BOE', 'identificador' => 'BOE-S-2024-100']);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         BoeSummary::factory()->create(['source' => 'BOE', 'identificador' => 'BOE-S-2024-100']);
     }
 

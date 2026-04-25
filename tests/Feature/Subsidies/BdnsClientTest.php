@@ -3,6 +3,7 @@
 namespace Tests\Feature\Subsidies;
 
 use Illuminate\Http\Client\Request;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Modules\Subsidies\Services\BdnsClient;
 use Tests\TestCase;
@@ -70,7 +71,7 @@ class BdnsClientTest extends TestCase
             '*' => Http::response('boom', 503),
         ]);
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
         $client = new BdnsClient;
         $client->searchCalls(0, 1);

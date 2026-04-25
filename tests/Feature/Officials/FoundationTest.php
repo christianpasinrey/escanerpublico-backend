@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Officials;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Contracts\Models\Organization;
 use Modules\Legislation\Models\BoeItem;
@@ -16,7 +17,7 @@ class FoundationTest extends TestCase
     public function test_public_official_unique_normalized_name(): void
     {
         PublicOfficial::factory()->create(['normalized_name' => 'juan perez']);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         PublicOfficial::factory()->create(['normalized_name' => 'juan perez']);
     }
 
@@ -45,7 +46,7 @@ class FoundationTest extends TestCase
         Appointment::factory()->for($official, 'publicOfficial')->for($boeItem, 'boeItem')->create([
             'event_type' => 'appointment',
         ]);
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
         Appointment::factory()->for($official, 'publicOfficial')->for($boeItem, 'boeItem')->create([
             'event_type' => 'appointment',
         ]);

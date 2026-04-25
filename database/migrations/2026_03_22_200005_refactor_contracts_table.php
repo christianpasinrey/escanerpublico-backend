@@ -10,7 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Add organization_id FK (idempotent)
-        if (!Schema::hasColumn('contracts', 'organization_id')) {
+        if (! Schema::hasColumn('contracts', 'organization_id')) {
             Schema::table('contracts', function (Blueprint $table) {
                 $table->foreignId('organization_id')->nullable()
                     ->constrained('organizations')->nullOnDelete();
@@ -38,7 +38,7 @@ return new class extends Migration
             'resultado_code', 'num_ofertas', 'sme_awarded', 'contrato_numero',
         ]);
 
-        if (!empty($toDrop)) {
+        if (! empty($toDrop)) {
             Schema::table('contracts', function (Blueprint $table) use ($toDrop) {
                 $table->dropColumn(array_values($toDrop));
             });
@@ -55,7 +55,9 @@ return new class extends Migration
             ->chunk(1000, function ($contracts) use (&$seen) {
                 foreach ($contracts as $c) {
                     $key = $c->organo_dir3 ?: md5($c->organo_contratante);
-                    if (isset($seen[$key])) continue;
+                    if (isset($seen[$key])) {
+                        continue;
+                    }
                     $seen[$key] = true;
 
                     $orgId = DB::table('organizations')->insertGetId([
@@ -86,9 +88,15 @@ return new class extends Migration
 
                     // Create polymorphic contacts
                     $contactData = [];
-                    if (!empty($c->organo_telefono)) $contactData[] = ['type' => 'phone', 'value' => $c->organo_telefono];
-                    if (!empty($c->organo_email)) $contactData[] = ['type' => 'email', 'value' => $c->organo_email];
-                    if (!empty($c->organo_website)) $contactData[] = ['type' => 'website', 'value' => $c->organo_website];
+                    if (! empty($c->organo_telefono)) {
+                        $contactData[] = ['type' => 'phone', 'value' => $c->organo_telefono];
+                    }
+                    if (! empty($c->organo_email)) {
+                        $contactData[] = ['type' => 'email', 'value' => $c->organo_email];
+                    }
+                    if (! empty($c->organo_website)) {
+                        $contactData[] = ['type' => 'website', 'value' => $c->organo_website];
+                    }
                     foreach ($contactData as $contact) {
                         DB::table('contacts')->insert(array_merge($contact, [
                             'contactable_type' => 'Modules\\Contracts\\Models\\Organization',
@@ -122,7 +130,7 @@ return new class extends Migration
             ->chunk(1000, function ($contracts) use (&$seen) {
                 foreach ($contracts as $c) {
                     $key = $c->adjudicatario_nif ?: md5($c->adjudicatario_nombre);
-                    if (!isset($seen[$key])) {
+                    if (! isset($seen[$key])) {
                         $seen[$key] = true;
                         DB::table('companies')->insertOrIgnore([
                             'name' => $c->adjudicatario_nombre,
@@ -146,10 +154,12 @@ return new class extends Migration
                     if ($c->adjudicatario_nif) {
                         $companyId = DB::table('companies')->where('nif', $c->adjudicatario_nif)->value('id');
                     }
-                    if (!$companyId) {
+                    if (! $companyId) {
                         $companyId = DB::table('companies')->where('name', $c->adjudicatario_nombre)->value('id');
                     }
-                    if (!$companyId) continue;
+                    if (! $companyId) {
+                        continue;
+                    }
 
                     DB::table('awards')->insertOrIgnore([
                         'contract_id' => $c->id,

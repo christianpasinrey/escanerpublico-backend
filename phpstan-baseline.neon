@@ -45,7 +45,7 @@ parameters:
 		-
 			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
-			count: 1
+			count: 2
 			path: app/Modules/Contracts/Console/SyncContracts.php
 
 		-
@@ -67,6 +67,12 @@ parameters:
 			path: app/Modules/Contracts/ContractsServiceProvider.php
 
 		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Company\>\:\:allowedFilters\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/CompanyController.php
+
+		-
 			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:findOrFail\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -83,6 +89,18 @@ parameters:
 			identifier: argument.templateType
 			count: 1
 			path: app/Modules/Contracts/Http/Controllers/CompanyController.php
+
+		-
+			message: '#^Parameter \#1 \$query of static method App\\Http\\Pagination\\FastPaginator\:\:paginate\(\) expects Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder, Spatie\\QueryBuilder\\QueryBuilder\<Modules\\Contracts\\Models\\Contract\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Contracts\\Models\\Organization\>\:\:allowedFilters\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Controllers/OrganizationController.php
 
 		-
 			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Organization\:\:findOrFail\(\)\.$#'
@@ -566,6 +584,12 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$buyer_profile_uri\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$contracts_sum_importe_con_iva\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
@@ -1191,7 +1215,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 6
 			path: app/Modules/Contracts/Services/Stats/CompanyStatsService.php
 
 		-
@@ -1215,7 +1239,7 @@ parameters:
 		-
 			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Award\:\:where\(\)\.$#'
 			identifier: staticMethod.notFound
-			count: 1
+			count: 2
 			path: app/Modules/Contracts/Services/Stats/CompanyStatsService.php
 
 		-

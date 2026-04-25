@@ -3,6 +3,7 @@
 namespace App\Http\Pagination;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
@@ -34,7 +35,7 @@ class FastPaginator
     private const CACHE_TTL_SECONDS = 300;
 
     /**
-     * @param  EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder  $query
+     * @param  EloquentBuilder<Model>|QueryBuilder  $query
      */
     public static function paginate($query, int $perPage, int $page, string $tableName, bool $hasFilters): LengthAwarePaginator
     {
@@ -96,7 +97,7 @@ class FastPaginator
     }
 
     /**
-     * @param  EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder  $query
+     * @param  EloquentBuilder<Model>|QueryBuilder  $query
      */
     private static function standardPaginate($query, int $perPage, int $page): LengthAwarePaginator
     {

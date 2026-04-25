@@ -34,7 +34,7 @@ class BoeClient
     /**
      * Sumario diario completo del BOE para una fecha (YYYYMMDD).
      *
-     * @return array<string, mixed>|null  null si la fecha no tiene sumario (404)
+     * @return array<string, mixed>|null null si la fecha no tiene sumario (404)
      */
     public function getDailySummary(string $yyyymmdd): ?array
     {
@@ -54,7 +54,7 @@ class BoeClient
     /**
      * Lista paginada de legislación consolidada.
      *
-     * @return array<string, mixed>  body completo con `data` y posible `links`/paginación
+     * @return array<string, mixed> body completo con `data` y posible `links`/paginación
      */
     public function searchConsolidatedLegislation(int $offset = 0, int $limit = 50): array
     {

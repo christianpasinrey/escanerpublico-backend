@@ -9,5 +9,8 @@ class Contact extends Model
 {
     protected $guarded = ['id'];
 
-    public function contactable(): MorphTo { return $this->morphTo(); }
+    public function contactable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }

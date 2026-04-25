@@ -3,7 +3,6 @@
 namespace Modules\Legislation;
 
 use Illuminate\Support\ServiceProvider;
-
 use Modules\Legislation\Console\SyncLegislation;
 use Modules\Legislation\Services\BoeClient;
 use Modules\Legislation\Services\LegislationIngestor;
