@@ -62,11 +62,13 @@ class VatRegimeValidator
     private function validateSimplificado(VatReturnInput $input): void
     {
         // simplifiedModulesData ya validado obligatorio en VatReturnInput.
-        // Aquí podríamos añadir validaciones de keys mínimas en el futuro.
-        $modules = $input->simplifiedModulesData ?? [];
-        if ($modules === []) {
+        // Aquí validamos que la lista `modules` esté presente y no vacía:
+        // sin módulos no hay cuota anual devengada que calcular.
+        $modulesData = $input->simplifiedModulesData ?? [];
+        $modules = $modulesData['modules'] ?? [];
+        if (! is_array($modules) || $modules === []) {
             throw new InvalidArgumentException(
-                'El régimen simplificado requiere al menos un módulo en simplifiedModulesData.'
+                'El régimen simplificado requiere al menos un módulo en simplifiedModulesData.modules.'
             );
         }
     }

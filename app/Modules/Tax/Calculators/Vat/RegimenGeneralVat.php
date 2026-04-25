@@ -14,6 +14,7 @@ use Modules\Tax\DTOs\VatReturn\VatTransactionInput;
 use Modules\Tax\Services\Vat\Modelo303CasillasMapper;
 use Modules\Tax\Services\Vat\VatPeriodResolver;
 use Modules\Tax\ValueObjects\Money;
+use Modules\Tax\ValueObjects\TaxRate;
 
 /**
  * Calculator IVA modelo 303 / 390 — Régimen General (IVA_GEN).
@@ -108,7 +109,7 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
         $surchargeBuckets = []; // ['rate%' => ['base' => Money, 'vat' => Money]]
 
         foreach ($domesticOutgoing as $tx) {
-            $key = $tx->vatRate->percentage;
+            $key = $this->normalizeRateKey($tx->vatRate->percentage);
             if (! isset($vatBuckets[$key])) {
                 $vatBuckets[$key] = ['base' => Money::zero(), 'vat' => Money::zero()];
             }
@@ -119,7 +120,7 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
             // — el surchargeEquivalenceAmount viene precalculado por el
             // emisor en M5 InvoiceCalculator).
             if ($tx->surchargeEquivalenceAmount !== null && ! $tx->surchargeEquivalenceAmount->isZero()) {
-                $reKey = $this->surchargeRateForVatRate($tx->vatRate->percentage);
+                $reKey = $this->surchargeRateForVatRate($this->normalizeRateKey($tx->vatRate->percentage));
                 if (! isset($surchargeBuckets[$reKey])) {
                     $surchargeBuckets[$reKey] = ['base' => Money::zero(), 'vat' => Money::zero()];
                 }
@@ -132,7 +133,7 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
         // Agrupar IVA soportado por tipo.
         $deductibleBuckets = []; // ['rate%' => ['base' => Money, 'vat' => Money]]
         foreach ($domesticIncoming as $tx) {
-            $key = $tx->vatRate->percentage;
+            $key = $this->normalizeRateKey($tx->vatRate->percentage);
             if (! isset($deductibleBuckets[$key])) {
                 $deductibleBuckets[$key] = ['base' => Money::zero(), 'vat' => Money::zero()];
             }
@@ -240,7 +241,7 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
                 amount: $bucket['vat'],
                 category: BreakdownCategory::TAX,
                 base: $bucket['base'],
-                rate: $input->transactions[0]->vatRate ?? null,
+                rate: TaxRate::fromPercentage($rate),
                 legalReference: $useCriterioCaja
                     ? 'https://www.boe.es/buscar/act.php?id=BOE-A-1992-28740#a163decies'
                     : self::LIVA_75,
@@ -409,5 +410,15 @@ class RegimenGeneralVat implements VatRegimeReturnCalculator
             '5.0000' => '0.6200',
             default => '0.0000',
         };
+    }
+
+    /**
+     * Normaliza una representación de TaxRate (que puede llegar como
+     * "21", "21.00" o "21.0000" según constructor) a la clave canónica
+     * de 4 decimales que usa Modelo303CasillasMapper.
+     */
+    protected function normalizeRateKey(string $percentage): string
+    {
+        return number_format((float) $percentage, 4, '.', '');
     }
 }
