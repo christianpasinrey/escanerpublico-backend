@@ -74,19 +74,8 @@ return [
     */
     'configuration' => [
         /** A string to use one of the color presets */
-        'theme' =>
-        // 'alternate',
-        'bluePlanet',
-        // 'deepSpace',
-        // 'default',
-        // 'kepler',
-        // 'laravel',
-        // 'mars',
-        // 'moon',
-        // 'purple',
-        // 'saturn',
-        // 'solarized',
-        // 'none',
+        // Tema custom 'Expediente del Estado' — definido en customCss más abajo.
+        'theme' => 'none',
 
         /** The layout to use for the references */
         'layout' => 'modern',
@@ -123,8 +112,8 @@ return [
         /** forceDarkModeState makes it always this state no matter what*/
         'forceDarkModeState' => 'dark',
 
-        /** Whether to show the dark mode toggle */
-        'hideDarkModeToggle' => false,
+        /** Tema fijo dark editorial — el toggle no aplica */
+        'hideDarkModeToggle' => true,
 
         /** Key used with CTRL/CMD to open the search modal (defaults to 'k' e.g. CMD+k) */
         'searchHotKey' => 'k',
@@ -159,8 +148,144 @@ return [
             'clientKey' => 'curl',
         ],
 
-        /** Custom CSS to be added to the page */
-        // 'customCss' => '',
+        /** Custom CSS — tema 'Expediente del Estado' oscuro (coherente con ApiCallout) */
+        'customCss' => <<<'CSS'
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&family=Caveat:wght@400;600&display=swap');
+
+.dark-mode,
+:root.dark-mode,
+.scalar-app.dark-mode,
+.scalar-api-reference.dark-mode {
+    /* Backgrounds — papel calco oscuro tipo carbon copy */
+    --scalar-background-1: #0d1318;
+    --scalar-background-2: #11181d;
+    --scalar-background-3: #0a1014;
+    --scalar-background-accent: #1a2229;
+
+    /* Texto — paper sobre dark */
+    --scalar-color-1: #e8e6dd;
+    --scalar-color-2: #d8d3c4;
+    --scalar-color-3: #a8b2b8;
+    --scalar-color-disabled: #5e6c73;
+    --scalar-color-ghost: #7d8b91;
+
+    /* Acentos — stamp / archive / highlight */
+    --scalar-color-accent: #d96a5e;
+    --scalar-color-green: #5cba9b;
+    --scalar-color-red: #d96a5e;
+    --scalar-color-yellow: #d4a04c;
+    --scalar-color-orange: #d4a04c;
+    --scalar-color-blue: #5cba9b;
+    --scalar-color-purple: #d4a04c;
+
+    /* Bordes — rule oscuro */
+    --scalar-border-color: #1f2a31;
+
+    /* Botones */
+    --scalar-button-1: #d96a5e;
+    --scalar-button-1-color: #0d1318;
+    --scalar-button-1-hover: #e58576;
+
+    /* Sidebar */
+    --scalar-sidebar-background-1: #0a1014;
+    --scalar-sidebar-color-1: #d8d3c4;
+    --scalar-sidebar-color-2: #a8b2b8;
+    --scalar-sidebar-border-color: #1f2a31;
+    --scalar-sidebar-item-hover-color: #d96a5e;
+    --scalar-sidebar-item-hover-background: #11181d;
+    --scalar-sidebar-item-active-background: #11181d;
+    --scalar-sidebar-search-background: #11181d;
+    --scalar-sidebar-search-border-color: #1f2a31;
+    --scalar-sidebar-search--color: #a8b2b8;
+
+    /* Code blocks */
+    --scalar-code-language-color-supersede: #d8d3c4;
+
+    /* Bordes redondeados muy moderados — papel no redondea */
+    --scalar-radius: 2px;
+    --scalar-radius-lg: 3px;
+    --scalar-radius-xl: 4px;
+
+    /* Tipografías editoriales */
+    --scalar-font: 'IBM Plex Serif', 'Georgia', serif;
+    --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace;
+
+    /* Headings con personalidad — Fraunces variable */
+    --scalar-heading-1-color: #e8e6dd;
+    --scalar-heading-2-color: #e8e6dd;
+    --scalar-heading-3-color: #d8d3c4;
+}
+
+/* Body global con grain editorial sutil */
+body, .scalar-app {
+    background-color: #0d1318 !important;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(160,180,170,0.025) 0 1px, transparent 1px 3px) !important;
+}
+
+/* Headings con Fraunces variable */
+.scalar-app h1,
+.scalar-app h2 {
+    font-family: 'Fraunces', 'IBM Plex Serif', Georgia, serif !important;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30 !important;
+    letter-spacing: -0.015em !important;
+}
+
+/* Bloques de código tipo recibo de máquina matricial */
+.scalar-app pre,
+.scalar-app code,
+.scalar-app .code-block {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+    background-color: #0a1014 !important;
+    border: 1px solid #1f2a31 !important;
+    border-radius: 2px !important;
+}
+
+/* Botones con monospace y tracking ancho */
+.scalar-app button,
+.scalar-app .scalar-button {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.16em !important;
+    font-weight: 600 !important;
+    border-radius: 2px !important;
+}
+
+/* Tags de método HTTP — paleta editorial */
+.scalar-app .method-tag-get,
+.scalar-app [data-method="get"] { background-color: #5cba9b !important; color: #0d1318 !important; }
+.scalar-app .method-tag-post,
+.scalar-app [data-method="post"] { background-color: #d4a04c !important; color: #0d1318 !important; }
+.scalar-app .method-tag-put,
+.scalar-app [data-method="put"] { background-color: #5cba9b !important; color: #0d1318 !important; }
+.scalar-app .method-tag-patch,
+.scalar-app [data-method="patch"] { background-color: #d4a04c !important; color: #0d1318 !important; }
+.scalar-app .method-tag-delete,
+.scalar-app [data-method="delete"] { background-color: #d96a5e !important; color: #0d1318 !important; }
+
+/* Selección con highlight ocre */
+.scalar-app ::selection {
+    background-color: #d4a04c !important;
+    color: #0d1318 !important;
+}
+
+/* Tablas tipo formulario administrativo */
+.scalar-app table {
+    border-collapse: collapse !important;
+}
+.scalar-app table th,
+.scalar-app table td {
+    border-bottom: 1px solid #1f2a31 !important;
+}
+.scalar-app table th {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.16em !important;
+    font-size: 11px !important;
+    color: #7d8b91 !important;
+    font-weight: 600 !important;
+}
+CSS,
 
         /** Prefill authentication */
         // 'authentication' => [
@@ -185,9 +310,10 @@ return [
         // ],
 
         /**
-         * We’re using Inter and JetBrains Mono as the default fonts. If you want to use your own fonts, set this to false.
+         * Inter / JetBrains Mono off — usamos las fuentes editoriales
+         * cargadas vía customCss (Fraunces, IBM Plex Serif/Mono).
          */
-        'withDefaultFonts' => true,
+        'withDefaultFonts' => false,
 
         /**
          * By default we only open the relevant tag based on the url, however if you want all the tags open by default then set this configuration option :)
