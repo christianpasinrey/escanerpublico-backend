@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Tax\Http\Controllers\Calculators\InvoiceController;
 use Modules\Tax\Http\Controllers\Calculators\PayrollController;
 use Modules\Tax\Http\Controllers\Catalog\EconomicActivityController;
 use Modules\Tax\Http\Controllers\Catalog\ObligationCalendarController;
@@ -23,6 +24,11 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
     Route::get('/types/{code}', [TaxTypeController::class, 'show'])
         ->where('code', '[A-Z0-9_]+');
 
-    // M4 — Calculadoras
+    // M4 — Calculadora de nómina (asalariado régimen general)
     Route::post('/payroll', PayrollController::class);
+
+    // M5 — Calculadora de factura autónomo
+    Route::post('/invoice', InvoiceController::class);
+
+    // M6-M8 (IRPF, IVA, modelos 130/131) — fases siguientes.
 });
