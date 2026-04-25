@@ -18,6 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->throttleApi('api');
+
+        // Security headers en todas las respuestas.
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
+        // Trust Cloudflare proxy → request->ip() devuelve la IP real del cliente.
+        // Necesario para que el rate limit por IP no agrupe a TODO el tráfico
+        // bajo la IP de CF.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

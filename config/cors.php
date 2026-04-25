@@ -2,20 +2,31 @@
 
 return [
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'docs', 'openapi.json'],
 
-    'allowed_methods' => ['*'],
+    // API solo expone GET (ningún endpoint público escribe). Limitamos métodos.
+    'allowed_methods' => ['GET', 'OPTIONS'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    // API pública por diseño: cualquier origen puede consumirla.
+    // Sin credenciales → el wildcard es seguro y conforme a la spec CORS.
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    // Cabeceras útiles para clientes JS que quieran reaccionar al rate limit.
+    'exposed_headers' => [
+        'X-RateLimit-Limit',
+        'X-RateLimit-Remaining',
+        'Retry-After',
+    ],
 
-    'max_age' => 0,
+    // Cache preflight 1h.
+    'max_age' => 3600,
 
-    'supports_credentials' => true,
+    // Falso obligatoriamente con allowed_origins=['*'] (spec CORS).
+    // La API no usa cookies/auth → no necesita credenciales.
+    'supports_credentials' => false,
 
 ];

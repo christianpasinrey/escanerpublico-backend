@@ -7,7 +7,7 @@ use Modules\Contracts\Http\Controllers\LotController;
 use Modules\Contracts\Http\Controllers\OrganizationController;
 use Modules\Contracts\Http\Controllers\TimelinesController;
 
-Route::prefix('api/v1')->middleware(['limit.includes'])->group(function () {
+Route::prefix('api/v1')->middleware(['throttle:api', 'limit.includes'])->group(function () {
     Route::get('/contracts', [ContractController::class, 'index']);
     Route::get('/contracts/{external_id}', [ContractController::class, 'show'])->where('external_id', '.*');
 
@@ -20,6 +20,9 @@ Route::prefix('api/v1')->middleware(['limit.includes'])->group(function () {
     Route::get('/companies/{company}/stats', [CompanyController::class, 'stats'])->whereNumber('company');
 
     Route::get('/lots', [LotController::class, 'index']);
+});
 
+// Endpoint pesado con su propio rate limit (30/min/IP).
+Route::prefix('api/v1')->middleware(['throttle:api-heavy'])->group(function () {
     Route::get('/timelines', [TimelinesController::class, 'index']);
 });
