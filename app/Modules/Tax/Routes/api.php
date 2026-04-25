@@ -8,6 +8,7 @@ use Modules\Tax\Http\Controllers\Calculators\PayrollController;
 use Modules\Tax\Http\Controllers\Calculators\VatReturnController;
 use Modules\Tax\Http\Controllers\Catalog\EconomicActivityController;
 use Modules\Tax\Http\Controllers\Catalog\ObligationCalendarController;
+use Modules\Tax\Http\Controllers\Catalog\ParametersController;
 use Modules\Tax\Http\Controllers\Catalog\RegimeController;
 use Modules\Tax\Http\Controllers\TaxTypeController;
 
@@ -26,6 +27,13 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
     Route::get('/types', [TaxTypeController::class, 'index']);
     Route::get('/types/{code}', [TaxTypeController::class, 'show'])
         ->where('code', '[A-Z0-9_]+');
+
+    // M3 — Open data: parámetros numéricos vigentes (escalas, SS, autónomos, IVA por sector)
+    Route::get('/parameters', [ParametersController::class, 'parameters']);
+    Route::get('/brackets', [ParametersController::class, 'brackets']);
+    Route::get('/social-security-rates', [ParametersController::class, 'socialSecurityRates']);
+    Route::get('/autonomo-brackets', [ParametersController::class, 'autonomoBrackets']);
+    Route::get('/vat-product-rates', [ParametersController::class, 'vatProductRates']);
 
     // M4 — Calculadora de nómina (asalariado régimen general)
     Route::post('/payroll', PayrollController::class);
