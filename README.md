@@ -63,18 +63,19 @@ php artisan serve
 ## Comandos clave
 
 ```bash
-# Sincronizar PLACSP (descarga + procesa + limpia, mes a mes)
-php artisan contracts:sync --all --sync --cleanup
-
-# Reprocesar atoms ya extraídos (sin descarga)
+# Contracts (PLACSP)
+php artisan contracts:sync --all --sync --cleanup            # descarga + procesa + limpia mes a mes
 php artisan contracts:reprocess --from=201801 --to=$(date +%Y%m) --sync
-
-# Reanudar un reproceso fallido
 php artisan contracts:reprocess --resume
 
-# Ejecutar tests + lint
+# Subsidies (BDNS)
+php artisan subsidies:sync --type=calls                      # convocatorias completas (625k registros)
+php artisan subsidies:sync --type=grants --from=01/01/2025 --to=31/12/2025
+php artisan subsidies:sync --resume                          # reanudar último run
+
+# Tests + lint
 php artisan test
-./vendor/bin/phpstan analyse app/Modules/Contracts --level=8
+./vendor/bin/phpstan analyse app/Modules --level=8
 ./vendor/bin/pint
 ```
 
@@ -144,15 +145,23 @@ app/Modules/Contracts/
 
 ## Roadmap
 
-- [x] Spec 1 — Backend v2 (parser modular + ingestor idempotente + API + landing + docs)
+- [x] Spec 1 — Backend v2 Contracts (parser modular + ingestor idempotente + API + landing + docs)
 - [x] Spec 2 — Frontend ficha de contrato disruptiva
-- [ ] Spec 3 — Ficha de empresa pública con grafo de relaciones
+- [x] Spec 3 — Ficha de empresa pública (contratos)
+- [x] **Spec 5 — Módulo Subvenciones (BDNS)**: ingestión idempotente de la API REST de [infosubvenciones.es](https://www.infosubvenciones.es/), 625k convocatorias + 24M concesiones disponibles. Comando `php artisan subsidies:sync`. API en `/api/v1/subsidies/calls` y `/api/v1/subsidies/grants`.
 - [ ] Spec 4 — Snapshot history exploitation: queries de diff + panel de auditoría
+- [ ] Spec 6 — Cruces contratos↔subvenciones por empresa: ficha de empresa unificada, detección de patrones
 - [ ] Módulo Cargos públicos (BOE + boletines autonómicos)
-- [ ] Módulo Presupuestos
-- [ ] Módulo Subvenciones (BDNS)
+- [ ] Módulo Presupuestos (PGE + autonómicos)
 - [ ] API keys + rate limit por cuenta
-- [ ] Webhooks para terceros que sigan contratos concretos
+- [ ] Webhooks para terceros que sigan contratos/subvenciones concretas
+
+### Módulos activos
+
+| Módulo | Fuente | Volumen | Endpoint público |
+|---|---|---|---|
+| **Contracts** | [PLACSP](https://contrataciondelestado.es) atom XML | ~10M contratos | `/api/v1/contracts` |
+| **Subsidies** | [BDNS](https://www.infosubvenciones.es/) JSON REST | 625k convocatorias + 24M concesiones | `/api/v1/subsidies/calls`, `/api/v1/subsidies/grants` |
 
 ## Datos y atribución
 
