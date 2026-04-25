@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Modules\Contracts\Http\Resources\CompanyResource;
 use Modules\Contracts\Models\Company;
 use Modules\Contracts\Services\Stats\CompanyStatsService;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CompanyController extends Controller
@@ -23,9 +24,17 @@ class CompanyController extends Controller
         $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
         $paginated = QueryBuilder::for(Company::class)
+            ->withCount('awards')
+            ->withSum('awards', 'amount')
             ->allowedFilters('nif', 'name')
             ->allowedIncludes('addresses', 'awards')
-            ->allowedSorts('name', 'created_at')
+            ->allowedSorts(
+                'name',
+                'created_at',
+                'updated_at',
+                AllowedSort::field('awards_count'),
+                AllowedSort::field('total_amount', 'awards_sum_amount'),
+            )
             ->defaultSort('name')
             ->paginate($perPage)
             ->appends($request->query());
