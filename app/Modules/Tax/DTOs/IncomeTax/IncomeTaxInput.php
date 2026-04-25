@@ -41,7 +41,7 @@ final readonly class IncomeTaxInput implements JsonSerializable
 
         if ($regime->code === 'ASALARIADO_GEN' && $workIncome === null) {
             throw new InvalidArgumentException(
-                "El régimen ASALARIADO_GEN requiere workIncome.",
+                'El régimen ASALARIADO_GEN requiere workIncome.',
             );
         }
 

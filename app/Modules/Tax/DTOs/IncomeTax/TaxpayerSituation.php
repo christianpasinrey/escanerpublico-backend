@@ -63,7 +63,7 @@ final readonly class TaxpayerSituation implements JsonSerializable
 
     public static function single(): self
     {
-        return new self();
+        return new self;
     }
 
     public function jsonSerialize(): array
