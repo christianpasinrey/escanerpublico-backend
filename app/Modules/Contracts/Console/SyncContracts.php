@@ -14,7 +14,8 @@ class SyncContracts extends Command
         {--month= : Mes a sincronizar (formato YYYYMM, ej: 202603). Por defecto el mes actual}
         {--all : Descargar todos los meses disponibles desde 2018}
         {--sync : Ejecutar el procesamiento de forma síncrona en lugar de por cola}
-        {--force-download : Descargar aunque existan atoms locales extraídos}';
+        {--force-download : Descargar aunque existan atoms locales extraídos}
+        {--cleanup : Borrar atoms + extracted dir tras procesar cada mes (modo low-disk; requiere --sync)}';
 
     protected $description = 'Descarga y procesa contratos de la PLACSP (Plataforma de Contratación del Sector Público)';
 
@@ -140,5 +141,16 @@ class SyncContracts extends Command
 
         // Limpiar ZIP (conservar atoms para reprocesado)
         @unlink($zipPath);
+
+        // --cleanup: borrar atoms + extracted dir tras procesar (modo low-disk).
+        // Solo válido junto con --sync (en async, los jobs aún no se han ejecutado).
+        if ($this->option('cleanup') && $this->option('sync')) {
+            foreach ($atomFiles as $atomFile) {
+                @unlink($atomFile);
+            }
+            @rmdir($extractPath);
+            @rmdir($dirPath);
+            $this->line("  🧹 Cleanup: atoms + extracted/{$month} eliminados.");
+        }
     }
 }
