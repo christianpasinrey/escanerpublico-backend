@@ -3,6 +3,7 @@
 namespace Modules\Subsidies\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Pagination\FastPaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Subsidies\Http\Resources\SubsidyGrantResource;
@@ -21,7 +22,7 @@ class SubsidyGrantController extends Controller
     {
         $perPage = min(100, max(1, (int) $request->query('per_page', '25')));
 
-        $paginated = QueryBuilder::for(SubsidyGrant::class)
+        $q = QueryBuilder::for(SubsidyGrant::class)
             ->allowedFilters(
                 'organization_id',
                 'company_id',
@@ -37,9 +38,11 @@ class SubsidyGrantController extends Controller
             )
             ->allowedIncludes('call', 'company', 'organization')
             ->allowedSorts('grant_date', 'amount', 'fecha_alta', 'created_at', 'updated_at')
-            ->defaultSort('-grant_date')
-            ->paginate($perPage)
-            ->appends($request->query());
+            ->defaultSort('-grant_date');
+
+        $page = max(1, (int) $request->query('page', '1'));
+        $hasFilters = is_array($request->query('filter')) && count($request->query('filter')) > 0;
+        $paginated = FastPaginator::paginate($q, $perPage, $page, 'subsidy_grants', $hasFilters)->appends($request->query());
 
         return SubsidyGrantResource::collection($paginated)
             ->response()
