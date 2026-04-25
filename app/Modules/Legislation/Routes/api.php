@@ -5,7 +5,7 @@ use Modules\Legislation\Http\Controllers\BoeItemController;
 use Modules\Legislation\Http\Controllers\BoeSummaryController;
 use Modules\Legislation\Http\Controllers\LegislationNormController;
 
-Route::prefix('api/v1/legislation')->middleware(['limit.includes'])->group(function () {
+Route::prefix('api/v1/legislation')->middleware(['throttle:api', 'limit.includes'])->group(function () {
     Route::get('/norms', [LegislationNormController::class, 'index']);
     Route::get('/norms/{norm}', [LegislationNormController::class, 'show'])->whereNumber('norm');
 
