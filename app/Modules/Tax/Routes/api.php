@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Tax\Http\Controllers\Calculators\FractionalPaymentController;
 use Modules\Tax\Http\Controllers\Calculators\IncomeTaxController;
 use Modules\Tax\Http\Controllers\Calculators\InvoiceController;
 use Modules\Tax\Http\Controllers\Calculators\PayrollController;
@@ -38,5 +39,6 @@ Route::prefix('api/v1/tax')->middleware(['throttle:api', 'limit.includes'])->gro
     // M7 — Calculadora autoliquidación IVA (modelo 303 trimestral / modelo 390 anual)
     Route::post('/vat-return', VatReturnController::class);
 
-    // M8 (modelos 130/131 pagos fraccionados) — fase siguiente.
+    // M8 — Calculadora pagos fraccionados IRPF (modelos 130 / 131)
+    Route::post('/fractional-payment', FractionalPaymentController::class);
 });

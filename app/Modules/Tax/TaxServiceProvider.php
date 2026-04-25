@@ -3,6 +3,9 @@
 namespace Modules\Tax;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Tax\Calculators\FractionalPayment\FractionalPaymentCalculator;
+use Modules\Tax\Calculators\FractionalPayment\Modelo130Payment;
+use Modules\Tax\Calculators\FractionalPayment\Modelo131Payment;
 use Modules\Tax\Calculators\IncomeTax\EstimacionDirectaNormal;
 use Modules\Tax\Calculators\IncomeTax\EstimacionDirectaSimplificada;
 use Modules\Tax\Calculators\IncomeTax\EstimacionObjetivaModulos;
@@ -21,6 +24,7 @@ use Modules\Tax\Console\ValidateTaxParameters;
 use Modules\Tax\Ingestion\CnaeImporter;
 use Modules\Tax\Ingestion\IaeImporter;
 use Modules\Tax\Services\BoeParameterDetector;
+use Modules\Tax\Services\FractionalPayment\DescendantsDeductionCalculator;
 use Modules\Tax\Services\IncomeTax\EoModulesCalculator;
 use Modules\Tax\Services\IncomeTax\IncomeTaxDeductionsCalculator;
 use Modules\Tax\Services\IncomeTax\PersonalMinimumCalculator;
@@ -78,6 +82,12 @@ class TaxServiceProvider extends ServiceProvider
         $this->app->singleton(VatRegimeValidator::class);
         $this->app->singleton(Modelo303CasillasMapper::class);
         $this->app->singleton(VatReturnCalculator::class);
+
+        // M8 — Servicios y calculadoras de pagos fraccionados IRPF (130/131)
+        $this->app->singleton(DescendantsDeductionCalculator::class);
+        $this->app->singleton(Modelo130Payment::class);
+        $this->app->singleton(Modelo131Payment::class);
+        $this->app->singleton(FractionalPaymentCalculator::class);
     }
 
     public function boot(): void
