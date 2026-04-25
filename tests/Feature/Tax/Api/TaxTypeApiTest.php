@@ -131,18 +131,26 @@ class TaxTypeApiTest extends TestCase
         $r->assertStatus(404);
     }
 
-    public function test_show_returns_422_when_ambiguous(): void
+    public function test_show_returns_state_by_default_with_regional_variants_in_meta(): void
     {
-        // mismo code en estatal y regional MD y regional CT
-        TaxType::factory()->create(['code' => 'AMBI']);
-        TaxType::factory()->regional('MD')->create(['code' => 'AMBI']);
-        TaxType::factory()->regional('CT')->create(['code' => 'AMBI']);
+        // mismo code en estatal y regional MD y regional CT.
+        TaxType::factory()->create(['code' => 'AMBI', 'name' => 'AMBI estatal']);
+        TaxType::factory()->regional('MD')->create(['code' => 'AMBI', 'name' => 'AMBI Madrid']);
+        TaxType::factory()->regional('CT')->create(['code' => 'AMBI', 'name' => 'AMBI Cataluña']);
 
         $r = $this->getJson('/api/v1/tax/types/AMBI');
 
-        $r->assertStatus(422);
-        $r->assertJsonStructure(['message', 'matches']);
-        $this->assertCount(3, $r->json('matches'));
+        // Devuelve la fila estatal por defecto, no 422.
+        $r->assertSuccessful();
+        $r->assertJsonPath('data.name', 'AMBI estatal');
+        $r->assertJsonPath('data.region_code', null);
+
+        // Las variantes autonómicas se exponen en meta.regional_variants.
+        $variants = $r->json('meta.regional_variants');
+        $this->assertCount(2, $variants);
+        $regions = array_column($variants, 'region_code');
+        sort($regions);
+        $this->assertSame(['CT', 'MD'], $regions);
     }
 
     public function test_show_disambiguates_with_region_code(): void
