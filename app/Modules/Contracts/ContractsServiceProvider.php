@@ -11,6 +11,9 @@ use Modules\Contracts\Console\RefreshLandingStats;
 use Modules\Contracts\Console\ReprocessContracts;
 use Modules\Contracts\Console\SyncContracts;
 use Modules\Contracts\Http\Middleware\LimitNestedIncludes;
+use Modules\Contracts\Search\CompanySearchProvider;
+use Modules\Contracts\Search\ContractSearchProvider;
+use Modules\Contracts\Search\OrganizationSearchProvider;
 use Modules\Contracts\Services\Parser\Extractors\CriteriaExtractor;
 use Modules\Contracts\Services\Parser\Extractors\DocumentsExtractor;
 use Modules\Contracts\Services\Parser\Extractors\LotsExtractor;
@@ -40,6 +43,14 @@ class ContractsServiceProvider extends ServiceProvider
         $this->app->singleton(DocumentsExtractor::class);
         $this->app->singleton(PlacspEntryParser::class);
         $this->app->singleton(PlacspStreamParser::class);
+
+        // Federated search providers — picked up by Modules\Search\SearchServiceProvider
+        // via container tagging; we don't reference the consumer.
+        $this->app->tag([
+            ContractSearchProvider::class,
+            OrganizationSearchProvider::class,
+            CompanySearchProvider::class,
+        ], 'search.providers');
     }
 
     public function boot(): void
