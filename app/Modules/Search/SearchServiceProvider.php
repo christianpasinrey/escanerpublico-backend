@@ -2,7 +2,10 @@
 
 namespace Modules\Search;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\Search\Events\SearchPerformed;
+use Modules\Search\Listeners\LogSearchTelemetry;
 use Modules\Search\Services\FederatedSearchService;
 
 /**
@@ -30,5 +33,8 @@ class SearchServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__.'/Routes/api.php');
+
+        // Telemetría desacoplada: el listener vive en el evento, no en el servicio.
+        Event::listen(SearchPerformed::class, LogSearchTelemetry::class);
     }
 }
