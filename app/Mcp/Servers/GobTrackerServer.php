@@ -13,6 +13,7 @@ use App\Mcp\Tools\OfficialsSearchTool;
 use App\Mcp\Tools\OrganizationShowTool;
 use App\Mcp\Tools\OrganizationsSearchTool;
 use App\Mcp\Tools\OrganizationStatsTool;
+use App\Mcp\Tools\SearchEverywhereTool;
 use App\Mcp\Tools\SubsidiesCallsSearchTool;
 use App\Mcp\Tools\SubsidiesGrantsSearchTool;
 use App\Mcp\Tools\SubsidyGrantShowTool;
@@ -90,6 +91,8 @@ class GobTrackerServer extends Server
      * @var array<int, class-string>
      */
     protected array $tools = [
+        // Cross-módulo — punto de entrada universal
+        SearchEverywhereTool::class,
         // Contratos
         ContractsSearchTool::class,
         ContractShowTool::class,

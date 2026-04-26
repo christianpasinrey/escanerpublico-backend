@@ -217,24 +217,6 @@ parameters:
 			path: app/Modules/Contracts/Http/Resources/AwardResource.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\CompanyResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/CompanyResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\CompanyResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/CompanyResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\CompanyResource\:\:\$nif\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/CompanyResource.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContactResource\:\:\$type\.$#'
 			identifier: property.notFound
 			count: 1
@@ -253,18 +235,6 @@ parameters:
 			path: app/Modules/Contracts/Http/Resources/ContractResource.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$expediente\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$external_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$fecha_fin\.$#'
 			identifier: property.notFound
 			count: 1
@@ -272,24 +242,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$fecha_inicio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$importe_con_iva\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$importe_sin_iva\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Contracts/Http/Resources/ContractResource.php
@@ -313,37 +265,13 @@ parameters:
 			path: app/Modules/Contracts/Http/Resources/ContractResource.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$objeto\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$procedimiento_code\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Contracts/Http/Resources/ContractResource.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$snapshot_updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$status_code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$tipo_contrato_code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/ContractResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\ContractResource\:\:\$valor_estimado\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Contracts/Http/Resources/ContractResource.php
@@ -590,42 +518,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$contracts_sum_importe_con_iva\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$hierarchy\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$identifier\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$nif\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Http\\Resources\\OrganizationResource\:\:\$type_code\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Contracts/Http/Resources/OrganizationResource.php
@@ -985,6 +877,12 @@ parameters:
 			path: app/Modules/Contracts/Models/ContractSnapshot.php
 
 		-
+			message: '#^Class Modules\\Contracts\\Models\\Organization has PHPDoc tag @property for property \$hierarchy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Modules/Contracts/Models/Organization.php
+
+		-
 			message: '#^Class Modules\\Contracts\\Models\\Organization uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
 			count: 1
@@ -1043,6 +941,24 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Modules/Contracts/Models/ReprocessRun.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: Modules\\Search\\DataObjects\\SearchHit, Closure\(Modules\\Contracts\\Models\\Company\)\: Modules\\Search\\DataObjects\\SearchHit given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Search/CompanySearchProvider.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: Modules\\Search\\DataObjects\\SearchHit, Closure\(Modules\\Contracts\\Models\\Contract\)\: Modules\\Search\\DataObjects\\SearchHit given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Search/ContractSearchProvider.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: Modules\\Search\\DataObjects\\SearchHit, Closure\(Modules\\Contracts\\Models\\Organization\)\: Modules\\Search\\DataObjects\\SearchHit given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Modules/Contracts/Search/OrganizationSearchProvider.php
 
 		-
 			message: '#^Anonymous function has an unused use \$errored\.$#'
@@ -1159,48 +1075,6 @@ parameters:
 			path: app/Modules/Contracts/Services/ContractIngestor.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$nif\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$identifier\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$nif\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
 			message: '#^Call to an undefined static method Modules\\Contracts\\Models\\Company\:\:select\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -1211,12 +1085,6 @@ parameters:
 			identifier: staticMethod.notFound
 			count: 1
 			path: app/Modules/Contracts/Services/EntityResolver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Company\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 6
-			path: app/Modules/Contracts/Services/Stats/CompanyStatsService.php
 
 		-
 			message: '#^Call to an undefined method object\:\:count\(\)\.$#'
@@ -1241,12 +1109,6 @@ parameters:
 			identifier: staticMethod.notFound
 			count: 2
 			path: app/Modules/Contracts/Services/Stats/CompanyStatsService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contracts\\Models\\Organization\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Contracts/Services/Stats/OrganizationStatsService.php
 
 		-
 			message: '#^Call to an undefined method object\:\:count\(\)\.$#'

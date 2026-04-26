@@ -10,6 +10,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int $id
+ * @property string|null $name
+ * @property string|null $identifier
+ * @property string|null $nif
+ * @property string|null $type_code
+ * @property string|null $parent_name
+ * @property array|null $hierarchy
+ */
 class Organization extends Model
 {
     use HasFactory;

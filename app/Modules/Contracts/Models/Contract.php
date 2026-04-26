@@ -2,6 +2,7 @@
 
 namespace Modules\Contracts\Models;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\Modules\Contracts\ContractFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +11,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
+/**
+ * @property int $id
+ * @property string|null $external_id
+ * @property string|null $expediente
+ * @property string|null $objeto
+ * @property string|null $status_code
+ * @property numeric|null $importe_sin_iva
+ * @property numeric|null $importe_con_iva
+ * @property numeric|null $valor_estimado
+ * @property int|null $organization_id
+ * @property CarbonImmutable|null $snapshot_updated_at
+ */
 class Contract extends Model
 {
     use HasFactory;
