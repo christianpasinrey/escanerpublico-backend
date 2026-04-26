@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int $id
+ * @property string|null $name
+ * @property string|null $identifier
+ * @property string|null $nif
+ */
 class Company extends Model
 {
     use HasFactory;
