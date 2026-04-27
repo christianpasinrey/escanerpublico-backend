@@ -1,0 +1,54 @@
+{
+    "entry_number": 199985,
+    "company_name_raw": "AGRUPACION DE FABRICANTES Y EXPORTADORES DE INGENIERIA Y SERVICIOS AUXILIARES SA",
+    "company_name_normalized": "agrupacion de fabricantes y exportadores de ingenieria y servicios auxiliares",
+    "legal_form": "SA",
+    "registry": {
+        "letter": "M",
+        "sheet": 84441,
+        "section": "8",
+        "inscription": "I\/A 27",
+        "date": "2026-04-17"
+    },
+    "act_types": [
+        "object_change",
+        "transformation",
+        "capital_increase",
+        "reelection"
+    ],
+    "act_items": [
+        {
+            "act_type": "object_change",
+            "payload": {
+                "new_object": "La sociedad tiene por objeto: - Proyectos y cálculos de ingeniería. CNAE 7112 (actividad principal). - Fabricación, compra venta al contado o a plazos, exportación e importación de maquinaria de todas clases y materiales para la construcción. CNAE 4663. - Ejecución completa de obras de construcción."
+            },
+            "effective_date": null
+        },
+        {
+            "act_type": "capital_increase",
+            "payload": {
+                "capital_after": {
+                    "amount_cents": 240266578,
+                    "currency": "EUR"
+                },
+                "subscribed": {
+                    "amount_cents": 692814265,
+                    "currency": "EUR"
+                },
+                "paid_in": null
+            },
+            "effective_date": null
+        }
+    ],
+    "officers": [
+        {
+            "role": "sole_admin",
+            "action": "reelection",
+            "kind": "person",
+            "name_raw": "PUTIN GHIDINI ALESSIA MARTA",
+            "name_normalized": "putin ghidini alessia marta",
+            "representative_name_raw": null
+        }
+    ],
+    "raw_text": "199985 - AGRUPACION DE FABRICANTES Y EXPORTADORES DE INGENIERIA Y SERVICIOS AUXILIARES SA Transformación de sociedad. Denominación y forma adoptada: AGRUPACION DE FABRICANTES Y EXPORTADORES DE INGENIERIA Y SERVICIOS AUXILIARES SL Reelecciones. Adm. Unico: PUTIN GHIDINI ALESSIA MARTA. Ampliación de capital. Capital: 2.402.665,78 Euros. Resultante Suscrito: 6.928.142,65 Euros. Cambio de objeto social. La sociedad tiene por objeto: - Proyectos y cálculos de ingeniería. CNAE 7112 (actividad principal). - Fabricación, compra venta al contado o a plazos, exportación e importación de maquinaria de todas clases y materiales para la construcción. CNAE 4663. - Ejecución completa de obras de construcción. Datos registrales. S 8 , H M 84441, I\/A 27 (17.04.26)."
+}

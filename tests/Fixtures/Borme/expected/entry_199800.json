@@ -1,0 +1,61 @@
+{
+    "entry_number": 199800,
+    "company_name_raw": "ORIGEN Y SENTIDO SL",
+    "company_name_normalized": "origen y sentido",
+    "legal_form": "SL",
+    "registry": {
+        "letter": "M",
+        "sheet": 882492,
+        "section": "8",
+        "inscription": "I\/A 1",
+        "date": "2026-04-06"
+    },
+    "act_types": [
+        "constitution",
+        "appointment"
+    ],
+    "act_items": [
+        {
+            "act_type": "constitution",
+            "payload": {
+                "start_date": "2026-03-03",
+                "object": "a) La creación, formulación, fabricación y envasado de todo tipo de perfumes, aguas de colonia, cosméticos, productos de belleza, cuidado corporal y ambientadores, así como su venta, comercialización, distribución y exportación, tanto al por mayor como al por menor. b) La promoción, marketing (inclu",
+                "domicile": {
+                    "address": "C\/ ORENSE, 20 - PLANTA 1ª, OFICINA 8",
+                    "city": "MADRID"
+                },
+                "capital": {
+                    "amount_cents": 300000,
+                    "currency": "EUR"
+                }
+            },
+            "effective_date": "2026-03-03"
+        },
+        {
+            "act_type": "appointment",
+            "payload": {
+                "summary": "Adm. Mancom.: BARRERAS RUANO MARTA;VERGARA TENORIO MANUEL ANGEL."
+            },
+            "effective_date": null
+        }
+    ],
+    "officers": [
+        {
+            "role": "joint_admin",
+            "action": "appointment",
+            "kind": "person",
+            "name_raw": "BARRERAS RUANO MARTA",
+            "name_normalized": "barreras ruano marta",
+            "representative_name_raw": null
+        },
+        {
+            "role": "joint_admin",
+            "action": "appointment",
+            "kind": "person",
+            "name_raw": "VERGARA TENORIO MANUEL ANGEL",
+            "name_normalized": "vergara tenorio manuel angel",
+            "representative_name_raw": null
+        }
+    ],
+    "raw_text": "199800 - ORIGEN Y SENTIDO SL. Constitución. Comienzo de operaciones: 3.03.26. Objeto social: a) La creación, formulación, fabricación y envasado de todo tipo de perfumes, aguas de colonia, cosméticos, productos de belleza, cuidado corporal y ambientadores, así como su venta, comercialización, distribución y exportación, tanto al por mayor como al por menor. b) La promoción, marketing (inclu. Domicilio: C\/ ORENSE, 20 - PLANTA 1ª, OFICINA 8 (MADRID). Capital: 3.000,00 Euros. Nombramientos. Adm. Mancom.: BARRERAS RUANO MARTA;VERGARA TENORIO MANUEL ANGEL. Datos registrales. S 8 , H M 882492, I\/A 1 ( 6.04.26)."
+}

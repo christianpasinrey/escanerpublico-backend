@@ -1,0 +1,54 @@
+{
+    "entry_number": 200428,
+    "company_name_raw": "VERTICE MADRID OBRAS SL",
+    "company_name_normalized": "vertice madrid obras",
+    "legal_form": "SL",
+    "registry": {
+        "letter": "M",
+        "sheet": 883129,
+        "section": "8",
+        "inscription": "I\/A 1",
+        "date": "2026-04-17"
+    },
+    "act_types": [
+        "constitution",
+        "sole_partner_declaration",
+        "appointment"
+    ],
+    "act_items": [
+        {
+            "act_type": "constitution",
+            "payload": {
+                "start_date": "2026-03-03",
+                "object": "La sociedad tiene por objeto La compraventa, arrendamiento (no financiero), rehabilitación y restauración de todo tipo o clase de inmuebles de naturaleza rustica y\/o urbana, la construcción de edificios tanto residenciales como no residenciales, la construcción y conservación de carreteras y autopis",
+                "domicile": {
+                    "address": "C\/ ARBOLEDA 14 - LOCAL AR 146A",
+                    "city": "MADRID"
+                },
+                "capital": {
+                    "amount_cents": 100,
+                    "currency": "EUR"
+                }
+            },
+            "effective_date": "2026-03-03"
+        },
+        {
+            "act_type": "appointment",
+            "payload": {
+                "summary": "Adm. Unico: MAGNAFOX GROUND SOLID SL. Representan: VILAR MARTINEZ JOAN VICENT."
+            },
+            "effective_date": null
+        }
+    ],
+    "officers": [
+        {
+            "role": "sole_admin",
+            "action": "appointment",
+            "kind": "company",
+            "name_raw": "MAGNAFOX GROUND SOLID SL",
+            "name_normalized": "magnafox ground solid",
+            "representative_name_raw": "VILAR MARTINEZ JOAN VICENT"
+        }
+    ],
+    "raw_text": "200428 - VERTICE MADRID OBRAS SL. Constitución. Comienzo de operaciones: 3.03.26. Objeto social: La sociedad tiene por objeto La compraventa, arrendamiento (no financiero), rehabilitación y restauración de todo tipo o clase de inmuebles de naturaleza rustica y\/o urbana, la construcción de edificios tanto residenciales como no residenciales, la construcción y conservación de carreteras y autopis. Domicilio: C\/ ARBOLEDA 14 - LOCAL AR 146A (MADRID). Capital: 1,00 Euros. Declaración de unipersonalidad. Socio único: MAGNAFOX GROUND SOLID SL. Nombramientos. Adm. Unico: MAGNAFOX GROUND SOLID SL. Representan: VILAR MARTINEZ JOAN VICENT. Datos registrales. S 8 , H M 883129, I\/A 1 (17.04.26)."
+}

@@ -1,0 +1,64 @@
+{
+    "entry_number": 199801,
+    "company_name_raw": "IBEROSMA GESTORIA ADMINISTRATIVA SL",
+    "company_name_normalized": "iberosma gestoria administrativa",
+    "legal_form": "SL",
+    "registry": {
+        "letter": "M",
+        "sheet": 261837,
+        "section": "8",
+        "inscription": "I\/A 8",
+        "date": "2026-04-17"
+    },
+    "act_types": [
+        "sole_partner_declaration",
+        "dissolution",
+        "extinction",
+        "cease",
+        "appointment"
+    ],
+    "act_items": [
+        {
+            "act_type": "dissolution",
+            "payload": {
+                "cause": "voluntary",
+                "cause_raw": "Voluntaria",
+                "description": "Voluntaria."
+            },
+            "effective_date": null
+        },
+        {
+            "act_type": "cease",
+            "payload": {
+                "summary": "Adm. Unico: HERNANDEZ HERNANDEZ EMILIO."
+            },
+            "effective_date": null
+        },
+        {
+            "act_type": "appointment",
+            "payload": {
+                "summary": "Liquidador: HERNANDEZ JAEN EMILIO."
+            },
+            "effective_date": null
+        }
+    ],
+    "officers": [
+        {
+            "role": "liquidator",
+            "action": "appointment",
+            "kind": "person",
+            "name_raw": "HERNANDEZ JAEN EMILIO",
+            "name_normalized": "hernandez jaen emilio",
+            "representative_name_raw": null
+        },
+        {
+            "role": "sole_admin",
+            "action": "cease",
+            "kind": "person",
+            "name_raw": "HERNANDEZ HERNANDEZ EMILIO",
+            "name_normalized": "hernandez hernandez emilio",
+            "representative_name_raw": null
+        }
+    ],
+    "raw_text": "199801 - IBEROSMA GESTORIA ADMINISTRATIVA SL. Declaración de unipersonalidad. Socio único: HERNANDEZ JAEN EMILIO. Ceses\/Dimisiones. Adm. Unico: HERNANDEZ HERNANDEZ EMILIO. Nombramientos. Liquidador: HERNANDEZ JAEN EMILIO. Disolución. Voluntaria. Extinción. Datos registrales. S 8 , H M 261837, I\/A 8 (17.04.26)."
+}

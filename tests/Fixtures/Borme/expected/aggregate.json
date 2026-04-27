@@ -1,0 +1,58 @@
+{
+    "total_entries": 718,
+    "act_types": {
+        "address_change": 70,
+        "appointment": 445,
+        "bonds_issuance": 1,
+        "bylaws_change": 34,
+        "capital_decrease": 8,
+        "capital_increase": 44,
+        "cease": 148,
+        "concurso": 8,
+        "constitution": 99,
+        "dissolution": 31,
+        "erratum": 3,
+        "extinction": 34,
+        "merger_by_absorption": 3,
+        "name_change": 16,
+        "object_change": 34,
+        "other": 84,
+        "paid_in_capital": 1,
+        "reelection": 24,
+        "revocation": 59,
+        "sole_partner_change": 28,
+        "sole_partner_declaration": 69,
+        "transformation": 1,
+        "website_change": 3
+    },
+    "legal_forms": {
+        "AIE": 11,
+        "BRANCH": 2,
+        "SA": 123,
+        "SL": 572,
+        "SLL": 2,
+        "SLP": 8
+    },
+    "officer_kinds": {
+        "person": 1670,
+        "company": 45
+    },
+    "officer_actions": {
+        "appointment": 1087,
+        "cease": 216,
+        "reelection": 36,
+        "revocation": 376
+    },
+    "officer_roles": {
+        "attorney": 618,
+        "board_member": 103,
+        "chairman": 25,
+        "joint_admin": 42,
+        "joint_attorney": 206,
+        "liquidator": 38,
+        "secretary": 26,
+        "several_admin": 111,
+        "several_attorney": 324,
+        "sole_admin": 222
+    }
+}

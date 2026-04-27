@@ -1,0 +1,60 @@
+{
+    "entry_number": 199948,
+    "company_name_raw": "MIRAMCO SL",
+    "company_name_normalized": "miramco",
+    "legal_form": "SL",
+    "registry": {
+        "letter": "M",
+        "sheet": 51002,
+        "section": "8",
+        "inscription": "I\/A 18",
+        "date": "2026-04-17"
+    },
+    "act_types": [
+        "revocation"
+    ],
+    "act_items": [],
+    "officers": [
+        {
+            "role": "attorney",
+            "action": "revocation",
+            "kind": "person",
+            "name_raw": "GIL Y GIL JESUS",
+            "name_normalized": "gil y gil jesus",
+            "representative_name_raw": null
+        },
+        {
+            "role": "joint_attorney",
+            "action": "revocation",
+            "kind": "person",
+            "name_raw": "GIL MARIN MARIA DE LOS ANGELES",
+            "name_normalized": "gil marin maria de los angeles",
+            "representative_name_raw": null
+        },
+        {
+            "role": "attorney",
+            "action": "revocation",
+            "kind": "person",
+            "name_raw": "LAGO BORNSTEIN PABLO",
+            "name_normalized": "lago bornstein pablo",
+            "representative_name_raw": null
+        },
+        {
+            "role": "several_attorney",
+            "action": "revocation",
+            "kind": "person",
+            "name_raw": "GIL MARIN MIGUEL ANGEL",
+            "name_normalized": "gil marin miguel angel",
+            "representative_name_raw": null
+        },
+        {
+            "role": "several_attorney",
+            "action": "revocation",
+            "kind": "person",
+            "name_raw": "LAGO BORNSTEIN PABLO",
+            "name_normalized": "lago bornstein pablo",
+            "representative_name_raw": null
+        }
+    ],
+    "raw_text": "199948 - MIRAMCO SL. Revocaciones. Apoderado: GIL Y GIL JESUS. Apo.Man.Soli: GIL MARIN MARIA DE LOS ANGELES. Apoderado: LAGO BORNSTEIN PABLO. Apo.Sol.: GIL MARIN MIGUEL ANGEL;LAGO BORNSTEIN PABLO. Datos registrales. S 8 , H M 51002, I\/A 18 (17.04.26)."
+}

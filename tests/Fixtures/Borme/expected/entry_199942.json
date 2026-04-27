@@ -1,0 +1,19 @@
+{
+    "entry_number": 199942,
+    "company_name_raw": "ACCIONA RECARGA SL",
+    "company_name_normalized": "acciona recarga",
+    "legal_form": "SL",
+    "registry": {
+        "letter": "M",
+        "sheet": 645630,
+        "section": "8",
+        "inscription": "I\/A 36",
+        "date": "2026-04-18"
+    },
+    "act_types": [
+        "merger_by_absorption"
+    ],
+    "act_items": [],
+    "officers": [],
+    "raw_text": "199942 - ACCIONA RECARGA SL. Fusión por absorción. Sociedades absorbidas: EXANERGIA SOCIEDAD LIMITADA. Datos registrales. S 8 , H M 645630, I\/A 36 (18.04.26)."
+}

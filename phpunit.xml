@@ -39,8 +39,9 @@
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
         <env name="DB_DATABASE" value="gobtracker_testing"/>
-        <env name="DB_USERNAME" value="root"/>
-        <env name="DB_PASSWORD" value=""/>
+        <!-- DB_USERNAME and DB_PASSWORD are intentionally not set here so they can
+             be supplied via .env.testing (local) or CI env vars without needing
+             a per-environment phpunit.xml override. -->
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Modules\Contracts\Http\Resources\CompanyResource;
 use Modules\Contracts\Models\Company;
 use Modules\Contracts\Services\Stats\CompanyStatsService;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -35,12 +36,32 @@ class CompanyController extends Controller
         $paginated = QueryBuilder::for(Company::class)
             ->withCount(['awards as awards_count' => fn ($q) => $q->where('amount', '<', $threshold)])
             ->withSum(['awards as awards_sum_amount' => fn ($q) => $q->where('amount', '<', $threshold)], 'amount')
-            ->allowedFilters('nif', 'name')
+            ->allowedFilters(
+                'nif',
+                'name',
+                'legal_form',
+                'status',
+                'registry_letter',
+                AllowedFilter::callback('source', function ($query, $value) {
+                    // Comma-separated whitelist matched against source_modules JSON.
+                    $values = is_array($value) ? $value : explode(',', (string) $value);
+                    $query->where(function ($q) use ($values) {
+                        foreach ($values as $v) {
+                            $q->orWhereJsonContains('source_modules', trim($v));
+                        }
+                    });
+                }),
+                AllowedFilter::callback('has_borme_acts', function ($query, $value) {
+                    $query->whereJsonContains('source_modules', 'borme');
+                }),
+            )
             ->allowedIncludes('addresses', 'awards')
             ->allowedSorts(
                 'name',
                 'created_at',
                 'updated_at',
+                'last_act_date',
+                'incorporation_date',
                 AllowedSort::field('awards_count'),
                 AllowedSort::field('total_amount', 'awards_sum_amount'),
             )
