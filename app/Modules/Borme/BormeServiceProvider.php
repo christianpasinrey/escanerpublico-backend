@@ -41,6 +41,7 @@ class BormeServiceProvider extends ServiceProvider
                 \Modules\Borme\Console\SyncBorme::class,
                 \Modules\Borme\Console\BackfillHistoricalBorme::class,
                 \Modules\Borme\Console\ListPendingReview::class,
+                \Modules\Borme\Console\RetryFailed::class,
             ]);
         }
     }
