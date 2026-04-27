@@ -10,6 +10,14 @@ use Modules\Contracts\Models\Company;
 
 class EntityResolver
 {
+    /**
+     * Defensive cap on company / person names. Real BORME entries top out
+     * around ~250 chars; anything longer is almost certainly a parser
+     * over-capture. Cap before insert to keep ingestion from failing on a
+     * single bad row when name columns are TEXT but bound by index limits.
+     */
+    private const NAME_MAX = 1000;
+
     public function __construct(private readonly NameNormalizer $nameNormalizer) {}
 
     /**
@@ -44,8 +52,8 @@ class EntityResolver
         }
 
         $created = Company::create([
-            'name' => $entry->companyNameRaw,
-            'name_normalized' => $entry->companyNameNormalized,
+            'name' => $this->cap($entry->companyNameRaw),
+            'name_normalized' => $this->cap($entry->companyNameNormalized),
             'legal_form' => $entry->legalForm?->value,
             'registry_letter' => $entry->registryLetter,
             'registry_sheet' => $entry->registrySheet,
@@ -54,6 +62,13 @@ class EntityResolver
         ]);
 
         return ['company' => $created, 'status' => 'created'];
+    }
+
+    private function cap(string $value): string
+    {
+        return mb_strlen($value) > self::NAME_MAX
+            ? mb_substr($value, 0, self::NAME_MAX)
+            : $value;
     }
 
     /**
@@ -65,8 +80,8 @@ class EntityResolver
         $normalized = $this->nameNormalizer->normalize($rawName);
 
         return Person::firstOrCreate(
-            ['full_name_normalized' => $normalized],
-            ['full_name_raw' => $rawName]
+            ['full_name_normalized' => $this->cap($normalized)],
+            ['full_name_raw' => $this->cap($rawName)]
         );
     }
 
@@ -84,8 +99,8 @@ class EntityResolver
                 ->first();
             if ($byName === null) {
                 $byName = Company::create([
-                    'name' => $officer->nameRaw,
-                    'name_normalized' => $officer->nameNormalized,
+                    'name' => $this->cap($officer->nameRaw),
+                    'name_normalized' => $this->cap($officer->nameNormalized),
                     'source_modules' => ['borme'],
                 ]);
             }
