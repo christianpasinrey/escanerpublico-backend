@@ -106,29 +106,29 @@ php artisan test
 
 ```bash
 # Últimos contratos adjudicados con su organismo
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/contracts?filter[status_code]=ADJ&include=organization&sort=-snapshot_updated_at"
+curl "https://<TU_DOMINIO>/api/v1/contracts?filter[status_code]=ADJ&include=organization&sort=-snapshot_updated_at"
 
 # Ficha completa de un contrato
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/contracts/19066873?include=lots.awards.company,notices,modifications,documents"
+curl "https://<TU_DOMINIO>/api/v1/contracts/19066873?include=lots.awards.company,notices,modifications,documents"
 
 # Estadísticas de un órgano
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/organizations/1/stats"
+curl "https://<TU_DOMINIO>/api/v1/organizations/1/stats"
 
 # Búsqueda full-text en contratos
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/contracts?filter[search]=puente+autopista"
+curl "https://<TU_DOMINIO>/api/v1/contracts?filter[search]=puente+autopista"
 
 # Subvenciones de 2025 superiores a 100.000 €
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/subsidies/grants?filter[grant_date_from]=2025-01-01&filter[amount_above]=100000"
+curl "https://<TU_DOMINIO>/api/v1/subsidies/grants?filter[grant_date_from]=2025-01-01&filter[amount_above]=100000"
 
 # Disposiciones BOE de la Sección II.A (nombramientos)
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/legislation/items?filter[seccion_code]=2A"
+curl "https://<TU_DOMINIO>/api/v1/legislation/items?filter[seccion_code]=2A"
 
 # Trayectoria de un cargo público
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/officials/1?include=appointments.organization,appointments.boeItem"
+curl "https://<TU_DOMINIO>/api/v1/officials/1?include=appointments.organization,appointments.boeItem"
 
 # Series temporales agregadas (todos los módulos)
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/timelines"
-curl "https://app.gobtracker.tailor-bytes.com/api/v1/timelines?module=contracts"
+curl "https://<TU_DOMINIO>/api/v1/timelines"
+curl "https://<TU_DOMINIO>/api/v1/timelines?module=contracts"
 ```
 
 ## Arquitectura
